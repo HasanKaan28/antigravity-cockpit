@@ -1,0 +1,3173 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Deep Space Cockpit & Activity Dashboard v2.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #03060c;
+            --bg-glass-1: rgba(10, 16, 28, 0.75);
+            --bg-glass-2: rgba(16, 25, 46, 0.88);
+            --bg-glass-hover: rgba(22, 36, 68, 0.96);
+            --border-glass: rgba(0, 242, 254, 0.16);
+            --border-glass-glow: rgba(0, 242, 254, 0.5);
+            --border-fav: rgba(251, 191, 36, 0.6);
+            --border-fav-glow: rgba(251, 191, 36, 0.9);
+            --neon-cyan: #00f2fe;
+            --neon-blue: #38bdf8;
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+            --neon-emerald: #00ff9d;
+            --neon-amber: #fbbf24;
+            --text-bright: #f8fafc;
+            --text-dim: #94a3b8;
+            --text-dark: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-bright);
+            min-height: 100vh;
+            padding: 24px 36px 60px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas Particle Background */
+        #spaceCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Scanline Overlay Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.03));
+            z-index: 999;
+            background-size: 100% 3px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* Top HUD Cockpit Bar */
+        .hud-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 16px 28px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-bar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), transparent);
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .hud-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-core {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo-badge {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(168, 85, 247, 0.3));
+            border: 1px solid var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .logo-text h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #ffffff, var(--neon-cyan), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .logo-text .subtext {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-emerald);
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-emerald);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-emerald);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hud-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .clock-widget {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--neon-blue);
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 8px 14px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .hud-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-bright);
+            padding: 9px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+        }
+
+        .hud-btn:hover {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .hud-btn.primary {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.3), rgba(168, 85, 247, 0.4));
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+
+        .hud-btn.primary:hover {
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Telemetry Cards Row */
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .tele-card {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tele-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 242, 254, 0.15);
+        }
+
+        .tele-icon {
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tele-info .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .tele-info .val {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-bright);
+        }
+
+        .tele-action-btn {
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-bright);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            margin-left: auto;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            outline: none;
+        }
+
+        .tele-action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tele-action-btn.start {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+        }
+
+        .tele-action-btn.start:hover {
+            background: rgba(0, 242, 254, 0.3);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+        }
+
+        .tele-action-btn.stop {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+            color: #fca5a5;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .tele-action-btn.stop:hover {
+            background: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+        }
+
+        .hud-btn.ollama-on {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            background: rgba(0, 242, 254, 0.12);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+        }
+
+        .hud-btn.ollama-eco {
+            border-color: var(--neon-amber);
+            color: var(--neon-amber);
+            background: rgba(251, 191, 36, 0.12);
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.25);
+        }
+
+        .hud-btn.ollama-off {
+            opacity: 0.75;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navigation Command Tabs */
+        .nav-cockpit {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 8px 12px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .nav-tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab-btn:hover {
+            color: var(--text-bright);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(168, 85, 247, 0.25));
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+        }
+
+        .tab-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-bright);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .nav-tab-btn.active .tab-badge {
+            background: var(--neon-cyan);
+            color: #03060c;
+            font-weight: 700;
+        }
+
+        /* Search and Subfilters Bar */
+        .filter-cockpit {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 500px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 12px 18px 12px 44px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-dark);
+            pointer-events: none;
+        }
+
+        .filter-chips {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chip-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chip-btn:hover {
+            color: #ffffff;
+            border-color: var(--neon-cyan);
+        }
+
+        .chip-btn.active {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+        }
+
+        .chip-btn.fav-chip.active {
+            background: rgba(251, 191, 36, 0.18);
+            border-color: var(--neon-amber);
+            color: var(--neon-amber);
+            box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+        }
+
+        .chip-btn.arch-chip.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+            box-shadow: 0 0 14px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Section Layouts */
+        .section-view {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .section-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Project Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            background: var(--bg-glass-2);
+            border-color: var(--border-glass-glow);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 242, 254, 0.2);
+        }
+
+        /* Special Holographic Border for Favorites */
+        .project-card.is-favorite {
+            border-color: var(--border-fav);
+            box-shadow: 0 8px 30px rgba(251, 191, 36, 0.15), inset 0 0 15px rgba(251, 191, 36, 0.05);
+        }
+
+        .project-card.is-favorite::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-amber), #ffd700, var(--neon-cyan));
+        }
+
+        .project-card.is-favorite:hover {
+            border-color: var(--border-fav-glow);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(251, 191, 36, 0.35);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-proj-icon {
+            font-size: 22px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .card-actions-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .icon-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+
+        .icon-action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            transform: scale(1.1);
+        }
+
+        .icon-action-btn.fav-btn.active {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: var(--neon-amber);
+            color: var(--neon-amber);
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.5);
+        }
+
+        .icon-action-btn.arch-btn:hover {
+            background: rgba(168, 85, 247, 0.25);
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .card-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dark);
+            margin-bottom: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .badge-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .badge-git {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fb7185;
+        }
+
+        .badge-cbm {
+            background: rgba(0, 242, 254, 0.12);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            color: var(--neon-cyan);
+        }
+
+        .badge-graphify {
+            background: rgba(168, 85, 247, 0.14);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            color: #c084fc;
+        }
+
+        .badge-uncommitted {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            color: #fcd34d;
+        }
+
+        .badge-fav-tag {
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: var(--neon-amber);
+            font-weight: 700;
+        }
+
+        .card-snippet {
+            background: rgba(0, 0, 0, 0.35);
+            border-left: 2px solid var(--neon-cyan);
+            border-radius: 0 8px 8px 0;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 18px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-snippet.commit-view {
+            border-left-color: var(--neon-purple);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 14px;
+        }
+
+        .card-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-bright);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .card-btn:hover {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+        }
+
+        .card-btn.primary {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.25), rgba(168, 85, 247, 0.3));
+            border-color: var(--neon-cyan);
+        }
+
+        .card-btn.primary:hover {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        .card-btn.graph-btn {
+            background: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #e9d5ff;
+        }
+
+        .card-btn.graph-btn:hover {
+            background: rgba(168, 85, 247, 0.28);
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Dedicated GitHub Repolarım Section */
+        .github-hero {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(0, 242, 254, 0.12));
+            border: 1px solid var(--border-glass-glow);
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .github-hero::before {
+            content: '🐙';
+            position: absolute;
+            right: 20px;
+            bottom: -20px;
+            font-size: 130px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .gh-hero-text h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .gh-hero-text p {
+            font-size: 13px;
+            color: var(--text-dim);
+            max-width: 600px;
+        }
+
+        .gh-add-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 6px 6px 6px 16px;
+            min-width: 320px;
+        }
+
+        .gh-add-box input {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            flex: 1;
+        }
+
+        .gh-add-box button {
+            background: var(--neon-purple);
+            border: none;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .gh-add-box button:hover {
+            box-shadow: 0 0 15px var(--neon-purple);
+            transform: scale(1.05);
+        }
+
+        /* GitHub Repo Cards */
+        .gh-card {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .gh-card:hover {
+            background: var(--bg-glass-2);
+            border-color: var(--neon-purple);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 24px rgba(168, 85, 247, 0.25);
+        }
+
+        .lang-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .lang-python { background-color: #3572A5; box-shadow: 0 0 8px #3572A5; }
+        .lang-javascript { background-color: #f7df1e; box-shadow: 0 0 8px #f7df1e; }
+        .lang-typescript { background-color: #3178c6; box-shadow: 0 0 8px #3178c6; }
+        .lang-html { background-color: #e34c26; box-shadow: 0 0 8px #e34c26; }
+        .lang-default { background-color: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
+
+        .clone-status-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 14px;
+        }
+
+        .clone-status-banner.is-cloned {
+            border-left: 2px solid var(--neon-emerald);
+            color: var(--neon-emerald);
+        }
+
+        .clone-status-banner.not-cloned {
+            border-left: 2px solid var(--neon-amber);
+            color: var(--neon-amber);
+        }
+
+        /* Sessions Section */
+        .sessions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .session-card {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .session-card:hover {
+            background: var(--bg-glass-2);
+            border-color: var(--neon-cyan);
+            transform: translateX(4px);
+            box-shadow: 0 8px 25px rgba(0, 242, 254, 0.15);
+        }
+
+        .sess-main {
+            flex: 1;
+        }
+
+        .sess-prompt {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .sess-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .sess-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* CBM Observatory Radar */
+        .radar-hero {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(168, 85, 247, 0.15));
+            border: 1px solid var(--border-glass-glow);
+            border-radius: 20px;
+            padding: 28px 36px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .radar-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .radar-stat-box {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .radar-stat-box h3 {
+            font-size: 16px;
+            color: var(--neon-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radar-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radar-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Empty / Archive placeholder */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-dim);
+            background: var(--bg-glass-1);
+            border-radius: 20px;
+            border: 1px dashed var(--border-glass);
+        }
+
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 14px;
+            opacity: 0.6;
+        }
+
+        /* Toast Popup */
+        #cockpitToast {
+            position: fixed;
+            bottom: 30px;
+            right: 36px;
+            background: var(--bg-glass-2);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 14px;
+            padding: 14px 24px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 254, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #cockpitToast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    
+        /* Discrete Archive Section - Unobtrusive (Pek ortalıkta olmayan) */
+        .archive-drawer-wrap {
+            margin: 40px auto 30px auto;
+            max-width: 1400px;
+            padding: 0 36px;
+        }
+
+        .archive-drawer-bar {
+            background: rgba(12, 18, 28, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .archive-drawer-bar:hover {
+            background: rgba(16, 24, 38, 0.85);
+            border-color: rgba(168, 85, 247, 0.35);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(168, 85, 247, 0.15);
+        }
+
+        .archive-drawer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .archive-drawer-icon {
+            font-size: 16px;
+            opacity: 0.8;
+        }
+
+        .archive-drawer-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dim);
+            letter-spacing: 0.3px;
+        }
+
+        .archive-drawer-bar:hover .archive-drawer-label {
+            color: #ffffff;
+        }
+
+        .archive-count-pill {
+            background: rgba(168, 85, 247, 0.18);
+            color: var(--neon-purple);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .archive-drawer-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+
+        .archive-arrow {
+            font-size: 14px;
+            transition: transform 0.25s ease;
+        }
+
+        .archive-drawer-bar.open .archive-arrow {
+            transform: rotate(180deg);
+        }
+
+        .archive-drawer-content {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-top: none;
+            border-radius: 0 0 14px 14px;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .archive-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 14px;
+        }
+
+        .archived-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .archived-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .archived-info {
+            overflow: hidden;
+        }
+
+        .archived-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 3px;
+        }
+
+        .archived-type {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .archived-type.local {
+            background: rgba(0, 242, 254, 0.12);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+        }
+
+        .archived-type.gh {
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--neon-purple);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+        }
+
+        .archived-sub {
+            font-size: 11px;
+            color: var(--text-dark);
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 240px;
+        }
+
+        .archived-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .unarch-btn {
+            background: rgba(168, 85, 247, 0.15) !important;
+            border: 1px solid rgba(168, 85, 247, 0.4) !important;
+            color: #ffffff !important;
+            font-size: 11px !important;
+            padding: 6px 12px !important;
+            border-radius: 8px !important;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .unarch-btn:hover {
+            background: rgba(168, 85, 247, 0.3) !important;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+        }
+
+        .empty-archive {
+            text-align: center;
+            padding: 30px 10px;
+            color: var(--text-dim);
+            font-size: 13px;
+            grid-column: 1 / -1;
+        }
+
+        /* ======================================================== */
+        /* ANTIGRAVITY PANEL - MINIMIZED CYBERPUNK QUOTA HUD        */
+        /* ======================================================== */
+        .ag-panel-card {
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 10px 18px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .ag-panel-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-amber), transparent);
+            opacity: 0.85;
+        }
+
+        .ag-panel-card:hover {
+            border-color: rgba(0, 242, 254, 0.35);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 242, 254, 0.1);
+        }
+
+        .ag-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .ag-panel-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ag-panel-icon-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(251, 191, 36, 0.15));
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+            flex-shrink: 0;
+        }
+
+        .ag-panel-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ag-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 255, 157, 0.12);
+            border: 1px solid rgba(0, 255, 157, 0.3);
+            color: var(--neon-emerald);
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .ag-live-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--neon-emerald);
+            box-shadow: 0 0 6px var(--neon-emerald);
+            animation: blink 1.8s infinite;
+        }
+
+        .ag-tier-pill {
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: var(--neon-amber);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 6px;
+        }
+
+        .ag-panel-sub {
+            display: inline-block;
+            font-size: 10px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.3px;
+            opacity: 0.75;
+        }
+
+        .ag-collapsed-summary {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-cyan);
+            background: rgba(0, 242, 254, 0.08);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: none;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .ag-panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ag-btn-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+        }
+
+        .ag-btn-icon svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .ag-btn-icon:hover {
+            background: rgba(0, 242, 254, 0.15);
+            border-color: var(--neon-cyan);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .ag-btn-icon.spinning svg {
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Compact Antigravity Model Grid */
+        .ag-models-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 860px) {
+            .ag-models-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .ag-model-card {
+            background: rgba(14, 22, 38, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 10px;
+            padding: 8px 14px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.25s ease;
+            gap: 12px;
+        }
+
+        .ag-model-card:hover {
+            background: rgba(18, 28, 48, 0.85);
+            transform: translateY(-1px);
+        }
+
+        .ag-model-card.gemini-card:hover {
+            border-color: rgba(64, 196, 255, 0.45);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(64, 196, 255, 0.15);
+        }
+
+        .ag-model-card.claude-card:hover {
+            border-color: rgba(255, 171, 64, 0.45);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 171, 64, 0.15);
+        }
+
+        .ag-model-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Compact Ring Gauge Container */
+        .ag-gauge-box {
+            position: relative;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ag-gauge-svg {
+            width: 42px;
+            height: 42px;
+            overflow: visible;
+        }
+
+        .gauge-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            fill: #ffffff;
+            font-size: 12px;
+        }
+
+        .gauge-pct-unit {
+            font-size: 8px;
+            font-weight: 600;
+            fill: var(--text-dim);
+        }
+
+        .ag-model-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .ag-model-name {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ag-model-name.gemini {
+            color: #40C4FF;
+        }
+
+        .ag-model-name.claude {
+            color: #FFAB40;
+        }
+
+        .ag-model-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .ag-model-dot.gemini {
+            background: #40C4FF;
+            box-shadow: 0 0 6px #40C4FF;
+        }
+
+        .ag-model-dot.claude {
+            background: #FFAB40;
+            box-shadow: 0 0 6px #FFAB40;
+        }
+
+        .ag-model-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ag-timer-icon {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+
+        /* Compact Weekly Progress Section */
+        .ag-weekly-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 110px;
+            max-width: 150px;
+            width: 100%;
+        }
+
+        .ag-weekly-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .ag-weekly-title {
+            color: var(--text-dim);
+        }
+
+        .ag-weekly-title strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .ag-weekly-reset {
+            color: var(--text-dark);
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .ag-weekly-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ag-weekly-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .ag-weekly-fill.gemini {
+            background: linear-gradient(90deg, #00b4d8, #40C4FF);
+            box-shadow: 0 0 8px rgba(64, 196, 255, 0.5);
+        }
+
+        .ag-weekly-fill.claude {
+            background: linear-gradient(90deg, #f59e0b, #FFAB40);
+            box-shadow: 0 0 8px rgba(255, 171, 64, 0.5);
+        }
+
+        .ag-weekly-reset .reset-icon {
+            font-size: 10px;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .ag-model-card:hover .reset-icon {
+            transform: rotate(-45deg);
+        }
+
+        /* Details Holographic Modal */
+        .ag-modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(3, 6, 12, 0.85);
+            backdrop-filter: blur(14px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .ag-modal-backdrop.open {
+            display: flex;
+        }
+
+        .ag-modal-content {
+            background: var(--bg-glass-2);
+            border: 1px solid var(--border-glass-glow);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.2);
+            position: relative;
+        }
+
+        .ag-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ag-metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        .ag-metric-row .lbl {
+            color: var(--text-dim);
+        }
+
+        .ag-metric-row .val {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .ag-credit-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="spaceCanvas"></canvas>
+
+    <!-- Top HUD Cockpit Bar -->
+    <header class="hud-bar">
+        <div class="hud-left">
+            <div class="logo-core">
+                <div class="logo-badge">⚡</div>
+                <div class="logo-text">
+                    <h1>Antigravity Cockpit</h1>
+                    <div class="subtext">
+                        <span class="status-dot"></span>
+                        <span>DEEP SPACE COMMAND v2.0 // NOMINAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hud-right">
+            <div class="clock-widget" id="hudClock">00:00:00</div>
+            <button class="hud-btn primary" onclick="startNewChat()">
+                <span>💬</span>
+                <span>Yeni Sohbet</span>
+            </button>
+            <button class="hud-btn" onclick="openCbmWebUi()">
+                <span>🧠</span>
+                <span>CBM Web UI</span>
+            </button>
+            <button class="hud-btn" onclick="openGraphifyRoot()">
+                <span>👑</span>
+                <span>Observatory</span>
+            </button>
+            <button class="hud-btn" id="audioToggleBtn" onclick="toggleAudioSfx()">
+                <span id="audioIcon">🔊</span>
+                <span>SFX</span>
+            </button>
+            <button class="hud-btn" id="hudOllamaBtn" onclick="toggleOllama()" title="Ollama Yerel Kod Motorunu Başlat / Kapat">
+                <span id="hudOllamaIcon">⚡</span>
+                <span id="hudOllamaText">Ollama</span>
+            </button>
+            <button class="hud-btn" onclick="refreshDashboard()">
+                <span>🔄</span>
+                <span>Yenile</span>
+            </button>
+            <button class="hud-btn" id="startupToggleBtn" onclick="toggleStartupSetting()">
+                <span id="startupIcon">☑️</span>
+                <span>Açılışta</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Telemetry Cards -->
+    <div class="telemetry-grid">
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #00ff9d;">🖥️</div>
+            <div class="tele-info">
+                <div class="label">GPU MİMARİSİ</div>
+                <div class="val" id="teleGpu">NVIDIA RTX 5070 Ti (Active)</div>
+            </div>
+        </div>
+        <div class="tele-card" id="teleCardOllama">
+            <div class="tele-icon" id="teleOllamaIcon" style="color: #00f2fe;">⚡</div>
+            <div class="tele-info" style="flex: 1;">
+                <div class="label">AI MİMARİSİ</div><div class="val" id="teleModel">Antigravity Cloud Native (Gemini & Claude)</div>
+            </div>
+            <button class="tele-action-btn start" id="teleOllamaActionBtn" onclick="toggleOllama()" title="Ollama'yı Başlat veya Durdur">
+                <span id="teleOllamaActionIcon">⚡</span>
+                <span id="teleOllamaActionText">Başlat</span>
+            </button>
+        </div>
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #a855f7;">🧠</div>
+            <div class="tele-info">
+                <div class="label">CBM KNOWLEDGE GRAPH</div>
+                <div class="val" id="teleCbm">10 Repo // 185.0 MB</div>
+            </div>
+        </div>
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #fbbf24;">🐙</div>
+            <div class="tele-info">
+                <div class="label">GITHUB SENKRONİZASYONU</div>
+                <div class="val">GitHub Senkronizasyonu (Aktif)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Antigravity Panel - Model Quota & Telemetry HUD -->
+    <section class="ag-panel-card" id="agPanelSection">
+        <div class="ag-panel-header">
+            <div class="ag-panel-title-wrap">
+                <div class="ag-panel-icon-badge">✨</div>
+                <div>
+                    <div class="ag-panel-title">
+                        <span>Antigravity Panel</span>
+                        <span class="ag-live-badge"><span class="ag-live-dot"></span> LIVE</span>
+                        <span class="ag-tier-pill" id="agUserTier">Google AI Pro</span>
+                        <span class="ag-panel-sub">// Quota Telemetry</span>
+                        <span class="ag-collapsed-summary" id="agCollapsedSummary"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="ag-panel-actions">
+                <button class="ag-btn-icon" title="Hesap ve Kredi Bilgileri" onclick="toggleAgDetailsModal()">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </button>
+                <button class="ag-btn-icon" title="Antigravity Panel Ayarlarını Aç" onclick="openAgPanelSettings()">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+                <button class="ag-btn-icon" id="agRefreshBtn" title="Kotaları Canlı Yenile" onclick="refreshAgQuota(true)">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </button>
+                <button class="ag-btn-icon" id="agCollapseBtn" title="Paneli Küçült / Genişlet" onclick="toggleAgPanelCollapse()">
+                    <span id="agCollapseIcon">▾</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="ag-panel-body" id="agPanelBody">
+            <div class="ag-models-grid">
+                <!-- Gemini Model Capsule -->
+                <div class="ag-model-card gemini-card" id="agGeminiCard">
+                    <div class="ag-model-left">
+                        <div class="ag-gauge-box">
+                            <svg class="ag-gauge-svg" viewBox="0 0 44 44">
+                                <defs>
+                                    <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00f2fe" />
+                                        <stop offset="100%" stop-color="#40C4FF" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="22" cy="22" r="16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.5" fill="none" />
+                                <circle id="geminiGaugeArc" cx="22" cy="22" r="16" stroke="url(#geminiGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="61.32" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1); filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.5));" />
+                                <text x="22" y="26" text-anchor="middle" class="gauge-pct"><tspan id="geminiPctVal">39</tspan><tspan class="gauge-pct-unit">%</tspan></text>
+                            </svg>
+                        </div>
+                        <div class="ag-model-meta">
+                            <div class="ag-model-name gemini">
+                                <span class="ag-model-dot gemini"></span>
+                                <span>Gemini</span>
+                            </div>
+                            <div class="ag-model-timer">
+                                <span class="ag-timer-icon">⏱</span>
+                                <span id="geminiTimerVal">2h 19m</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ag-weekly-wrap">
+                        <div class="ag-weekly-header">
+                            <span class="ag-weekly-title">Haftalık: <strong id="geminiWeeklyVal">71%</strong></span>
+                            <span class="ag-weekly-reset"><span class="reset-icon">↺</span> <span id="geminiWeeklyReset">2d 11h</span></span>
+                        </div>
+                        <div class="ag-weekly-track">
+                            <div class="ag-weekly-fill gemini" id="geminiWeeklyBar" style="width: 71%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claude Model Capsule -->
+                <div class="ag-model-card claude-card" id="agClaudeCard">
+                    <div class="ag-model-left">
+                        <div class="ag-gauge-box">
+                            <svg class="ag-gauge-svg" viewBox="0 0 44 44">
+                                <defs>
+                                    <linearGradient id="claudeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fbbf24" />
+                                        <stop offset="100%" stop-color="#FFAB40" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="22" cy="22" r="16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.5" fill="none" />
+                                <circle id="claudeGaugeArc" cx="22" cy="22" r="16" stroke="url(#claudeGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="0" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1); filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5));" />
+                                <text x="22" y="26" text-anchor="middle" class="gauge-pct"><tspan id="claudePctVal">100</tspan><tspan class="gauge-pct-unit">%</tspan></text>
+                            </svg>
+                        </div>
+                        <div class="ag-model-meta">
+                            <div class="ag-model-name claude">
+                                <span class="ag-model-dot claude"></span>
+                                <span>Claude</span>
+                            </div>
+                            <div class="ag-model-timer">
+                                <span class="ag-timer-icon">⏱</span>
+                                <span id="claudeTimerVal">5h 0m</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ag-weekly-wrap">
+                        <div class="ag-weekly-header">
+                            <span class="ag-weekly-title">Haftalık: <strong id="claudeWeeklyVal">91%</strong></span>
+                            <span class="ag-weekly-reset"><span class="reset-icon">↺</span> <span id="claudeWeeklyReset">5d 22h</span></span>
+                        </div>
+                        <div class="ag-weekly-track">
+                            <div class="ag-weekly-fill claude" id="claudeWeeklyBar" style="width: 91%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Command Tabs -->
+    <nav class="nav-cockpit">
+        <button class="nav-tab-btn active" id="tabBtnProjects" onclick="switchNavTab('projects')">
+            <span>📂</span>
+            <span>Projeler & Çalışma Alanları</span>
+            <span class="tab-badge" id="badgeProjCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnGithub" onclick="switchNavTab('github')">
+            <span>🐙</span>
+            <span>GitHub Repolarım</span>
+            <span class="tab-badge" id="badgeGhCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnSessions" onclick="switchNavTab('sessions')">
+            <span>⚡</span>
+            <span>Son Yapılanlar & Oturumlar</span>
+            <span class="tab-badge" id="badgeSessCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnRadar" onclick="switchNavTab('radar')">
+            <span>🌌</span>
+            <span>CBM & Graphify Radar</span>
+            <span class="tab-badge">v0.11</span>
+        </button>
+    </nav>
+
+    <!-- Search & Filters (Visible in Projects view) -->
+    <div class="filter-cockpit" id="filterBar">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="projectSearchInput" placeholder="Proje, repo veya commit ara... (Ctrl + K)" oninput="filterCards()">
+        </div>
+        <div class="filter-chips">
+            <button class="chip-btn active" id="chipAll" onclick="setSubFilter('all')">🌐 Tümü</button>
+            <button class="chip-btn fav-chip" id="chipFav" onclick="setSubFilter('favorites')">⭐ Favoriler (<span id="favChipCount">0</span>)</button>
+            <button class="chip-btn" id="chipGit" onclick="setSubFilter('git')">🐙 Git Olanlar</button>
+            <button class="chip-btn" id="chipGraph" onclick="setSubFilter('graphify')">👑 Graphify Hazır</button>
+            <button class="chip-btn" id="chipCbm" onclick="setSubFilter('cbm')">🧠 CBM İndeksli</button>
+        </div>
+    </div>
+
+    <!-- MAIN VIEW 1: Projects & Workspaces -->
+    <main class="section-view active" id="viewProjects">
+        <div class="cards-grid" id="projectsGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 2: Dedicated GitHub Repositories (Separated from Projects!) -->
+    <main class="section-view" id="viewGithub">
+        <div class="github-hero">
+            <div class="gh-hero-text">
+                <h2><span>🐙</span> GitHub Ekosistemi & Repolar</h2>
+                <p>Bulut repolarınız, yerel klonlama durumları ve tek tıkla Codebase Memory CBM Grafı & Graphify analiz entegrasyonu.</p>
+            </div>
+            <div class="gh-add-box">
+                <input type="text" id="customGhInput" placeholder="Yeni repo adı veya git URL ekle...">
+                <button onclick="submitCustomRepo()">➕ Ekle</button>
+            </div>
+        </div>
+        <div class="cards-grid" id="githubGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 3: Sessions Timeline -->
+    <main class="section-view" id="viewSessions">
+        <div class="sessions-list" id="sessionsList"></div>
+    </main>
+
+    <!-- MAIN VIEW 4: CBM & Graphify Radar -->
+    <main class="section-view" id="viewRadar">
+        <div class="radar-hero">
+            <div>
+                <h2 style="font-size: 24px; color: #ffffff; margin-bottom: 6px;">🌌 Deep Space CBM & Graphify Bilgi Radarı</h2>
+                <p style="color: var(--text-dim); font-size: 14px; max-width: 650px;">
+                    Codebase Memory MCP ve Graphify mimarisi ile tüm depolarınızın fonksiyon çağrı grafı, topluluk tespiti ve god node analizleri kalıcı olarak saklanmaktadır.
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="hud-btn primary" onclick="openCbmWebUi()">🧠 CBM Grafını Aç (9749)</button>
+                <button class="hud-btn" onclick="openGraphifyRoot()">👑 Edge Observatory</button>
+            </div>
+        </div>
+        <div class="radar-stats-grid">
+            <div class="radar-stat-box">
+                <h3><span>🧠</span> CBM İndeksli Depolar</h3>
+                <ul class="radar-list" id="radarCbmList"></ul>
+            </div>
+            <div class="radar-stat-box">
+                <h3><span>👑</span> Graphify Bilgi Ağları</h3>
+                <ul class="radar-list" id="radarGraphList"></ul>
+            </div>
+        </div>
+    </main>
+
+    
+    <!-- DEDICATED DISCRETE ARCHIVE DRAWER (Pek ortalıkta olmayan arşiv bölümü) -->
+    <div class="archive-drawer-wrap" id="archiveDrawerWrap">
+        <div class="archive-drawer-bar" onclick="toggleArchiveDrawer()">
+            <div class="archive-drawer-left">
+                <span class="archive-drawer-icon">📦</span>
+                <span class="archive-drawer-label">Arşivlenmiş Depo ve Projeler</span>
+                <span class="archive-count-pill" id="archCountBadge">0</span>
+            </div>
+            <div class="archive-drawer-right">
+                <span class="archive-toggle-text" id="archiveToggleHint">Genişlet / Gizle</span>
+                <span class="archive-arrow" id="archiveArrow">▾</span>
+            </div>
+        </div>
+        <div class="archive-drawer-content" id="archiveDrawerContent" style="display: none;">
+            <div class="archive-items-grid" id="archiveGrid"></div>
+        </div>
+    </div>
+
+    <!-- Antigravity Panel Details Holographic Modal -->
+    <div class="ag-modal-backdrop" id="agDetailsModal" onclick="closeAgDetailsModal(event)">
+        <div class="ag-modal-content" onclick="event.stopPropagation()">
+            <div class="ag-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 22px;">✨</span>
+                    <div>
+                        <h2 style="font-size: 17px; color: #ffffff; font-weight: 700;">Antigravity Panel Telemetri</h2>
+                        <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">HESAP & MODEL KOTA DETAYLARI</div>
+                    </div>
+                </div>
+                <button class="ag-btn-icon" onclick="toggleAgDetailsModal()">✕</button>
+            </div>
+            <div class="ag-modal-body">
+                <div class="ag-metric-row">
+                    <span class="lbl">Kullanıcı Hesabı:</span>
+                    <span class="val" id="modalUserEmail">ufukkarabulut35@gmail.com</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Abonelik / Tier:</span>
+                    <span class="val" style="color: var(--neon-emerald); font-weight: 700;" id="modalUserTier">Google AI Pro</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Eklenti Durumu:</span>
+                    <span class="val" style="color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace;">Antigravity Panel v2.8.0 (Bağlı)</span>
+                </div>
+
+                <div style="margin: 18px 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace; font-weight: 700;">Aylık Kredi Durumu (Plan)</div>
+                
+                <div class="ag-credit-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Prompt Kredisi</span>
+                        <span id="modalPromptCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #ffffff;">500 / 50.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill gemini" id="modalPromptBar" style="width: 1%;"></div>
+                    </div>
+                </div>
+
+                <div class="ag-credit-box" style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Flow Kredisi</span>
+                        <span id="modalFlowCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #ffffff;">100 / 150.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill claude" id="modalFlowBar" style="width: 0.1%;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="hud-btn" onclick="openAgSidebar()">Sidebar'da Aç</button>
+                    <button class="hud-btn primary" onclick="openAgPanelSettings()">Panel Ayarları</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="cockpitToast">İşlem Tamamlandı</div>
+
+    <script>
+        const vscode = (typeof acquireVsCodeApi === 'function') ? acquireVsCodeApi() : null;
+        let appData = __INITIAL_DATA__;
+        let currentNavTab = 'projects';
+        let currentSubFilter = 'all';
+
+        // Sound Synthesis Engine with Web Audio API
+        const AudioEngine = {
+            ctx: null,
+            enabled: true,
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            },
+            click() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.05);
+            },
+            favorite() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.045);
+                    gain.gain.setValueAtTime(0.09, now + idx * 0.045);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.045 + 0.22);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.045);
+                    osc.stop(now + idx * 0.045 + 0.22);
+                });
+            },
+            archive() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.exponentialRampToValueAtTime(140, now + 0.14);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.001, now + 0.14);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.14);
+            },
+            tab() {
+                if (!this.enabled) return;
+                this.init();
+                if (!this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.06);
+                gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.06);
+            }
+        };
+
+        // Space Canvas Particle Animation
+        (function initSpaceCanvas() {
+            const canvas = document.getElementById('spaceCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+
+            const stars = [];
+            const count = Math.min(80, Math.floor((w * h) / 18000));
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    vx: (Math.random() - 0.5) * 0.35,
+                    vy: (Math.random() - 0.5) * 0.35,
+                    size: Math.random() * 1.8 + 0.5,
+                    alpha: Math.random() * 0.7 + 0.2
+                });
+            }
+
+            let mouseX = -1000;
+            let mouseY = -1000;
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            function render() {
+                ctx.clearRect(0, 0, w, h);
+
+                for (let i = 0; i < stars.length; i++) {
+                    const s = stars[i];
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    if (s.x < 0) s.x = w;
+                    if (s.x > w) s.x = 0;
+                    if (s.y < 0) s.y = h;
+                    if (s.y > h) s.y = 0;
+
+                    ctx.fillStyle = 'rgba(0, 242, 254, ' + s.alpha + ')';
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    const dx = mouseX - s.x;
+                    const dy = mouseY - s.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 110) {
+                        ctx.strokeStyle = 'rgba(0, 242, 254, ' + ((1 - dist / 110) * 0.35) + ')';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(s.x, s.y);
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.stroke();
+                    }
+                }
+                requestAnimationFrame(render);
+            }
+            render();
+        })();
+
+        // Real-time Clock
+        function updateClock() {
+            const el = document.getElementById('hudClock');
+            if (el) {
+                const now = new Date();
+                const h = String(now.getHours()).padStart(2, '0');
+                const m = String(now.getMinutes()).padStart(2, '0');
+                const s = String(now.getSeconds()).padStart(2, '0');
+                el.textContent = h + ':' + m + ':' + s;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Toast Helper
+        function showToast(text) {
+            const toast = document.getElementById('cockpitToast');
+            if (!toast) return;
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Navigation Switching
+        function switchNavTab(tabId) {
+            AudioEngine.tab();
+            currentNavTab = tabId;
+
+            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+
+            const filterBar = document.getElementById('filterBar');
+            if (tabId === 'projects') {
+                filterBar.style.display = 'flex';
+                document.getElementById('tabBtnProjects').classList.add('active');
+                document.getElementById('viewProjects').classList.add('active');
+            } else if (tabId === 'github') {
+                filterBar.style.display = 'none';
+                document.getElementById('tabBtnGithub').classList.add('active');
+                document.getElementById('viewGithub').classList.add('active');
+            } else if (tabId === 'sessions') {
+                filterBar.style.display = 'none';
+                document.getElementById('tabBtnSessions').classList.add('active');
+                document.getElementById('viewSessions').classList.add('active');
+            } else if (tabId === 'radar') {
+                filterBar.style.display = 'none';
+                document.getElementById('tabBtnRadar').classList.add('active');
+                document.getElementById('viewRadar').classList.add('active');
+            }
+        }
+
+        function setSubFilter(filterId) {
+            AudioEngine.click();
+            currentSubFilter = filterId;
+            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+            if (filterId === 'all') document.getElementById('chipAll').classList.add('active');
+            if (filterId === 'favorites') document.getElementById('chipFav').classList.add('active');
+            if (filterId === 'git') document.getElementById('chipGit').classList.add('active');
+            if (filterId === 'graphify') document.getElementById('chipGraph').classList.add('active');
+            if (filterId === 'cbm') document.getElementById('chipCbm').classList.add('active');
+            renderProjects();
+        }
+
+        function filterCards() {
+            renderProjects();
+        }
+
+        // Render Projects Grid
+        function renderProjects() {
+            const grid = document.getElementById('projectsGrid');
+            if (!grid) return;
+
+            const q = (document.getElementById('projectSearchInput').value || '').trim().toLowerCase();
+            let list = appData.projects || [];
+
+            // Filter logic
+            list = list.filter(p => {
+                if (p.isArchived) return false;
+                if (currentSubFilter === 'favorites' && !p.isFavorite) return false;
+                if (currentSubFilter === 'git' && !p.isGit) return false;
+                if (currentSubFilter === 'graphify' && !p.hasGraphify) return false;
+                if (currentSubFilter === 'cbm' && !p.cbmIndexed) return false;
+
+                if (q) {
+                    const inName = p.name.toLowerCase().includes(q);
+                    const inPath = p.path.toLowerCase().includes(q);
+                    const inBranch = (p.branch || '').toLowerCase().includes(q);
+                    const inLog = (p.gitLog || []).some(l => (l.msg || '').toLowerCase().includes(q));
+                    return inName || inPath || inBranch || inLog;
+                }
+                return true;
+            });
+
+            if (list.length === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
+                    '<div class="icon">' + (currentSubFilter === 'favorites' ? '⭐' : ('🔍')) + '</div>' +
+                    '<h3 style="font-size: 18px; margin-bottom: 6px; color: #ffffff;">Proje Bulunamadı</h3>' +
+                    '<p style="font-size: 13px;">Seçilen filtreye uygun aktif proje mevcut değil.</p>' +
+                '</div>';
+                return;
+            }
+
+            let html = '';
+            for (const p of list) {
+                const favActive = p.isFavorite ? 'active' : '';
+                const favClass = p.isFavorite ? 'is-favorite' : '';
+                const lastCommit = (p.gitLog && p.gitLog.length > 0) ? p.gitLog[0] : null;
+
+                html += '<div class="project-card ' + favClass + '" id="card-' + escapeHtml(p.name) + '">' +
+                    '<div>' +
+                        '<div class="card-header">' +
+                            '<div class="card-title-group">' +
+                                '<div class="card-proj-icon">' + (p.isFavorite ? '⭐' : (p.isGit ? '🐙' : '📁')) + '</div>' +
+                                '<div>' +
+                                    '<div class="card-name">' + escapeHtml(p.name) + '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="card-actions-top">' +
+                                '<button class="icon-action-btn fav-btn ' + favActive + '" title="' + (p.isFavorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle') + '" onclick="toggleFav(\'' + escapeJs(p.path) + '\')">⭐</button>' +
+                                '<button class="icon-action-btn arch-btn" title="' + (p.isArchived ? 'Arşivden Çıkar' : 'Arşivle') + '" onclick="toggleArch(\'' + escapeJs(p.path) + '\')">📦</button>' +
+                            '</div>' +
+                        '</div>' +
+
+                        '<div class="card-path" title="' + escapeHtml(p.path) + '">' + escapeHtml(p.path) + '</div>' +
+
+                        '<div class="card-badges">' +
+                            (p.isFavorite ? '<span class="badge-pill badge-fav-tag">⭐ FAVORİ</span>' : '') +
+                            (p.isGit ? '<span class="badge-pill badge-git">🌿 ' + escapeHtml(p.branch) + '</span>' : '') +
+                            (p.hasUncommitted ? '<span class="badge-pill badge-uncommitted">⚠️ Değişiklikler Var</span>' : '') +
+                            (p.cbmIndexed ? '<span class="badge-pill badge-cbm">🧠 CBM: ' + (p.cbmDbSize || 'Aktif') + '</span>' : '<span class="badge-pill" style="opacity:0.6;">🧠 CBM Yok</span>') +
+                            (p.hasGraphify ? '<span class="badge-pill badge-graphify">👑 Graphify Hazır</span>' : '') +
+                        '</div>' +
+
+                        (lastCommit ? (
+                            '<div class="card-snippet commit-view">' +
+                                '<span>📝 ' + escapeHtml(lastCommit.msg.slice(0, 75)) + ' <em style="color:var(--text-dark); margin-left:6px;">(' + escapeHtml(lastCommit.ago) + ')</em></span>' +
+                            '</div>'
+                        ) : (p.sessionNotes ? (
+                            '<div class="card-snippet">' +
+                                '<span>' + escapeHtml(p.sessionNotes.slice(0, 90)) + '...</span>' +
+                            '</div>'
+                        ) : '<div class="card-snippet" style="opacity:0.5;"><span>Herhangi bir not veya commit kaydı yok.</span></div>')) +
+                    '</div>' +
+
+                    '<div class="card-footer">' +
+                        '<button class="card-btn primary" onclick="openFolder(\'' + escapeJs(p.rawPath) + '\', false)">🚀 IDE\'de Aç</button>' +
+                        '<button class="card-btn" onclick="openFolder(\'' + escapeJs(p.rawPath) + '\', true)" title="Yeni Pencerede Aç">🪟 Yeni</button>' +
+                        (p.hasGraphify ? '<button class="card-btn graph-btn" onclick="openGraphify(\'' + escapeJs(p.graphifyPath) + '\')">👑 Graphify</button>' : '') +
+                        '<button class="card-btn" onclick="indexCbm(\'' + escapeJs(p.rawPath) + '\', this)">' + (p.cbmIndexed ? '🧠 CBM Güncelle' : '🧠 CBM İndeksle') + '</button>' +
+                    '</div>' +
+                '</div>';
+            }
+            grid.innerHTML = html;
+        }
+
+        // Render Dedicated GitHub Section
+        function renderGithub() {
+            const grid = document.getElementById('githubGrid');
+            if (!grid) return;
+
+            const list = (appData.githubRepos || []).filter(r => !r.isArchived);
+            if (list.length === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
+                    '<div class="icon">🐙</div>' +
+                    '<h3 style="font-size: 18px; margin-bottom: 6px; color: #ffffff;">Aktif GitHub Deposu Bulunamadı</h3>' +
+                    '<p style="font-size: 13px;">Tüm repolar arşivlenmiş olabilir veya yukarıdan yeni bir repo ekleyebilirsiniz.</p>' +
+                '</div>';
+                return;
+            }
+
+            let html = '';
+            for (const r of list) {
+                const langClass = 'lang-' + (r.language || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                html += '<div class="gh-card">' +
+                    '<div>' +
+                        '<div class="card-header">' +
+                            '<div class="card-title-group">' +
+                                '<div class="card-proj-icon" style="color: var(--neon-purple);">🐙</div>' +
+                                '<div>' +
+                                    '<div class="card-name">' + escapeHtml(r.name) + '</div>' +
+                                    '<div style="font-size: 11px; color: var(--text-dark); font-family: \'JetBrains Mono\', monospace;">' + escapeHtml(r.fullName) + '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="card-actions-top">' +
+                                '<button class="icon-action-btn" title="GitHub Web Sayfasını Aç" onclick="openUrl(\'' + escapeJs(r.url) + '\')">🌐</button>' +
+                                '<button class="icon-action-btn arch-btn" title="Arşivle" onclick="toggleArch(\'' + escapeJs(r.name) + '\')">📦</button>' +
+                            '</div>' +
+                        '</div>' +
+
+                        '<p style="font-size: 13px; color: var(--text-dim); margin-bottom: 14px; min-height: 38px; line-height: 1.4;">' +
+                            escapeHtml(r.description || 'Açıklama belirtilmemiş.') +
+                        '</p>' +
+
+                        '<div class="card-badges">' +
+                            '<span class="badge-pill" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">' +
+                                (r.isPrivate ? '🔒 Gizli (Private)' : '🌐 Herkese Açık') +
+                            '</span>' +
+                            '<span class="badge-pill" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);">' +
+                                '<span class="lang-dot ' + langClass + '"></span> ' + escapeHtml(r.language) +
+                            '</span>' +
+                            '<span class="badge-pill" style="background: rgba(251,191,36,0.12); color: var(--neon-amber); border: 1px solid rgba(251,191,36,0.3);">' +
+                                '⭐ ' + r.stars +
+                            '</span>' +
+                            (r.cbmIndexed ? '<span class="badge-pill badge-cbm">🧠 CBM: ' + (r.cbmDbSize || 'Aktif') + '</span>' : '') +
+                            (r.hasGraphify ? '<span class="badge-pill badge-graphify">🌌 Graphify</span>' : '') +
+                        '</div>' +
+
+                        '<div class="clone-status-banner ' + (r.isCloned ? 'is-cloned' : 'not-cloned') + '">' +
+                            '<span>' + (r.isCloned ? '✅ Yerel Klasör: ' + escapeHtml(r.localPath) : '📦 Henüz Yerel Diske Klonlanmadı') + '</span>' +
+                            '<span style="color: var(--text-dark);">' + escapeHtml(r.timeAgo) + '</span>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="card-footer">' +
+                        '<button class="card-btn primary" onclick="openUrl(\'' + escapeJs(r.url) + '\')">🌐 GitHub.com</button>' +
+                        (r.isCloned ? (
+                            '<button class="card-btn" onclick="openFolder(\'' + escapeJs(r.localPath) + '\', false)">🚀 IDE\'de Aç</button>' +
+                            '<button class="card-btn" onclick="indexCbm(\'' + escapeJs(r.localPath) + '\', this)">' + (r.cbmIndexed ? '🧠 CBM Güncelle' : '🧠 CBM İndeksle') + '</button>'
+                        ) : (
+                            '<button class="card-btn" style="background: rgba(168, 85, 247, 0.2); border-color: var(--neon-purple);" onclick="cloneRepo(\'' + escapeJs(r.name) + '\')">📦 Klonla</button>'
+                        )) +
+                    '</div>' +
+                '</div>';
+            }
+            grid.innerHTML = html;
+        }
+
+        // Render Sessions Timeline
+        function renderSessions() {
+            const listEl = document.getElementById('sessionsList');
+            if (!listEl) return;
+
+            const list = appData.sessions || [];
+            if (list.length === 0) {
+                listEl.innerHTML = '<div class="empty-state">' +
+                    '<div class="icon">⚡</div>' +
+                    '<h3 style="font-size: 18px; margin-bottom: 6px; color: #ffffff;">Oturum Kaydı Bulunamadı</h3>' +
+                    '<p style="font-size: 13px;">Antigravity ile yapılan sohbetler burada kronolojik olarak listelenir.</p>' +
+                '</div>';
+                return;
+            }
+
+            let html = '';
+            for (const s of list) {
+                html += '<div class="session-card">' +
+                    '<div class="sess-main">' +
+                        '<div class="sess-prompt">' + escapeHtml(s.prompt) + '</div>' +
+                        '<div class="sess-meta">' +
+                            '<span>🕒 ' + escapeHtml(s.time) + ' (' + escapeHtml(s.timeAgo) + ')</span>' +
+                            '<span>🛠️ ' + s.toolCount + ' Araç Çağrısı</span>' +
+                            (s.activeDoc ? '<span style="color: var(--neon-cyan);">📄 ' + escapeHtml(s.activeDoc.split('/').pop()) + '</span>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="sess-actions">' +
+                        '<button class="card-btn primary" onclick="openTranscript(\'' + escapeJs(s.transcriptPath) + '\')">📜 Transkript</button>' +
+                        '<button class="card-btn" onclick="openSessionFolder(\'' + escapeJs(s.path) + '\')">📁 Klasör</button>' +
+                    '</div>' +
+                '</div>';
+            }
+            listEl.innerHTML = html;
+        }
+
+        // Render Radar View
+        function renderRadar() {
+            const cbmList = document.getElementById('radarCbmList');
+            const graphList = document.getElementById('radarGraphList');
+
+            if (cbmList) {
+                let html = '';
+                const allCbm = [];
+                const seenKeys = new Set();
+
+                if (appData.cbm && Array.isArray(appData.cbm.indexedProjects)) {
+                    for (const item of appData.cbm.indexedProjects) {
+                        const k = item.key.toLowerCase();
+                        if (!seenKeys.has(k)) {
+                            allCbm.push({
+                                name: item.key,
+                                size: item.sizeMb,
+                                projectKey: item.key
+                            });
+                            seenKeys.add(k);
+                        }
+                    }
+                }
+
+                for (const p of (appData.projects || [])) {
+                    if (p.cbmIndexed) {
+                        const k = (p.cbmProjectKey || p.name).toLowerCase();
+                        if (!seenKeys.has(k)) {
+                            allCbm.push({
+                                name: p.name,
+                                size: p.cbmDbSize || 'Aktif',
+                                projectKey: p.cbmProjectKey || p.name
+                            });
+                            seenKeys.add(k);
+                        }
+                    }
+                }
+
+                for (const item of allCbm) {
+                    html += '<li class="radar-item" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
+                        '<div style="display: flex; align-items: center; gap: 8px; min-width: 0;">' +
+                            '<span style="font-size: 14px;">🧠</span>' +
+                            '<span style="color: #ffffff; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="' + escapeHtml(item.name) + '">' + escapeHtml(item.name) + '</span>' +
+                        '</div>' +
+                        '<div style="display: flex; align-items: center; gap: 8px; shrink-0;">' +
+                            '<span style="color: var(--neon-cyan); font-size: 12px; font-weight: 600;">' + escapeHtml(item.size) + '</span>' +
+                            '<button class="chip-btn" style="padding: 4px 10px; font-size: 11px; background: rgba(0, 242, 254, 0.15); border-color: var(--neon-cyan); color: #fff;" onclick="openCbmProject(\'' + escapeJs(item.projectKey) + '\')">Grafı Aç</button>' +
+                        '</div>' +
+                    '</li>';
+                }
+                if (html === '') html = '<li class="radar-item" style="opacity: 0.5;">Henüz CBM verisi yok.</li>';
+                cbmList.innerHTML = html;
+            }
+
+            if (graphList) {
+                let html = '';
+                const graphs = (appData.projects || []).filter(p => p.hasGraphify);
+                for (const p of graphs) {
+                    html += '<li class="radar-item">' +
+                        '<span style="color: #ffffff; font-weight: 600;">' + escapeHtml(p.name) + '</span>' +
+                        '<button class="chip-btn" style="padding: 4px 10px; font-size: 11px;" onclick="openGraphify(\'' + escapeJs(p.graphifyPath) + '\')">Edge ile Aç</button>' +
+                    '</li>';
+                }
+                if (html === '') html = '<li class="radar-item" style="opacity: 0.5;">Henüz Graphify haritası yok.</li>';
+                graphList.innerHTML = html;
+            }
+        }
+
+        // Update Dynamic UI Fields
+        function updateDashboardUI(data) {
+            appData = data;
+            document.getElementById('badgeProjCount').textContent = (data.projects || []).filter(p => !p.isArchived).length;
+            document.getElementById('badgeGhCount').textContent = (data.githubRepos || []).filter(r => !r.isArchived).length;
+            document.getElementById('badgeSessCount').textContent = (data.sessions || []).length;
+            document.getElementById('favChipCount').textContent = data.favCount || 0;
+            
+            const archBadge = document.getElementById('archCountBadge');
+            if (archBadge) archBadge.textContent = data.archCount || 0;
+
+            document.getElementById('startupIcon').textContent = data.openOnStartup ? '⚡ Açık' : '⚪ Kapalı';
+            
+            if (data.cbm) {
+                document.getElementById('teleCbm').textContent = data.cbm.indexedProjectsCount + ' Repo // ' + data.cbm.totalDbSizeMb;
+            }
+            if (data.system) {
+                document.getElementById('teleGpu').textContent = data.system.gpu || 'RTX 5070 Ti';
+                document.getElementById('teleModel').textContent = data.system.localModel || 'Qwen 2.5 Coder 14B';
+
+                const isOllamaOn = Boolean(data.system.ollamaOnline);
+                const teleActionBtn = document.getElementById('teleOllamaActionBtn');
+                const teleActionText = document.getElementById('teleOllamaActionText');
+                const teleActionIcon = document.getElementById('teleOllamaActionIcon');
+                const hudOllamaBtn = document.getElementById('hudOllamaBtn');
+                const hudOllamaText = document.getElementById('hudOllamaText');
+
+                if (teleActionBtn && teleActionText && teleActionIcon) {
+                    if (isOllamaOn) {
+                        teleActionBtn.className = 'tele-action-btn stop';
+                        teleActionText.textContent = 'Kapat';
+                        teleActionIcon.textContent = '⏹️';
+                        teleActionBtn.title = 'Ollama yerel kod motorunu durdur ve GPU belleğini boşalt';
+                    } else {
+                        teleActionBtn.className = 'tele-action-btn start';
+                        teleActionText.textContent = 'Başlat';
+                        teleActionIcon.textContent = '⚡';
+                        teleActionBtn.title = 'Ollama yerel kod motorunu (Qwen 2.5 Coder 14B) başlat';
+                    }
+                }
+
+                if (hudOllamaBtn && hudOllamaText) {
+                    const isBattery = data.system.power && !data.system.power.onAc;
+                    if (isBattery) {
+                        hudOllamaBtn.className = 'hud-btn ollama-eco';
+                        hudOllamaText.textContent = `Ollama: Eko Mod (Pilde %${data.system.power.percent})`;
+                        hudOllamaBtn.title = 'Cihaz pilde çalıştığı için batarya ömrü ve GPU gücünü korumak amacıyla Ollama Eko Modunda (pasif).';
+                    } else if (isOllamaOn) {
+                        hudOllamaBtn.className = 'hud-btn ollama-on';
+                        hudOllamaText.textContent = 'Ollama: Aktif';
+                        hudOllamaBtn.title = 'Ollama yerel kod motoru aktif (Prize Bağlı)';
+                    } else {
+                        hudOllamaBtn.className = 'hud-btn ollama-off';
+                        hudOllamaText.textContent = 'Ollama: Kapalı';
+                        hudOllamaBtn.title = 'Ollama kapalı';
+                    }
+                }
+            }
+
+            renderProjects();
+            renderGithub();
+            renderSessions();
+            renderRadar();
+            renderArchive();
+            renderAntigravityPanel(data.panel || (appData && appData.panel));
+        }
+
+        // Action Handlers
+        function toggleFav(id) {
+            AudioEngine.favorite();
+            const p = appData.projects.find(x => x.path.toLowerCase() === id.toLowerCase() || x.rawPath.toLowerCase() === id.toLowerCase());
+            if (p) {
+                p.isFavorite = !p.isFavorite;
+                appData.favCount = appData.projects.filter(x => x.isFavorite).length;
+                document.getElementById('favChipCount').textContent = appData.favCount;
+                showToast(p.isFavorite ? '⭐ ' + p.name + ' Favorilere Eklendi!' : p.name + ' Favorilerden Çıkarıldı');
+                renderProjects();
+            }
+            if (vscode) {
+                vscode.postMessage({ command: 'toggleFavorite', id: id });
+            }
+        }
+
+        let isArchiveDrawerOpen = false;
+
+        function toggleArchiveDrawer() {
+            AudioEngine.click();
+            isArchiveDrawerOpen = !isArchiveDrawerOpen;
+            const content = document.getElementById('archiveDrawerContent');
+            const bar = document.querySelector('.archive-drawer-bar');
+            const hint = document.getElementById('archiveToggleHint');
+            if (content) {
+                content.style.display = isArchiveDrawerOpen ? 'block' : 'none';
+            }
+            if (bar) {
+                bar.classList.toggle('open', isArchiveDrawerOpen);
+            }
+            if (hint) {
+                hint.textContent = isArchiveDrawerOpen ? 'Gizlemek için tıkla' : 'Genişlet / Gizle';
+            }
+            if (isArchiveDrawerOpen) {
+                renderArchive();
+            }
+        }
+
+        function renderArchive() {
+            const grid = document.getElementById('archiveGrid');
+            const badge = document.getElementById('archCountBadge');
+            if (!grid) return;
+
+            const archivedProjects = (appData.projects || []).filter(p => p.isArchived);
+            const archivedGithub = (appData.githubRepos || []).filter(r => r.isArchived);
+            const totalArchived = archivedProjects.length + archivedGithub.length;
+
+            if (badge) badge.textContent = totalArchived;
+
+            if (totalArchived === 0) {
+                grid.innerHTML = '<div class="empty-archive">📦 Arşivlenmiş herhangi bir depo veya proje bulunmuyor.</div>';
+                return;
+            }
+
+            let html = '';
+            for (const p of archivedProjects) {
+                html += '<div class="archived-card">' +
+                    '<div class="archived-info">' +
+                        '<div class="archived-title">📁 ' + escapeHtml(p.name) + ' <span class="archived-type local">Yerel</span></div>' +
+                        '<div class="archived-sub" title="' + escapeHtml(p.path) + '">' + escapeHtml(p.path) + '</div>' +
+                    '</div>' +
+                    '<div class="archived-actions">' +
+                        '<button class="unarch-btn" onclick="toggleArch(\'' + escapeJs(p.path) + '\')">↩️ Geri Yükle</button>' +
+                        '<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" onclick="openFolder(\'' + escapeJs(p.rawPath) + '\', false)">🚀 Aç</button>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            for (const r of archivedGithub) {
+                html += '<div class="archived-card">' +
+                    '<div class="archived-info">' +
+                        '<div class="archived-title">🐙 ' + escapeHtml(r.name) + ' <span class="archived-type gh">GitHub</span></div>' +
+                        '<div class="archived-sub" title="' + escapeHtml(r.fullName) + '">' + escapeHtml(r.fullName) + '</div>' +
+                    '</div>' +
+                    '<div class="archived-actions">' +
+                        '<button class="unarch-btn" onclick="toggleArch(\'' + escapeJs(r.name) + '\')">↩️ Geri Yükle</button>' +
+                        '<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" onclick="openUrl(\'' + escapeJs(r.url) + '\')">🌐 GitHub</button>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            grid.innerHTML = html;
+        }
+
+        function toggleArch(id) {
+            AudioEngine.archive();
+            const cleanId = String(id).trim();
+
+            const p = (appData.projects || []).find(x => 
+                x.path.toLowerCase() === cleanId.toLowerCase() || 
+                x.rawPath.toLowerCase() === cleanId.toLowerCase() ||
+                x.name.toLowerCase() === cleanId.toLowerCase()
+            );
+            if (p) {
+                p.isArchived = !p.isArchived;
+                showToast(p.isArchived ? '📦 ' + p.name + ' Arşivlendi' : '↩️ ' + p.name + ' Arşivden Çıkarıldı');
+            }
+
+            const r = (appData.githubRepos || []).find(x => 
+                x.name.toLowerCase() === cleanId.toLowerCase() ||
+                (x.localPath && x.localPath.toLowerCase() === cleanId.toLowerCase())
+            );
+            if (r) {
+                r.isArchived = !r.isArchived;
+                if (!p) {
+                    showToast(r.isArchived ? '📦 ' + r.name + ' Arşivlendi' : '↩️ ' + r.name + ' Arşivden Çıkarıldı');
+                }
+            }
+
+            const totalArch = (appData.projects || []).filter(x => x.isArchived).length + 
+                              (appData.githubRepos || []).filter(x => x.isArchived).length;
+            appData.archCount = totalArch;
+            const archBadge = document.getElementById('archCountBadge');
+            if (archBadge) archBadge.textContent = totalArch;
+
+            renderProjects();
+            renderGithub();
+            renderArchive();
+
+            if (vscode) {
+                vscode.postMessage({ command: 'toggleArchive', id: cleanId });
+            }
+        }
+
+        function openFolder(folderPath, newWindow) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openFolder', path: folderPath, newWindow: !!newWindow });
+            }
+        }
+
+        function openTranscript(filePath) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openTranscript', path: filePath });
+            } else {
+                window.open('file:///' + filePath, '_blank');
+            }
+        }
+
+        function openFile(filePath) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openFile', path: filePath });
+            }
+        }
+
+        function openSessionFolder(folderPath) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openSessionFolder', path: folderPath });
+            }
+        }
+
+        function openUrl(url) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openExternalUrl', url: url });
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function startNewChat() {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openChat' });
+                showToast('💬 Yeni Sohbet başlatılıyor...');
+            } else {
+                showToast('💬 Yeni Sohbet Antigravity IDE içinde açılır');
+            }
+        }
+
+        function toggleOllama() {
+            AudioEngine.click();
+            showToast('⚡ Ollama durumu güncelleniyor...');
+            if (vscode) {
+                vscode.postMessage({ command: 'toggleOllama' });
+            }
+        }
+
+        function openCbmProject(projectKey) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openCbmUi', project: projectKey });
+            } else {
+                window.open('http://localhost:9749/?tab=graph&project=' + encodeURIComponent(projectKey), '_blank');
+            }
+        }
+
+        function openCbmWebUi() {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openCbmUi' });
+            } else {
+                window.open('http://localhost:9749', '_blank');
+            }
+        }
+
+        function openGraphify(graphPath) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openGraphify', path: graphPath });
+            } else {
+                window.open('file:///' + graphPath, '_blank');
+            }
+        }
+
+        function openGraphifyRoot() {
+            const p = (appData.projects || []).find(x => x.hasGraphify);
+            if (p && p.graphifyPath) {
+                openGraphify(p.graphifyPath);
+            } else {
+                showToast('Mevcut projelerde Graphify çıktısı bulunamadı (/graphify ile oluşturabilirsiniz).');
+            }
+        }
+
+        function indexCbm(targetPath, btn) {
+            AudioEngine.click();
+            if (btn) {
+                btn.style.opacity = '0.7';
+                btn.innerHTML = '<span>⏳</span> İndeksleniyor...';
+                btn.disabled = true;
+            }
+            if (vscode) {
+                vscode.postMessage({ command: 'indexInCbm', path: targetPath });
+                showToast('🧠 CBM İndeksleme başlatıldı...');
+            } else {
+                showToast('CBM İndeksleme Antigravity IDE içinde çalışır');
+            }
+        }
+
+        function cloneRepo(repoName) {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'cloneGithubRepo', name: repoName });
+            }
+        }
+
+        function submitCustomRepo() {
+            const input = document.getElementById('customGhInput');
+            if (!input || !input.value.trim()) return;
+            const val = input.value.trim();
+            input.value = '';
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'addCustomGithubRepo', text: val });
+            }
+        }
+
+        function refreshDashboard() {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'refresh' });
+            }
+        }
+
+        function toggleStartupSetting() {
+            AudioEngine.click();
+            const newVal = !appData.openOnStartup;
+            appData.openOnStartup = newVal;
+            document.getElementById('startupIcon').textContent = newVal ? '☑️' : '◻️';
+            if (vscode) {
+                vscode.postMessage({ command: 'toggleStartup', value: newVal });
+            }
+        }
+
+        function toggleAudioSfx() {
+            AudioEngine.enabled = !AudioEngine.enabled;
+            document.getElementById('audioIcon').textContent = AudioEngine.enabled ? '🔊' : '🔇';
+            showToast(AudioEngine.enabled ? '🔊 Cyber Ses Efektleri Açıldı' : '🔇 Ses Efektleri Kapatıldı');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function escapeJs(text) {
+            if (!text) return '';
+            return String(text).replace(/\\/g, '/').replace(/'/g, "\\'");
+        }
+
+        // Keyboard shortcuts (Ctrl + K for search)
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const search = document.getElementById('projectSearchInput');
+                if (search) {
+                    switchNavTab('projects');
+                    search.focus();
+                    search.select();
+                }
+            }
+        });
+
+        // ========================================================
+        // ANTIGRAVITY PANEL - LIVE TELEMETRY ENGINE
+        // ========================================================
+        let agPanelState = null;
+        let agTickerInterval = null;
+        let isAgPanelCollapsed = false;
+
+        function renderAntigravityPanel(panelData) {
+            if (!panelData) return;
+            agPanelState = panelData;
+
+            // User Tier & Email
+            const user = panelData.user || {};
+            const tierName = user.tier || 'Google AI Pro';
+            const tierEl = document.getElementById('agUserTier');
+            if (tierEl) tierEl.textContent = tierName;
+
+            const modalTier = document.getElementById('modalUserTier');
+            if (modalTier) modalTier.textContent = tierName;
+
+            const modalEmail = document.getElementById('modalUserEmail');
+            if (modalEmail) modalEmail.textContent = user.email || 'ufukkarabulut35@gmail.com';
+
+            // Token Credits
+            const tokens = panelData.tokenUsage || {};
+            const promptCredits = tokens.promptCredits || {};
+            const flowCredits = tokens.flowCredits || {};
+            const pAvail = promptCredits.available ?? 500;
+            const pMonthly = tokens.formatted?.promptMonthly ?? '50.0K';
+            const fAvail = flowCredits.available ?? 100;
+            const fMonthly = tokens.formatted?.flowMonthly ?? '150.0K';
+
+            const modalPrompt = document.getElementById('modalPromptCredits');
+            if (modalPrompt) modalPrompt.textContent = pAvail + ' / ' + pMonthly;
+            const modalPromptBar = document.getElementById('modalPromptBar');
+            if (modalPromptBar) modalPromptBar.style.width = Math.min(100, Math.max(1, promptCredits.remainingPercentage || 1)) + '%';
+
+            const modalFlow = document.getElementById('modalFlowCredits');
+            if (modalFlow) modalFlow.textContent = fAvail + ' / ' + fMonthly;
+            const modalFlowBar = document.getElementById('modalFlowBar');
+            if (modalFlowBar) modalFlowBar.style.width = Math.min(100, Math.max(0.2, (flowCredits.remainingPercentage || 0.1))) + '%';
+
+            // Extract Gemini and Claude groups
+            const groups = panelData.groups || [];
+            const gemini = groups.find(g => g.id === 'gemini') || {
+                remaining: 39,
+                resetTime: '2h 19m',
+                weekly: { remaining: 71, resetTime: '2d 11h' }
+            };
+            const claude = groups.find(g => g.id === 'non-google' || g.id === 'claude') || {
+                remaining: 100,
+                resetTime: '5h 0m',
+                weekly: { remaining: 91, resetTime: '5d 22h' }
+            };
+
+            updateAgGauges(gemini, claude);
+
+            if (!agTickerInterval) {
+                agTickerInterval = setInterval(agTickerTick, 1000);
+            }
+        }
+
+        function updateAgGauges(gemini, claude) {
+            // Circumference for 44x44 circular ring with R=16 (2 * PI * 16)
+            const CIRCUMFERENCE = 100.53;
+
+            // 1. GEMINI
+            const gPct = Math.round(Number(gemini.remaining || 0));
+            const gOffset = CIRCUMFERENCE * (1 - Math.min(100, Math.max(0, gPct)) / 100);
+            const geminiArc = document.getElementById('geminiGaugeArc');
+            if (geminiArc) geminiArc.style.strokeDashoffset = gOffset;
+
+            const geminiPct = document.getElementById('geminiPctVal');
+            if (geminiPct) geminiPct.textContent = gPct;
+
+            const geminiTimer = document.getElementById('geminiTimerVal');
+            if (geminiTimer) geminiTimer.textContent = gemini.resetTime || '2h 19m';
+
+            const gWeekly = gemini.weekly || {};
+            const gWVal = Math.round(Number(gWeekly.remaining || 71));
+            const geminiWVal = document.getElementById('geminiWeeklyVal');
+            if (geminiWVal) geminiWVal.textContent = gWVal + '%';
+
+            const geminiWBar = document.getElementById('geminiWeeklyBar');
+            if (geminiWBar) geminiWBar.style.width = gWVal + '%';
+
+            const geminiWReset = document.getElementById('geminiWeeklyReset');
+            if (geminiWReset) geminiWReset.textContent = gWeekly.resetTime || '2d 11h';
+
+            // 2. CLAUDE
+            const cPct = Math.round(Number(claude.remaining || 0));
+            const cOffset = CIRCUMFERENCE * (1 - Math.min(100, Math.max(0, cPct)) / 100);
+            const claudeArc = document.getElementById('claudeGaugeArc');
+            if (claudeArc) claudeArc.style.strokeDashoffset = cOffset;
+
+            const claudePct = document.getElementById('claudePctVal');
+            if (claudePct) claudePct.textContent = cPct;
+
+            const claudeTimer = document.getElementById('claudeTimerVal');
+            if (claudeTimer) claudeTimer.textContent = claude.resetTime || '5h 0m';
+
+            const cWeekly = claude.weekly || {};
+            const cWVal = Math.round(Number(cWeekly.remaining || 91));
+            const claudeWVal = document.getElementById('claudeWeeklyVal');
+            if (claudeWVal) claudeWVal.textContent = cWVal + '%';
+
+            const claudeWBar = document.getElementById('claudeWeeklyBar');
+            if (claudeWBar) claudeWBar.style.width = cWVal + '%';
+
+            const claudeWReset = document.getElementById('claudeWeeklyReset');
+            if (claudeWReset) claudeWReset.textContent = cWeekly.resetTime || '5d 22h';
+
+            // Update collapsed summary indicator
+            const summary = document.getElementById('agCollapsedSummary');
+            if (summary) {
+                summary.innerHTML = `<span style="color: #40C4FF; font-weight: 700;">Gemini: ${gPct}% (${gemini.resetTime || '2h 19m'})</span><span style="opacity: 0.4;">|</span><span style="color: #FFAB40; font-weight: 700;">Claude: ${cPct}% (${claude.resetTime || '5h 0m'})</span>`;
+            }
+
+            // In-dashboard notification only on significant change (>= 5%)
+            if (lastDashboardQuotas.gemini !== null && lastDashboardQuotas.claude !== null) {
+                const dG = Math.abs(gPct - lastDashboardQuotas.gemini);
+                const dC = Math.abs(cPct - lastDashboardQuotas.claude);
+                if (dG >= 5 || dC >= 5) {
+                    const changes = [];
+                    if (dG >= 5) {
+                        changes.push(`Gemini: %${lastDashboardQuotas.gemini} ➔ %${gPct}`);
+                        lastDashboardQuotas.gemini = gPct;
+                    }
+                    if (dC >= 5) {
+                        changes.push(`Claude: %${lastDashboardQuotas.claude} ➔ %${cPct}`);
+                        lastDashboardQuotas.claude = cPct;
+                    }
+                    showToast(`⚡ Model kotasında %5+ değişim: ${changes.join(' | ')}`);
+                }
+            } else {
+                lastDashboardQuotas.gemini = gPct;
+                lastDashboardQuotas.claude = cPct;
+            }
+        }
+
+        function formatRemainingTime(ms) {
+            if (ms <= 0) return 'Sıfırlandı';
+            const totalSec = Math.floor(ms / 1000);
+            const days = Math.floor(totalSec / 86400);
+            const hours = Math.floor((totalSec % 86400) / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+
+            if (days > 0) return `${days}d ${hours}h`;
+            if (hours > 0) return `${hours}h ${mins}m`;
+            return `${mins}m ${totalSec % 60}s`;
+        }
+
+        function agTickerTick() {
+            if (!agPanelState || !agPanelState.groups) return;
+            const now = Date.now();
+            agPanelState.groups.forEach(g => {
+                if (g.resetDate && g.resetDate > now) {
+                    const formatted = formatRemainingTime(g.resetDate - now);
+                    if (g.id === 'gemini') {
+                        const el = document.getElementById('geminiTimerVal');
+                        if (el) el.textContent = formatted;
+                    } else {
+                        const el = document.getElementById('claudeTimerVal');
+                        if (el) el.textContent = formatted;
+                    }
+                }
+                if (g.weekly && g.weekly.resetDate && g.weekly.resetDate > now) {
+                    const formattedW = formatRemainingTime(g.weekly.resetDate - now);
+                    if (g.id === 'gemini') {
+                        const el = document.getElementById('geminiWeeklyReset');
+                        if (el) el.textContent = formattedW;
+                    } else {
+                        const el = document.getElementById('claudeWeeklyReset');
+                        if (el) el.textContent = formattedW;
+                    }
+                }
+            });
+        }
+
+        let lastDashboardQuotas = { gemini: null, claude: null };
+
+        function refreshAgQuota(isManual = true) {
+            if (isManual) {
+                AudioEngine.click();
+                const btn = document.getElementById('agRefreshBtn');
+                if (btn) btn.classList.add('spinning');
+            }
+
+            if (vscode) {
+                vscode.postMessage({ command: 'refreshAgQuota', isManual: !!isManual });
+            }
+
+            if (isManual) {
+                setTimeout(() => {
+                    const btn = document.getElementById('agRefreshBtn');
+                    if (btn) btn.classList.remove('spinning');
+                    showToast('✨ Antigravity Panel kotaları yenilendi.');
+                }, 900);
+            }
+        }
+
+        function openAgPanelSettings() {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openAgSettings' });
+            } else {
+                showToast('Ayarları açmak için Antigravity IDE içinde çalıştırın.');
+            }
+        }
+
+        function openAgSidebar() {
+            AudioEngine.click();
+            if (vscode) {
+                vscode.postMessage({ command: 'openAgSidebar' });
+            } else {
+                showToast('Yan panel için Antigravity IDE içinde çalıştırın.');
+            }
+        }
+
+        let isAgModalOpen = false;
+        function toggleAgDetailsModal() {
+            AudioEngine.click();
+            isAgModalOpen = !isAgModalOpen;
+            const modal = document.getElementById('agDetailsModal');
+            if (modal) {
+                modal.classList.toggle('open', isAgModalOpen);
+            }
+        }
+
+        function closeAgDetailsModal(e) {
+            if (e.target.id === 'agDetailsModal') {
+                toggleAgDetailsModal();
+            }
+        }
+
+        function toggleAgPanelCollapse() {
+            AudioEngine.click();
+            isAgPanelCollapsed = !isAgPanelCollapsed;
+            const body = document.getElementById('agPanelBody');
+            const icon = document.getElementById('agCollapseIcon');
+            const summary = document.getElementById('agCollapsedSummary');
+            if (body) {
+                body.style.display = isAgPanelCollapsed ? 'none' : 'block';
+            }
+            if (icon) {
+                icon.textContent = isAgPanelCollapsed ? '▸' : '▾';
+            }
+            if (summary) {
+                summary.style.display = isAgPanelCollapsed ? 'inline-flex' : 'none';
+            }
+            try {
+                localStorage.setItem('ag_panel_collapsed', isAgPanelCollapsed ? '1' : '0');
+            } catch (e) {}
+        }
+
+        // Listen for data updates from extension
+        window.addEventListener('message', event => {
+            const message = event.data;
+            if (message.command === 'updateData') {
+                updateDashboardUI(message.data);
+            } else if (message.command === 'updateAgPanel') {
+                if (message.panel) {
+                    renderAntigravityPanel(message.panel);
+                }
+            }
+        });
+
+        // Auto-refresh quota every 60 seconds (silent background polling, no popup unless >= 5% change)
+        setInterval(() => {
+            refreshAgQuota(false);
+        }, 60000);
+
+        // Initialize UI
+        updateDashboardUI(appData);
+
+        // Restore collapsed state preference
+        try {
+            if (localStorage.getItem('ag_panel_collapsed') === '1') {
+                toggleAgPanelCollapse();
+            }
+        } catch (e) {}
+    </script>
+</body>
+</html>

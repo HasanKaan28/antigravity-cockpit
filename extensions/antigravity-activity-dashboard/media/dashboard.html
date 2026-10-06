@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+    <title>Antigravity Deep Space Cockpit & Activity Dashboard v2.0</title>
+    <link rel="stylesheet" href="{{CSS_URI}}">
+</head>
+<body id="dashboardRoot">
+<canvas id="spaceCanvas"></canvas>
+
+    <!-- Top HUD Cockpit Bar -->
+    <header class="hud-bar">
+        <div class="hud-left">
+            <div class="logo-core">
+                <div class="logo-badge">⚡</div>
+                <div class="logo-text">
+                    <h1>Antigravity Cockpit</h1>
+                    <div class="subtext">
+                        <span class="status-dot"></span>
+                        <span>DEEP SPACE COMMAND v2.0 // NOMINAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hud-right">
+            <div class="clock-widget" id="hudClock">00:00:00</div>
+            <button class="hud-btn primary" data-action="startNewChat">
+                <span>💬</span>
+                <span>Yeni Sohbet</span>
+            </button>
+            <button class="hud-btn" data-action="openCbmWebUi">
+                <span>🧠</span>
+                <span>CBM Web UI</span>
+            </button>
+            <button class="hud-btn" data-action="openGraphifyRoot">
+                <span>👑</span>
+                <span>Observatory</span>
+            </button>
+            <button class="hud-btn" id="audioToggleBtn" data-action="toggleAudio">
+                <span id="audioIcon">🔊</span>
+                <span>SFX</span>
+            </button>
+            <button class="hud-btn" id="hudOllamaBtn" onclick="toggleOllama()" title="Ollama Yerel Kod Motorunu Başlat / Kapat">
+                <span id="hudOllamaIcon">⚡</span>
+                <span id="hudOllamaText">Ollama</span>
+            </button>
+            <button class="hud-btn" data-action="refresh">
+                <span>🔄</span>
+                <span>Yenile</span>
+            </button>
+            <button class="hud-btn" id="startupToggleBtn" data-action="toggleStartup">
+                <span id="startupIcon">☑️</span>
+                <span>Açılışta</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Telemetry Cards -->
+    <div class="telemetry-grid">
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #00ff9d;">🖥️</div>
+            <div class="tele-info">
+                <div class="label">GPU MİMARİSİ</div>
+                <div class="val" id="teleGpu">NVIDIA RTX 5070 Ti (Active)</div>
+            </div>
+        </div>
+        <div class="tele-card" id="teleCardOllama">
+            <div class="tele-icon" id="teleOllamaIcon" style="color: #00f2fe;">⚡</div>
+            <div class="tele-info" style="flex: 1;">
+                <div class="label">AI MİMARİSİ</div><div class="val" id="teleModel">Antigravity Cloud Native (Gemini & Claude)</div>
+            </div>
+            <button class="tele-action-btn start" id="teleOllamaActionBtn" onclick="toggleOllama()" title="Ollama'yı Başlat veya Durdur">
+                <span id="teleOllamaActionIcon">⚡</span>
+                <span id="teleOllamaActionText">Başlat</span>
+            </button>
+        </div>
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #a855f7;">🧠</div>
+            <div class="tele-info">
+                <div class="label">CBM KNOWLEDGE GRAPH</div>
+                <div class="val" id="teleCbm">10 Repo // 185.0 MB</div>
+            </div>
+        </div>
+        <div class="tele-card">
+            <div class="tele-icon" style="color: #fbbf24;">🐙</div>
+            <div class="tele-info">
+                <div class="label">GITHUB SENKRONİZASYONU</div>
+                <div class="val">GitHub Senkronizasyonu (Aktif)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Antigravity Panel - Model Quota & Telemetry HUD -->
+    <section class="ag-panel-card" id="agPanelSection">
+        <div class="ag-panel-header">
+            <div class="ag-panel-title-wrap">
+                <div class="ag-panel-icon-badge">✨</div>
+                <div>
+                    <div class="ag-panel-title">
+                        <span>Antigravity Panel</span>
+                        <span class="ag-live-badge"><span class="ag-live-dot"></span> LIVE</span>
+                        <span class="ag-tier-pill" id="agUserTier">Google AI Pro</span>
+                        <span class="ag-panel-sub">// Quota Telemetry</span>
+                        <span class="ag-collapsed-summary" id="agCollapsedSummary"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="ag-panel-actions">
+                <button class="ag-btn-icon" title="Hesap ve Kredi Bilgileri" data-action="toggleAgDetailsModal">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </button>
+                <button class="ag-btn-icon" title="Antigravity Panel Ayarlarını Aç" data-action="openAgSettings">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+                <button class="ag-btn-icon" id="agRefreshBtn" title="Kotaları Canlı Yenile" data-action="refreshAgQuota">
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </button>
+                <button class="ag-btn-icon" id="agCollapseBtn" title="Paneli Küçült / Genişlet" data-action="toggleAgCollapse">
+                    <span id="agCollapseIcon">▾</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="ag-panel-body" id="agPanelBody">
+            <div class="ag-models-grid">
+                <!-- Gemini Model Capsule -->
+                <div class="ag-model-card gemini-card" id="agGeminiCard">
+                    <div class="ag-model-left">
+                        <div class="ag-gauge-box">
+                            <svg class="ag-gauge-svg" viewBox="0 0 44 44">
+                                <defs>
+                                    <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00f2fe" />
+                                        <stop offset="100%" stop-color="#40C4FF" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="22" cy="22" r="16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.5" fill="none" />
+                                <circle id="geminiGaugeArc" cx="22" cy="22" r="16" stroke="url(#geminiGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="61.32" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1); filter: drop-shadow(0 0 6px rgba(0, 242, 254, 0.5));" />
+                                <text x="22" y="26" text-anchor="middle" class="gauge-pct"><tspan id="geminiPctVal">39</tspan><tspan class="gauge-pct-unit">%</tspan></text>
+                            </svg>
+                        </div>
+                        <div class="ag-model-meta">
+                            <div class="ag-model-name gemini">
+                                <span class="ag-model-dot gemini"></span>
+                                <span>Gemini</span>
+                            </div>
+                            <div class="ag-model-timer">
+                                <span class="ag-timer-icon">⏱</span>
+                                <span id="geminiTimerVal">2h 19m</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ag-weekly-wrap">
+                        <div class="ag-weekly-header">
+                            <span class="ag-weekly-title">Haftalık: <strong id="geminiWeeklyVal">71%</strong></span>
+                            <span class="ag-weekly-reset"><span class="reset-icon">↺</span> <span id="geminiWeeklyReset">2d 11h</span></span>
+                        </div>
+                        <div class="ag-weekly-track">
+                            <div class="ag-weekly-fill gemini" id="geminiWeeklyBar" style="width: 71%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claude Model Capsule -->
+                <div class="ag-model-card claude-card" id="agClaudeCard">
+                    <div class="ag-model-left">
+                        <div class="ag-gauge-box">
+                            <svg class="ag-gauge-svg" viewBox="0 0 44 44">
+                                <defs>
+                                    <linearGradient id="claudeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fbbf24" />
+                                        <stop offset="100%" stop-color="#FFAB40" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="22" cy="22" r="16" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.5" fill="none" />
+                                <circle id="claudeGaugeArc" cx="22" cy="22" r="16" stroke="url(#claudeGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="0" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1); filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.5));" />
+                                <text x="22" y="26" text-anchor="middle" class="gauge-pct"><tspan id="claudePctVal">100</tspan><tspan class="gauge-pct-unit">%</tspan></text>
+                            </svg>
+                        </div>
+                        <div class="ag-model-meta">
+                            <div class="ag-model-name claude">
+                                <span class="ag-model-dot claude"></span>
+                                <span>Claude</span>
+                            </div>
+                            <div class="ag-model-timer">
+                                <span class="ag-timer-icon">⏱</span>
+                                <span id="claudeTimerVal">5h 0m</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ag-weekly-wrap">
+                        <div class="ag-weekly-header">
+                            <span class="ag-weekly-title">Haftalık: <strong id="claudeWeeklyVal">91%</strong></span>
+                            <span class="ag-weekly-reset"><span class="reset-icon">↺</span> <span id="claudeWeeklyReset">5d 22h</span></span>
+                        </div>
+                        <div class="ag-weekly-track">
+                            <div class="ag-weekly-fill claude" id="claudeWeeklyBar" style="width: 91%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation Command Tabs -->
+    <nav class="nav-cockpit">
+        <button class="nav-tab-btn active" id="tabBtnProjects" data-action="switchTab" data-tab="projects">
+            <span>📂</span>
+            <span>Projeler & Çalışma Alanları</span>
+            <span class="tab-badge" id="badgeProjCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnGithub" data-action="switchTab" data-tab="github">
+            <span>🐙</span>
+            <span>GitHub Repolarım</span>
+            <span class="tab-badge" id="badgeGhCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnSessions" data-action="switchTab" data-tab="sessions">
+            <span>⚡</span>
+            <span>Son Yapılanlar & Oturumlar</span>
+            <span class="tab-badge" id="badgeSessCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnRadar" data-action="switchTab" data-tab="radar">
+            <span>🌌</span>
+            <span>CBM & Graphify Radar</span>
+            <span class="tab-badge">v0.11</span>
+        </button>
+    </nav>
+
+    <!-- Search & Filters (Visible in Projects view) -->
+    <div class="filter-cockpit" id="filterBar">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="projectSearchInput" placeholder="Proje, repo veya commit ara... (Ctrl + K)" oninput="filterCards()">
+        </div>
+        <div class="filter-chips">
+            <button class="chip-btn active" id="chipAll" data-action="setSubFilter" data-filter="all">🌐 Tümü</button>
+            <button class="chip-btn fav-chip" id="chipFav" data-action="setSubFilter" data-filter="favorites">⭐ Favoriler (<span id="favChipCount">0</span>)</button>
+            <button class="chip-btn" id="chipGit" data-action="setSubFilter" data-filter="git">🐙 Git Olanlar</button>
+            <button class="chip-btn" id="chipGraph" data-action="setSubFilter" data-filter="graphify">👑 Graphify Hazır</button>
+            <button class="chip-btn" id="chipCbm" data-action="setSubFilter" data-filter="cbm">🧠 CBM İndeksli</button>
+        </div>
+    </div>
+
+    <!-- MAIN VIEW 1: Projects & Workspaces -->
+    <main class="section-view active" id="viewProjects">
+        <div class="cards-grid" id="projectsGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 2: Dedicated GitHub Repositories (Separated from Projects!) -->
+    <main class="section-view" id="viewGithub">
+        <div class="github-hero">
+            <div class="gh-hero-text">
+                <h2><span>🐙</span> GitHub Ekosistemi & Repolar</h2>
+                <p>Bulut repolarınız, yerel klonlama durumları ve tek tıkla Codebase Memory CBM Grafı & Graphify analiz entegrasyonu.</p>
+            </div>
+            <div class="gh-add-box">
+                <input type="text" id="customGhInput" placeholder="Yeni repo adı veya git URL ekle...">
+                <button data-action="submitCustomRepo">➕ Ekle</button>
+            </div>
+        </div>
+        <div class="cards-grid" id="githubGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 3: Sessions Timeline -->
+    <main class="section-view" id="viewSessions">
+        <div class="sessions-list" id="sessionsList"></div>
+    </main>
+
+    <!-- MAIN VIEW 4: CBM & Graphify Radar -->
+    <main class="section-view" id="viewRadar">
+        <div class="radar-hero">
+            <div>
+                <h2 style="font-size: 24px; color: #ffffff; margin-bottom: 6px;">🌌 Deep Space CBM & Graphify Bilgi Radarı</h2>
+                <p style="color: var(--text-dim); font-size: 14px; max-width: 650px;">
+                    Codebase Memory MCP ve Graphify mimarisi ile tüm depolarınızın fonksiyon çağrı grafı, topluluk tespiti ve god node analizleri kalıcı olarak saklanmaktadır.
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="hud-btn primary" data-action="openCbmWebUi">🧠 CBM Grafını Aç (9749)</button>
+                <button class="hud-btn" data-action="openGraphifyRoot">👑 Edge Observatory</button>
+            </div>
+        </div>
+        <div class="radar-stats-grid">
+            <div class="radar-stat-box">
+                <h3><span>🧠</span> CBM İndeksli Depolar</h3>
+                <ul class="radar-list" id="radarCbmList"></ul>
+            </div>
+            <div class="radar-stat-box">
+                <h3><span>👑</span> Graphify Bilgi Ağları</h3>
+                <ul class="radar-list" id="radarGraphList"></ul>
+            </div>
+        </div>
+    </main>
+
+    
+    <!-- DEDICATED DISCRETE ARCHIVE DRAWER (Pek ortalıkta olmayan arşiv bölümü) -->
+    <div class="archive-drawer-wrap" id="archiveDrawerWrap">
+        <div class="archive-drawer-bar" data-action="toggleArchiveDrawer">
+            <div class="archive-drawer-left">
+                <span class="archive-drawer-icon">📦</span>
+                <span class="archive-drawer-label">Arşivlenmiş Depo ve Projeler</span>
+                <span class="archive-count-pill" id="archCountBadge">0</span>
+            </div>
+            <div class="archive-drawer-right">
+                <span class="archive-toggle-text" id="archiveToggleHint">Genişlet / Gizle</span>
+                <span class="archive-arrow" id="archiveArrow">▾</span>
+            </div>
+        </div>
+        <div class="archive-drawer-content" id="archiveDrawerContent" style="display: none;">
+            <div class="archive-items-grid" id="archiveGrid"></div>
+        </div>
+    </div>
+
+    <!-- Antigravity Panel Details Holographic Modal -->
+    <div class="ag-modal-backdrop" id="agDetailsModal" data-action="closeAgDetailsModal">
+        <div class="ag-modal-content" data-stop-propagation="true">
+            <div class="ag-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 22px;">✨</span>
+                    <div>
+                        <h2 style="font-size: 17px; color: #ffffff; font-weight: 700;">Antigravity Panel Telemetri</h2>
+                        <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">HESAP & MODEL KOTA DETAYLARI</div>
+                    </div>
+                </div>
+                <button class="ag-btn-icon" data-action="toggleAgDetailsModal">✕</button>
+            </div>
+            <div class="ag-modal-body">
+                <div class="ag-metric-row">
+                    <span class="lbl">Kullanıcı Hesabı:</span>
+                    <span class="val" id="modalUserEmail">ufukkarabulut35@gmail.com</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Abonelik / Tier:</span>
+                    <span class="val" style="color: var(--neon-emerald); font-weight: 700;" id="modalUserTier">Google AI Pro</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Eklenti Durumu:</span>
+                    <span class="val" style="color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace;">Antigravity Panel v2.8.0 (Bağlı)</span>
+                </div>
+
+                <div style="margin: 18px 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace; font-weight: 700;">Aylık Kredi Durumu (Plan)</div>
+                
+                <div class="ag-credit-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Prompt Kredisi</span>
+                        <span id="modalPromptCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #ffffff;">500 / 50.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill gemini" id="modalPromptBar" style="width: 1%;"></div>
+                    </div>
+                </div>
+
+                <div class="ag-credit-box" style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Flow Kredisi</span>
+                        <span id="modalFlowCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #ffffff;">100 / 150.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill claude" id="modalFlowBar" style="width: 0.1%;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="hud-btn" data-action="openAgSidebar">Sidebar'da Aç</button>
+                    <button class="hud-btn primary" data-action="openAgSettings">Panel Ayarları</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="cockpitToast">İşlem Tamamlandı</div>
+    <script nonce="{{NONCE}}">
+        window.__INITIAL_DATA__ = {{INITIAL_DATA}};
+    </script>
+    <script nonce="{{NONCE}}" src="{{JS_URI}}"></script>
+</body>
+</html>
