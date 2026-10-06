@@ -29,3 +29,5 @@ project_memory_registry.json
 mcp_config.json
 .codebase-memory/
 memory/
+
+graphify-out/
