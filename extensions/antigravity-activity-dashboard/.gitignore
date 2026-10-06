@@ -1,0 +1,7 @@
+node_modules/
+*.vsix
+preview.html
+graphify-out/
+.vscode-test/
+coverage/
+*.log

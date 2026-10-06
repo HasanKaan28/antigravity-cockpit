@@ -1,0 +1,15 @@
+.git/**
+.gitignore
+.agents/**
+.vscode/**
+.vscode-test/**
+graphify-out/**
+node_modules/**
+scripts/**
+test/**
+coverage/**
+*.vsix
+preview.html
+sync_and_build.js
+eslint.config.js
+**/*.map

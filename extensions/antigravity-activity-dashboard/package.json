@@ -1,0 +1,130 @@
+{
+  "name": "antigravity-activity-dashboard",
+  "displayName": "Antigravity Activity Dashboard & Cockpit",
+  "description": "Antigravity IDE her açıldığında son yapılanları, oturumları ve canlı proje durumunu gösteren fütüristik kontrol paneli.",
+  "version": "2.0.0",
+  "publisher": "antigravity-local",
+  "license": "MIT",
+  "author": "Antigravity Community",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HasanKaan28/antigravity-cockpit.git"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "antigravity",
+    "dashboard",
+    "cockpit",
+    "projects",
+    "codebase-memory"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onWebviewPanel:antigravityActivityDashboard"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "antigravity.openActivityDashboard",
+        "title": "Antigravity: Son Yapılanları Göster (Dashboard)",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "antigravity.refreshActivityDashboard",
+        "title": "Antigravity: Dashboard'u Yenile",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "antigravity.cockpitNewChat",
+        "title": "Antigravity Cockpit: Yeni Sohbet Başlat",
+        "icon": "$(comment-discussion)"
+      }
+    ],
+    "configuration": {
+      "title": "Antigravity Activity Dashboard",
+      "properties": {
+        "antigravity.dashboard.openOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Antigravity IDE açıldığında Son Yapılanlar kontrol panelini otomatik olarak aç."
+        },
+        "antigravity.dashboard.githubUser": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub reposu listelenecek kullanıcı adı (boş bırakılırsa gh CLI ile otomatik algılanır)."
+        },
+        "antigravity.dashboard.scanRoots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Projelerin taranacağı ek ana dizinler (örn: ~/projects)."
+        },
+        "antigravity.dashboard.extraProjectPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Doğrudan panoya eklenecek spesifik proje dizinleri."
+        },
+        "antigravity.dashboard.browser": {
+          "type": "string",
+          "enum": [
+            "edge",
+            "systemDefault"
+          ],
+          "default": "edge",
+          "description": "Graphify ve harici linkleri açarken tercih edilen tarayıcı."
+        },
+        "antigravity.dashboard.pollIntervalSec": {
+          "type": "number",
+          "default": 60,
+          "description": "Arka plan model kotalarını sessiz kontrol aralığı (saniye)."
+        },
+        "antigravity.dashboard.sessionLimit": {
+          "type": "number",
+          "default": 25,
+          "description": "Listelenecek maksimum son oturum sayısı."
+        },
+        "antigravity.dashboard.soundEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Siber ses efektlerinin varsayılan durumu."
+        },
+        "antigravity.dashboard.cbmPath": {
+          "type": "string",
+          "default": "",
+          "description": "Özel Codebase Memory MCP çalıştırılabilir dosya yolu (boş ise otomatik algılanır)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "mocha \"test/unit/**/*.test.js\"",
+    "test:integration": "node test/integration/runTest.js",
+    "preview": "node scripts/dev-preview.js",
+    "package": "vsce package --no-dependencies",
+    "install-local": "node scripts/install-local.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0",
+    "mocha": "^12.0.3"
+  }
+}
