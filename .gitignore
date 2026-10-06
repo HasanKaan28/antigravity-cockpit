@@ -1,0 +1,31 @@
+﻿# Environment & Secrets
+.env
+.env.*
+*.secret
+*.token
+*.key
+*.pem
+credentials.json
+token.json
+
+# Logs & Runtime
+*.log
+*.tmp
+*.bak
+temp/
+tmp/
+node_modules/
+__pycache__/
+*.pyc
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# User specific registries and personal caches
+project_memory_registry.json
+mcp_config.json
+.codebase-memory/
+memory/
