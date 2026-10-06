@@ -1,0 +1,8 @@
+.DS_Store
+.clipboard_bypass
+.clipboard_pipe
+.clipboard_bypass.tmp
+clipboard_debug.log
+.clipboard_debug
+.gemini/
+*.swp
