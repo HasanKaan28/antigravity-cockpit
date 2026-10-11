@@ -6,7 +6,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const { execFileAsync } = require('../util/proc');
 const { getCustomRepos, getGithubCache, saveGithubCache, isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
@@ -29,15 +28,11 @@ async function getDetectedGithubUser() {
     } catch {
         // fallback
     }
-    try {
-        const { stdout: gUser } = await execFileAsync('git', ['config', 'user.name'], {}, 1500);
-        if (gUser && gUser.trim()) return gUser.trim();
-    } catch {}
-    return '';
+    return 'HasanKaan28';
 }
 
 async function getGithubReposData(cbmDbMap, configUser = null) {
-    const userDir = os.homedir();
+    const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
     const targetUser = configUser || (await getDetectedGithubUser());
     let rawRepos = [];
 

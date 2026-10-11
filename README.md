@@ -102,7 +102,7 @@ antigravity-cockpit/
 │   └── skills/                             # 50+ Uzmanlık yeteneği
 ├── extensions/
 │   ├── antigravity-activity-dashboard/     # Fütüristik açılış kontrol paneli eklentisi (Kaynak kod)
-│   └── antigravity-activity-dashboard-2.0.0.vsix # Tek tıkla kurulabilir paket
+│   └── antigravity-activity-dashboard-2.2.0.vsix # Tek tıkla kurulabilir paket
 └── scripts/
     ├── adopt.ps1                           # Windows tek tıkla kurulum (Dashboard dahil)
     ├── adopt.sh                            # Linux/macOS tek tıkla kurulum (Dashboard dahil)

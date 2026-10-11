@@ -33,7 +33,7 @@ foreach ($ext in $extensions) {
 }
 
 # Install local Activity Dashboard VSIX if available
-$vsixPath = Join-Path $repoDir "extensions\antigravity-activity-dashboard-2.0.0.vsix"
+$vsixPath = Join-Path $repoDir "extensions\antigravity-activity-dashboard-2.2.0.vsix"
 if (Test-Path $vsixPath) {
     Write-Host "Installing Antigravity Activity Dashboard VSIX..." -ForegroundColor Cyan
     try {

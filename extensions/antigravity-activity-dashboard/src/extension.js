@@ -5,7 +5,7 @@
  */
 const vscode = require('vscode');
 const logger = require('./logger');
-const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml } = require('./webviewProvider');
+const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel } = require('./webviewProvider');
 const { getPanelData } = require('./collectors/panel');
 
 let quotaInterval = null;
@@ -23,7 +23,7 @@ function activate(context) {
 
     const refreshCmd = vscode.commands.registerCommand('antigravity.refreshActivityDashboard', () => {
         collectAllDashboardData(vscode).then(_data => {
-            vscode.window.showInformationMessage('🔄 Dashboard verileri güncellendi.');
+            vscode.window.showInformationMessage('Dashboard verileri güncellendi.');
         }).catch(err => {
             logger.error('Manual refresh failed:', err);
         });
@@ -47,6 +47,7 @@ function activate(context) {
                 attachPanelListeners(webviewPanel, context, vscode);
                 try {
                     const data = await collectAllDashboardData(vscode);
+                    webviewPanel._lastData = data;
                     webviewPanel.webview.html = getWebviewHtml(webviewPanel.webview, context.extensionUri, data);
                 } catch (err) {
                     logger.error('Deserialization data fetch error:', err);
@@ -59,7 +60,7 @@ function activate(context) {
     // 3. Status Bar Item
     const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     statusBar.text = '$(dashboard) Cockpit';
-    statusBar.tooltip = 'Antigravity Cockpit & Dashboard v2.0';
+    statusBar.tooltip = 'Antigravity Cockpit & Dashboard v2.1';
     statusBar.command = 'antigravity.openActivityDashboard';
     statusBar.show();
     context.subscriptions.push(statusBar);
@@ -68,6 +69,10 @@ function activate(context) {
     quotaInterval = setInterval(async () => {
         try {
             const pData = await getPanelData();
+            const panel = getCurrentPanel && getCurrentPanel();
+            if (panel && panel.visible) {
+                panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
+            }
             if (pData.status === 'ok' && Array.isArray(pData.groups)) {
                 const g = pData.groups.find(x => x.id === 'gemini');
                 const c = pData.groups.find(x => x.id === 'non-google' || x.id === 'claude');
@@ -90,7 +95,7 @@ function activate(context) {
                         changes.push(`Claude: %${lastKnownQuotas.claude} ➔ %${cVal}`);
                         lastKnownQuotas.claude = cVal;
                     }
-                    vscode.window.showInformationMessage(`⚡ Antigravity Panel: Model kotasında belirgin değişim: ${changes.join(' | ')}`);
+                    vscode.window.showInformationMessage(`Antigravity Panel: Model kotasında belirgin değişim: ${changes.join(' | ')}`);
                 }
             }
         } catch {
@@ -109,7 +114,29 @@ function activate(context) {
         }, 1200);
     }
 
-    logger.info('Antigravity Activity Dashboard & Cockpit v2.0 successfully activated.');
+    // 6. Live Hot-Reload Watcher for media/dashboard files
+    try {
+        const mediaWatcher = vscode.workspace.createFileSystemWatcher('**/media/dashboard.*');
+        const triggerReload = async () => {
+            const panel = getCurrentPanel && getCurrentPanel();
+            if (panel) {
+                try {
+                    const data = panel._lastData || await collectAllDashboardData(vscode);
+                    panel.webview.html = getWebviewHtml(panel.webview, context.extensionUri, data);
+                    logger.info('Live reloaded dashboard webview.');
+                } catch (e) {
+                    logger.error('Failed to live reload dashboard:', e);
+                }
+            }
+        };
+        mediaWatcher.onDidChange(triggerReload);
+        mediaWatcher.onDidCreate(triggerReload);
+        context.subscriptions.push(mediaWatcher);
+    } catch {
+        // file watcher setup exception ignored
+    }
+
+    logger.info('Antigravity Activity Dashboard & Cockpit v2.2 successfully activated.');
 }
 
 function deactivate() {

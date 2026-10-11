@@ -2,14 +2,14 @@
   "name": "antigravity-activity-dashboard",
   "displayName": "Antigravity Activity Dashboard & Cockpit",
   "description": "Antigravity IDE her açıldığında son yapılanları, oturumları ve canlı proje durumunu gösteren fütüristik kontrol paneli.",
-  "version": "2.0.0",
+  "version": "2.2.0",
   "publisher": "antigravity-local",
   "license": "MIT",
-  "author": "Antigravity Community",
+  "author": "HasanKaan28",
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HasanKaan28/antigravity-cockpit.git"
+    "url": "https://github.com/HasanKaan28/antigravity-activity-dashboard.git"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -66,7 +66,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Projelerin taranacağı ek ana dizinler (örn: ~/projects)."
+          "description": "Projelerin taranacağı ek ana dizinler (örn: C:/Users/Dev/projects)."
         },
         "antigravity.dashboard.extraProjectPaths": {
           "type": "array",
@@ -99,11 +99,6 @@
           "type": "boolean",
           "default": true,
           "description": "Siber ses efektlerinin varsayılan durumu."
-        },
-        "antigravity.dashboard.cbmPath": {
-          "type": "string",
-          "default": "",
-          "description": "Özel Codebase Memory MCP çalıştırılabilir dosya yolu (boş ise otomatik algılanır)."
         }
       }
     }
@@ -115,7 +110,8 @@
     "test:integration": "node test/integration/runTest.js",
     "preview": "node scripts/dev-preview.js",
     "package": "vsce package --no-dependencies",
-    "install-local": "node scripts/install-local.js"
+    "install-local": "node scripts/install-local.js",
+    "sync-live": "node scripts/sync-live.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -125,6 +121,7 @@
     "@vscode/vsce": "^4.0.0",
     "eslint": "^10.12.0",
     "globals": "^17.13.0",
-    "mocha": "^12.0.3"
+    "mocha": "^12.0.3",
+    "playwright": "^1.64.0"
   }
 }

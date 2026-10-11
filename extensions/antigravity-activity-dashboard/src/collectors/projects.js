@@ -5,7 +5,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const { execFileAsync, createPool } = require('../util/proc');
 const { isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
@@ -50,7 +49,7 @@ async function inspectGitRepo(projectPath) {
 }
 
 async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots = []) {
-    const userDir = os.homedir();
+    const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
     const candidateDirs = new Set();
 
     // 1. Workspace folders

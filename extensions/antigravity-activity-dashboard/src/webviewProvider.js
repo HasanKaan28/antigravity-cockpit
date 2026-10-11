@@ -5,7 +5,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const crypto = require('crypto');
 const logger = require('./logger');
 const { validateExternalUrl, parseRepoInput, isExistingPath } = require('./util/security');
@@ -20,8 +19,8 @@ const {
 const { getProjectsData } = require('./collectors/projects');
 const { getGithubReposData } = require('./collectors/github');
 const { getBrainSessions } = require('./collectors/sessions');
-const { getCbmData, CBM_EXE, ensureCbmServerRunning, buildCbmUrl, matchProjectCbm } = require('./collectors/cbm');
-const { startOllama, stopOllama, toggleOllama } = require('./util/ollama');
+const { getCbmData } = require('./collectors/cbm');
+const { startOllama, stopOllama, toggleOllama, toggleLocalAi } = require('./util/ollama');
 const { getPanelData } = require('./collectors/panel');
 const { getSystemTelemetry } = require('./collectors/system');
 const { openCleanTranscript } = require('./transcriptViewer');
@@ -85,8 +84,9 @@ function getWebviewHtml(webview, extensionUri, initialData) {
     const template = fs.readFileSync(templatePath, 'utf8');
 
     const nonce = getNonce();
-    const cssUri = webview.asWebviewUri(vscodeUriJoin(extensionUri, 'media', 'dashboard.css'));
-    const jsUri = webview.asWebviewUri(vscodeUriJoin(extensionUri, 'media', 'dashboard.js'));
+    const cacheBuster = Date.now();
+    const cssUri = webview.asWebviewUri(vscodeUriJoin(extensionUri, 'media', 'dashboard.css')).toString() + `?v=${cacheBuster}`;
+    const jsUri = webview.asWebviewUri(vscodeUriJoin(extensionUri, 'media', 'dashboard.js')).toString() + `?v=${cacheBuster}`;
 
     const csp = [
         "default-src 'none'",
@@ -101,8 +101,8 @@ function getWebviewHtml(webview, extensionUri, initialData) {
 
     return template
         .replace('{{CSP}}', csp)
-        .replace('{{CSS_URI}}', cssUri.toString())
-        .replace('{{JS_URI}}', jsUri.toString())
+        .replace('{{CSS_URI}}', cssUri)
+        .replace('{{JS_URI}}', jsUri)
         .replaceAll('{{NONCE}}', nonce)
         .replace('{{INITIAL_DATA}}', safeJson);
 }
@@ -117,8 +117,9 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
     switch (message.command) {
         case 'refresh':
             collectAllDashboardData(vscodeInstance).then(data => {
-                panel.webview.postMessage({ command: 'updateData', data });
-                vscodeInstance.window.showInformationMessage('🔄 Dashboard verileri güncellendi.');
+                panel._lastData = data;
+                panel.webview.html = getWebviewHtml(panel.webview, _extensionUri, data);
+                vscodeInstance.window.showInformationMessage('Dashboard verileri güncellendi.');
             }).catch(err => {
                 logger.error('Refresh failed:', err);
             });
@@ -210,7 +211,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             const gPath = message.path;
             if (isExistingPath(gPath)) {
                 launchInBrowser(gPath, vscodeInstance);
-                vscodeInstance.window.showInformationMessage('👑 Graphify Deep Space Observatory Microsoft Edge ile açıldı.');
+                vscodeInstance.window.showInformationMessage('Graphify Deep Space Observatory Microsoft Edge ile açıldı.');
             } else {
                 vscodeInstance.window.showWarningMessage('Graphify haritası bulunamadı. /graphify komutu ile oluşturabilirsiniz.');
             }
@@ -218,87 +219,73 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         }
 
         case 'toggleOllama': {
-            vscodeInstance.window.showInformationMessage('⚡ Antigravity Cloud Native AI Motoru devrede (Gemini 2.5 / Claude 3.5). Yerel GPU gerekmez.');
+            toggleOllama().then(async (res) => {
+                if (res.success) {
+                    vscodeInstance.window.showInformationMessage(res.message);
+                } else {
+                    vscodeInstance.window.showWarningMessage(res.message);
+                }
+                const freshData = await collectAllDashboardData(vscodeInstance);
+                panel.webview.postMessage({ command: 'updateData', data: freshData });
+            }).catch(err => {
+                vscodeInstance.window.showErrorMessage('Ollama işlem hatası: ' + (err.message || String(err)));
+            });
+            break;
+        }
+
+        case 'toggleLocalAi': {
+            const engineId = message.engineId || 'ollama';
+            toggleLocalAi(engineId).then(async (res) => {
+                if (res.success) {
+                    vscodeInstance.window.showInformationMessage(res.message);
+                } else {
+                    vscodeInstance.window.showWarningMessage(res.message);
+                }
+                const freshData = await collectAllDashboardData(vscodeInstance);
+                panel.webview.postMessage({ command: 'updateData', data: freshData });
+            }).catch(err => {
+                vscodeInstance.window.showErrorMessage('Yerel motor işlem hatası: ' + (err.message || String(err)));
+            });
             break;
         }
 
         case 'startOllama': {
-            vscodeInstance.window.showInformationMessage('⚡ Antigravity Cloud Native AI aktif.');
+            startOllama().then(async (res) => {
+                if (res.success) {
+                    vscodeInstance.window.showInformationMessage(res.message);
+                } else {
+                    vscodeInstance.window.showWarningMessage(res.message);
+                }
+                const freshData = await collectAllDashboardData(vscodeInstance);
+                panel.webview.postMessage({ command: 'updateData', data: freshData });
+            }).catch(err => {
+                vscodeInstance.window.showErrorMessage('Ollama başlatma hatası: ' + (err.message || String(err)));
+            });
             break;
         }
 
         case 'stopOllama': {
-            vscodeInstance.window.showInformationMessage('⚡ Antigravity Cloud Native AI modu devrede.');
+            stopOllama().then(async (res) => {
+                if (res.success) {
+                    vscodeInstance.window.showInformationMessage(res.message);
+                } else {
+                    vscodeInstance.window.showWarningMessage(res.message);
+                }
+                const freshData = await collectAllDashboardData(vscodeInstance);
+                panel.webview.postMessage({ command: 'updateData', data: freshData });
+            }).catch(err => {
+                vscodeInstance.window.showErrorMessage('Ollama durdurma hatası: ' + (err.message || String(err)));
+            });
             break;
         }
 
         case 'openCbmUi': {
-            getCbmData().then(async (cbm) => {
-                if (!cbm.installed) {
-                    vscodeInstance.window.showWarningMessage('Codebase Memory MCP çalıştırılabilir dosyası bulunamadı.');
-                    return;
-                }
-
-                // 1. Determine target project for direct graph view
-                let targetProject = message.project || message.name || null;
-                if (!targetProject) {
-                    const wf = (vscodeInstance.workspace.workspaceFolders || [])[0];
-                    if (wf && wf.uri && wf.uri.fsPath) {
-                        const matched = matchProjectCbm(wf.uri.fsPath, path.basename(wf.uri.fsPath), cbm.dbMap);
-                        if (matched.indexed && matched.cbmKey) {
-                            targetProject = matched.cbmKey;
-                        }
-                    }
-                }
-                if (!targetProject && cbm.indexedProjects && cbm.indexedProjects.length > 0) {
-                    const brainSync = cbm.indexedProjects.find(p => p.key.includes('brain-sync'));
-                    targetProject = brainSync ? brainSync.key : cbm.indexedProjects[0].key;
-                }
-
-                vscodeInstance.window.showInformationMessage('🧠 Codebase Memory Bilgi Grafı hazırlanıyor (9749)...');
-
-                // 2. Ensure daemon is running detached (prevents 1s kill timeout!)
-                const runRes = await ensureCbmServerRunning(cbm.path, 9749);
-                if (!runRes.success) {
-                    vscodeInstance.window.showErrorMessage(runRes.message || 'CBM sunucusu başlatılamadı.');
-                    return;
-                }
-
-                // 3. Build target URL with ?tab=graph&project=...
-                const targetUrl = buildCbmUrl(targetProject, 'graph', 9749);
-
-                // 4. Open in Microsoft Edge or system browser
-                setTimeout(() => {
-                    launchInBrowser(targetUrl, vscodeInstance);
-                }, 350);
-            }).catch(err => {
-                logger.error('openCbmUi error:', err);
-                vscodeInstance.window.showErrorMessage('CBM başlatma hatası: ' + (err.message || String(err)));
-            });
+            vscodeInstance.window.showInformationMessage('Codebase Memory (CBM) devre dışı bırakılmıştır. Mimari haritalar için Graphify kullanabilirsiniz.');
             break;
         }
 
         case 'indexInCbm': {
-            const targetPath = message.path;
-            if (!isExistingPath(targetPath)) {
-                vscodeInstance.window.showErrorMessage('İndekslenecek proje yolu bulunamadı.');
-                break;
-            }
-
-            vscodeInstance.window.withProgress({
-                location: vscodeInstance.ProgressLocation.Notification,
-                title: `🧠 CBM İndeksleniyor: ${path.basename(targetPath)}...`,
-                cancellable: false
-            }, async () => {
-                try {
-                    await execFileAsync(CBM_EXE, ['cli', 'index_repository', '--repo-path', targetPath], {}, 60000);
-                    vscodeInstance.window.showInformationMessage(`✅ ${path.basename(targetPath)} CBM Bilgi Grafına başarıyla indekslendi!`);
-                    const freshData = await collectAllDashboardData(vscodeInstance);
-                    panel.webview.postMessage({ command: 'updateData', data: freshData });
-                } catch (err) {
-                    vscodeInstance.window.showWarningMessage('CBM İndeksleme uyarısı: ' + (err.stderr || err.error?.message || 'Bilinmeyen hata'));
-                }
-            });
+            vscodeInstance.window.showInformationMessage('Codebase Memory (CBM) devre dışı bırakılmıştır. Mimari haritalar için Graphify kullanabilirsiniz.');
             break;
         }
 
@@ -309,7 +296,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 break;
             }
 
-            const userDir = os.homedir();
+            const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
             const targetDir = path.join(userDir, 'github-repos', parsed.repo);
 
             if (isExistingPath(targetDir)) {
@@ -319,12 +306,12 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
 
             vscodeInstance.window.withProgress({
                 location: vscodeInstance.ProgressLocation.Notification,
-                title: `📥 ${parsed.fullName} klonlanıyor...`,
+                title: `${parsed.fullName} klonlanıyor...`,
                 cancellable: false
             }, async () => {
                 try {
                     await execFileAsync('gh', ['repo', 'clone', parsed.fullName, targetDir], {}, 60000);
-                    vscodeInstance.window.showInformationMessage(`✅ ${parsed.repo} başarıyla klonlandı: ${targetDir}`);
+                    vscodeInstance.window.showInformationMessage(`${parsed.repo} başarıyla klonlandı: ${targetDir}`);
                     const freshData = await collectAllDashboardData(vscodeInstance);
                     panel.webview.postMessage({ command: 'updateData', data: freshData });
                 } catch (err) {
@@ -361,19 +348,32 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             cfg.update('openOnStartup', Boolean(message.value), vscodeInstance.ConfigurationTarget.Global);
             vscodeInstance.window.showInformationMessage(
                 message.value
-                    ? '🚀 Antigravity açıldığında Cockpit otomatik açılacak.'
-                    : '⏸️ Otomatik açılış kapatıldı.'
+                    ? 'Antigravity açıldığında Cockpit otomatik açılacak.'
+                    : 'Otomatik açılış kapatıldı.'
             );
             break;
         }
 
         case 'refreshAgQuota': {
-            getPanelData().then(pData => {
-                panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
-                if (message.isManual) {
-                    vscodeInstance.window.showInformationMessage('✨ Antigravity Panel model kotaları güncellendi.');
+            (async () => {
+                try {
+                    await vscodeInstance.commands.executeCommand('tfa.refresh');
+                } catch {
+                    // Ignore if command not present
                 }
-            });
+                try {
+                    const pData = await getPanelData();
+                    panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
+                    if (panel._lastData) {
+                        panel._lastData.panel = pData;
+                    }
+                    if (message.isManual) {
+                        vscodeInstance.window.showInformationMessage('Model kotaları ve token bakiyesi güncellendi.');
+                    }
+                } catch (err) {
+                    logger.error('Failed to refresh panel quota:', err);
+                }
+            })();
             break;
         }
 
@@ -387,7 +387,86 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
     }
 }
 
+let liveQuotaSyncInterval = null;
+let liveQuotaWatchedPath = null;
+
+function setupLiveQuotaSync(panel) {
+    if (liveQuotaSyncInterval) {
+        clearInterval(liveQuotaSyncInterval);
+        liveQuotaSyncInterval = null;
+    }
+    if (liveQuotaWatchedPath) {
+        try { fs.unwatchFile(liveQuotaWatchedPath); } catch {}
+        liveQuotaWatchedPath = null;
+    }
+
+    // Locate active state.vscdb database on system to watch file changes directly
+    const candidates = [];
+    if (process.platform === 'win32') {
+        const appdata = process.env.APPDATA || '';
+        if (appdata) {
+            candidates.push(
+                path.join(appdata, 'Antigravity IDE', 'User', 'globalStorage', 'state.vscdb'),
+                path.join(appdata, 'Antigravity', 'User', 'globalStorage', 'state.vscdb'),
+                path.join(appdata, 'Code', 'User', 'globalStorage', 'state.vscdb')
+            );
+        }
+    } else if (process.platform === 'darwin') {
+        const home = process.env.HOME || '';
+        candidates.push(
+            path.join(home, 'Library', 'Application Support', 'Antigravity IDE', 'User', 'globalStorage', 'state.vscdb'),
+            path.join(home, 'Library', 'Application Support', 'Antigravity', 'User', 'globalStorage', 'state.vscdb'),
+            path.join(home, 'Library', 'Application Support', 'Code', 'User', 'globalStorage', 'state.vscdb')
+        );
+    } else {
+        const home = process.env.HOME || '';
+        candidates.push(
+            path.join(home, '.config', 'Antigravity IDE', 'User', 'globalStorage', 'state.vscdb'),
+            path.join(home, '.config', 'Antigravity', 'User', 'globalStorage', 'state.vscdb'),
+            path.join(home, '.config', 'Code', 'User', 'globalStorage', 'state.vscdb')
+        );
+    }
+
+    const activeDb = candidates.find(p => fs.existsSync(p));
+    if (activeDb) {
+        liveQuotaWatchedPath = activeDb;
+        try {
+            // Watch state.vscdb with 1000ms polling for instant token quota reaction
+            fs.watchFile(activeDb, { interval: 1000 }, async (curr, prev) => {
+                if (curr.mtimeMs !== prev.mtimeMs && currentPanel === panel && panel.visible) {
+                    try {
+                        const pData = await getPanelData();
+                        if (pData && (pData.status === 'ok' || (pData.groups && pData.groups.length > 0))) {
+                            panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
+                            if (panel._lastData) {
+                                panel._lastData.panel = pData;
+                            }
+                        }
+                    } catch {}
+                }
+            });
+        } catch {}
+    }
+
+    // High-frequency live quota & token synchronization loop every 2.5s when panel is active
+    liveQuotaSyncInterval = setInterval(async () => {
+        if (!currentPanel || currentPanel !== panel || !panel.visible) return;
+        try {
+            const pData = await getPanelData();
+            if (pData && (pData.status === 'ok' || (pData.groups && pData.groups.length > 0))) {
+                panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
+                if (panel._lastData) {
+                    panel._lastData.panel = pData;
+                }
+            }
+        } catch {
+            // silent sync
+        }
+    }, 2500);
+}
+
 function attachPanelListeners(panel, context, vscodeInstance) {
+    currentPanel = panel;
     panel.webview.options = {
         enableScripts: true,
         localResourceRoots: [
@@ -401,24 +480,49 @@ function attachPanelListeners(panel, context, vscodeInstance) {
         context.subscriptions
     );
 
+    setupLiveQuotaSync(panel);
+
+    panel.onDidChangeViewState(
+        e => {
+            if (e.webviewPanel.visible) {
+                getPanelData().then(pData => {
+                    panel.webview.postMessage({ command: 'updateAgPanel', panel: pData });
+                }).catch(() => {});
+            }
+        },
+        null,
+        context.subscriptions
+    );
+
     panel.onDidDispose(() => {
         if (currentPanel === panel) currentPanel = null;
+        if (liveQuotaWatchedPath) {
+            try { fs.unwatchFile(liveQuotaWatchedPath); } catch {}
+            liveQuotaWatchedPath = null;
+        }
+        if (liveQuotaSyncInterval) {
+            clearInterval(liveQuotaSyncInterval);
+            liveQuotaSyncInterval = null;
+        }
     }, null, context.subscriptions);
 }
 
 async function openDashboardPanel(context, vscodeInstance) {
     if (currentPanel) {
         currentPanel.reveal(vscodeInstance.ViewColumn.One);
-        // Refresh data in background
-        collectAllDashboardData(vscodeInstance).then(data => {
-            if (currentPanel) currentPanel.webview.postMessage({ command: 'updateData', data });
-        });
+        try {
+            const data = await collectAllDashboardData(vscodeInstance);
+            currentPanel._lastData = data;
+            currentPanel.webview.html = getWebviewHtml(currentPanel.webview, context.extensionUri, data);
+        } catch (err) {
+            logger.error('Failed to refresh existing dashboard panel:', err);
+        }
         return currentPanel;
     }
 
     currentPanel = vscodeInstance.window.createWebviewPanel(
         'antigravityActivityDashboard',
-        '⚡ Antigravity Cockpit & Dashboard v2.0',
+        'Antigravity Cockpit & Dashboard v2.1',
         vscodeInstance.ViewColumn.One,
         {
             enableScripts: true,
@@ -444,9 +548,14 @@ async function openDashboardPanel(context, vscodeInstance) {
     return currentPanel;
 }
 
+function getCurrentPanel() {
+    return currentPanel;
+}
+
 module.exports = {
     openDashboardPanel,
     collectAllDashboardData,
     getWebviewHtml,
-    attachPanelListeners
+    attachPanelListeners,
+    getCurrentPanel
 };

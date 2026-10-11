@@ -5,3 +5,5 @@ graphify-out/
 .vscode-test/
 coverage/
 *.log
+.playwright-cli/
+
