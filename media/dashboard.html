@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="antigravity">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+    <meta name="theme-color" content="#1e1e1e" id="metaThemeColor">
+    <title>Antigravity Cockpit</title>
+    <script nonce="{{NONCE}}">
+        try {
+            const savedTheme = localStorage.getItem('antigravity_theme');
+            const family = localStorage.getItem('antigravity_theme_family') || 'antigravity';
+            const mode = localStorage.getItem('antigravity_theme_mode') || 'dark';
+            let active = savedTheme;
+            if (!active) {
+                if (family === 'system') {
+                    active = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'antigravity';
+                } else if (family === 'dark') {
+                    active = (mode === 'light') ? 'deepspace-light' : 'dark';
+                } else if (family === 'midnight') {
+                    active = (mode === 'light') ? 'midnight-light' : 'midnight';
+                } else if (family === 'nord') {
+                    active = (mode === 'light') ? 'nord-light' : 'nord-dark';
+                } else if (family === 'tokyo-night') {
+                    active = (mode === 'light') ? 'tokyo-night-light' : 'tokyo-night';
+                } else if (family === 'catppuccin') {
+                    active = (mode === 'light') ? 'catppuccin-light' : 'catppuccin';
+                } else if (family === 'solarized') {
+                    active = (mode === 'light') ? 'solarized-light' : 'solarized-dark';
+                } else if (family === 'synchronized') {
+                    active = (mode === 'light') ? 'synchronized-light' : 'synchronized';
+                } else if (family === 'cockpit-classic') {
+                    active = (mode === 'light') ? 'cockpit-classic-light' : 'cockpit-classic';
+                } else if (family === 'hc') {
+                    active = (mode === 'light') ? 'hc-light' : 'hc-dark';
+                } else {
+                    active = (mode === 'light') ? 'light' : 'antigravity';
+                }
+            }
+            if (active) {
+                document.documentElement.setAttribute('data-theme', active);
+            }
+        } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="{{CSS_URI}}">
+</head>
+<body id="dashboardRoot">
+<canvas id="spaceCanvas"></canvas>
+
+    <!-- Top HUD Cockpit Bar -->
+    <header class="hud-bar">
+        <div class="hud-left">
+            <div class="logo-core">
+                <div class="logo-badge" id="hudLogoBadge" title="Antigravity Workspace">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                        <circle cx="12" cy="12" r="9" stroke="var(--vscode-blue)" stroke-width="2" opacity="0.6"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="var(--vscode-blue)" stroke-width="1.5" transform="rotate(-30 12 12)"/>
+                        <circle cx="12" cy="12" r="3.5" fill="var(--vscode-blue)"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1 id="dashboardMainTitle">Antigravity Dashboard</h1>
+                    <div class="subtext">
+                        <span class="status-dot"></span>
+                        <span id="dashboardSubtext">Geliştirici Çalışma Alanı &amp; Proje Merkezi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hud-right">
+            <!-- Theme Dropdown Trigger & Popover -->
+            <div class="theme-dropdown-container" id="themeDropdownContainer">
+                <button class="hud-btn theme-switch-btn theme-dropdown-btn" id="themeDropdownBtn" data-action="toggleThemeDropdown" title="Tema ve Görünüm Seç (Açılır Liste)">
+                    <span class="theme-switch-icon ag-icon" id="themeBtnIcon">
+                        <svg class="theme-icon-sun" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="theme-icon-moon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </span>
+                    <span id="themeBtnText">Antigravity (Koyu)</span>
+                    <span class="dropdown-chevron" id="themeDropdownChevron">▾</span>
+                </button>
+
+                <!-- Popover Dropdown Menu -->
+                <div class="theme-dropdown-menu" id="themeDropdownMenu" data-stop-propagation="true">
+                    <div class="theme-dropdown-header">
+                        <span class="dropdown-title">Tema &amp; Görünüm</span>
+                        <!-- Koyu / Açık Mod Segmented Button -->
+                        <div class="theme-mode-segmented">
+                            <button type="button" class="mode-seg-btn active" id="segModeDark" data-action="setThemeModeType" data-mode="dark" title="Koyu Tema Modu">
+                                <span>🌙 Koyu</span>
+                            </button>
+                            <button type="button" class="mode-seg-btn" id="segModeLight" data-action="setThemeModeType" data-mode="light" title="Açık Tema Modu">
+                                <span>☀️ Açık</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="theme-dropdown-list">
+                        <!-- 1. Antigravity IDE -->
+                        <button type="button" class="theme-menu-item active" data-action="selectThemeFamily" data-family="antigravity" id="themeItemAntigravity">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #1e1e1e; border: 1px solid #444;"></span>
+                                <span class="theme-dot" style="background: #0078d4;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Antigravity IDE</div>
+                                <div class="theme-item-desc">Resmi VS Code Workbench stili</div>
+                            </div>
+                            <span class="theme-item-check" id="checkAntigravity">✓</span>
+                        </button>
+
+                        <!-- 2. Deep Space (Cyberpunk) -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="dark" id="themeItemDark">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #090d16; border: 1px solid #38bdf8;"></span>
+                                <span class="theme-dot" style="background: #38bdf8;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Deep Space</div>
+                                <div class="theme-item-desc">Cyberpunk Neon Void stili</div>
+                            </div>
+                            <span class="theme-item-check" id="checkDark">✓</span>
+                        </button>
+
+                        <!-- 3. Midnight Obsidian -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="midnight" id="themeItemMidnight">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #000000; border: 1px solid #555;"></span>
+                                <span class="theme-dot" style="background: #a855f7;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Midnight Obsidian</div>
+                                <div class="theme-item-desc">OLED Saf Siyah &amp; Yüksek Kontrast</div>
+                            </div>
+                            <span class="theme-item-check" id="checkMidnight">✓</span>
+                        </button>
+
+                        <!-- 4. Nord Slate -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="nord" id="themeItemNord">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #2e3440; border: 1px solid #4c566a;"></span>
+                                <span class="theme-dot" style="background: #88c0d0;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Nord Slate</div>
+                                <div class="theme-item-desc">Arktik Mavi &amp; Taş Grisi stili</div>
+                            </div>
+                            <span class="theme-item-check" id="checkNord">✓</span>
+                        </button>
+
+                        <!-- 5. Tokyo Night -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="tokyo-night" id="themeItemTokyoNight">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #1a1b26; border: 1px solid #7aa2f7;"></span>
+                                <span class="theme-dot" style="background: #7aa2f7;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Tokyo Night</div>
+                                <div class="theme-item-desc">Neon Cyber Indigo &amp; Mor Vurgular</div>
+                            </div>
+                            <span class="theme-item-check" id="checkTokyoNight">✓</span>
+                        </button>
+
+                        <!-- 6. Catppuccin -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="catppuccin" id="themeItemCatppuccin">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #1e1e2e; border: 1px solid #cba6f7;"></span>
+                                <span class="theme-dot" style="background: #cba6f7;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Catppuccin</div>
+                                <div class="theme-item-desc">Mocha &amp; Latte Yatıştırıcı Pastel</div>
+                            </div>
+                            <span class="theme-item-check" id="checkCatppuccin">✓</span>
+                        </button>
+
+                        <!-- 7. Solarized -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="solarized" id="themeItemSolarized">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #002b36; border: 1px solid #2aa198;"></span>
+                                <span class="theme-dot" style="background: #2aa198;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Solarized</div>
+                                <div class="theme-item-desc">Hassas Kontrast &amp; Sakin Çalışma Alanı</div>
+                            </div>
+                            <span class="theme-item-check" id="checkSolarized">✓</span>
+                        </button>
+
+                        <!-- 8. Synchronized Studio -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="synchronized" id="themeItemSynchronized">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #151515; border: 1px solid #deebc8;"></span>
+                                <span class="theme-dot" style="background: #deebc8;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Synchronized Studio</div>
+                                <div class="theme-item-desc">Minimalist Charcoal &amp; Pistachio Mint</div>
+                            </div>
+                            <span class="theme-item-check" id="checkSynchronized">✓</span>
+                        </button>
+
+                        <!-- 9. Cockpit Classic (Arkadaş Tasarımı) -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="cockpit-classic" id="themeItemCockpitClassic">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #121317; border: 1px solid #0084ff;"></span>
+                                <span class="theme-dot" style="background: #0084ff;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Cockpit Classic</div>
+                                <div class="theme-item-desc">Klasik Grafit &amp; Elektrik Mavisi</div>
+                            </div>
+                            <span class="theme-item-check" id="checkCockpitClassic">✓</span>
+                        </button>
+
+                        <!-- 10. Yüksek Kontrast -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="hc" id="themeItemHc">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #000000; border: 2px solid #ffffff;"></span>
+                                <span class="theme-dot" style="background: #ffffff; border: 1px solid #000;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Yüksek Kontrast</div>
+                                <div class="theme-item-desc">WCAG AAA Erişilebilirlik &amp; Sıfır Göz Yorgunluğu</div>
+                            </div>
+                            <span class="theme-item-check" id="checkHc">✓</span>
+                        </button>
+
+                        <!-- 7. Sistem Teması -->
+                        <button type="button" class="theme-menu-item" data-action="selectThemeFamily" data-family="system" id="themeItemSystem">
+                            <div class="theme-item-color-dots">
+                                <span class="theme-dot" style="background: #1e1e1e;"></span>
+                                <span class="theme-dot" style="background: #ffffff; border: 1px solid #ccc;"></span>
+                            </div>
+                            <div class="theme-item-info">
+                                <div class="theme-item-name">Sistem Teması</div>
+                                <div class="theme-item-desc">İşletim sistemi tercihine uyumlu</div>
+                            </div>
+                            <span class="theme-item-check" id="checkSystem">✓</span>
+                        </button>
+                    </div>
+
+                    <div class="theme-dropdown-footer">
+                        <button type="button" class="theme-settings-link" data-action="openSettings">
+                            <span>⚙️ Kontrol Paneli Ayarları</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Primary Action: New Chat -->
+            <button class="hud-btn primary" id="hudBtnNewChat" data-action="startNewChat" title="Yeni Antigravity AI Sohbeti Başlat" data-i18n-title="hud.newChatTitle">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </span>
+                <span data-i18n="hud.newChat">Yeni Sohbet</span>
+            </button>
+
+            <!-- Refresh Button -->
+            <button class="hud-btn" data-action="refresh" title="Dashboard Verilerini Yenile" data-i18n-title="hud.refreshTitle">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                </span>
+                <span data-i18n="hud.refresh">Yenile</span>
+            </button>
+
+            <!-- Settings Button -->
+            <button class="hud-btn" id="openSettingsBtn" data-action="openSettings" title="Kontrol Paneli Ayarları" data-i18n-title="hud.settingsTitle">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </span>
+                <span data-i18n="hud.settings">Ayarlar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Telemetry Cards -->
+    <div class="telemetry-grid" id="telemetryGrid">
+        <div class="tele-card" id="teleCardGpu">
+            <div class="tele-icon" id="teleIconGpu">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                    <circle cx="7" cy="10" r="2"></circle>
+                    <circle cx="12" cy="10" r="2"></circle>
+                    <circle cx="17" cy="10" r="2"></circle>
+                </svg>
+            </div>
+            <div class="tele-info">
+                <div class="label" data-i18n="telemetry.gpu">GPU MİMARİSİ</div>
+                <div class="val" id="teleGpu">NVIDIA RTX 5070 Ti (Active)</div>
+            </div>
+        </div>
+        <div class="tele-card tele-quota-card" id="teleCardQuota">
+            <div class="tele-gauge-box" title="Gemini Canlı Model Kota & Token Göstergesi">
+                <svg class="ag-gauge-svg" viewBox="0 0 44 44" width="46" height="46">
+                    <defs>
+                        <linearGradient id="teleGeminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#38bdf8" />
+                            <stop offset="100%" stop-color="#40C4FF" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="gauge-track" cx="22" cy="22" r="16" stroke="var(--gauge-track, rgba(255, 255, 255, 0.08))" stroke-width="3.5" fill="none" />
+                    <circle id="geminiGaugeArc" cx="22" cy="22" r="16" stroke="url(#teleGeminiGrad)" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="14.07" transform="rotate(-90 22 22)" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);" />
+                    <text x="22" y="26" text-anchor="middle" class="gauge-pct"><tspan id="geminiPctVal">—</tspan><tspan class="gauge-pct-unit">%</tspan></text>
+                </svg>
+            </div>
+            <div class="tele-info" style="flex: 1; min-width: 0;">
+                <div class="label" style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+                    <span style="display: flex; align-items: center; gap: 5px;">
+                        <span class="status-dot" style="width: 6px; height: 6px;"></span>
+                        <span data-i18n="telemetry.quota">GEMINI TOKEN &amp; KOTA</span>
+                    </span>
+                    <span class="ag-tier-pill" id="agUserTier" style="font-size: 9px; padding: 1px 6px;">Google AI Pro</span>
+                </div>
+                <div class="val" style="display: flex; align-items: baseline; justify-content: space-between; gap: 6px;">
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--neon-cyan);">
+                        <span data-i18n="telemetry.remaining">Kalan:</span> <strong id="teleGeminiPctText">—%</strong>
+                    </span>
+                    <span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 5px;" id="geminiLiveStatusWrap" title="Canlı Anlık Model Kotası">
+                        <span class="live-dot-pulse"></span>
+                        <span id="geminiTimerVal" data-i18n="telemetry.live">Canlı</span>
+                    </span>
+                </div>
+                <div class="tele-quota-sub" style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--text-dark); font-family: 'JetBrains Mono', monospace;">
+                    <span><span data-i18n="telemetry.weekly">Haftalık:</span> <strong style="color: var(--text-dim);" id="geminiWeeklyVal">—%</strong> (<span id="geminiWeeklyReset">—</span>)</span>
+                    <span id="teleTokenPill" style="color: var(--neon-emerald); font-weight: 600;" title="Kullanılabilir / Aylık Prompt Kredisi">Token: <strong id="teleTokenPromptVal">—</strong>/<span id="teleTokenPromptMonthly">—</span></span>
+                    <span id="claudeMiniPill" style="color: #fb923c; font-weight: 600;">Claude: <strong id="claudePctVal">0%</strong></span>
+                </div>
+            </div>
+            <div class="tele-quota-actions" style="display: flex; flex-direction: column; gap: 4px; margin-left: auto;">
+                <button class="ag-btn-icon" title="Hesap ve Token Detayları" data-action="toggleAgDetailsModal" style="width: 24px; height: 24px; padding: 0;">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </button>
+                <button class="ag-btn-icon" id="agRefreshBtn" title="Kotaları ve Tokenları Canlı Yenile" data-action="refreshAgQuota" style="width: 24px; height: 24px; padding: 0;">
+                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div class="tele-card" id="teleCardGithub">
+            <div class="tele-icon" id="teleIconGithub">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+                </svg>
+            </div>
+            <div class="tele-info">
+                <div class="label" data-i18n="telemetry.github">GITHUB SENKRONİZASYONU</div>
+                <div class="val">HasanKaan28 (Aktif)</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Navigation Command Tabs -->
+    <nav class="nav-cockpit">
+        <button class="nav-tab-btn active" id="tabBtnProjects" data-action="switchTab" data-tab="projects">
+            <span class="ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </span>
+            <span data-i18n="nav.projects">Projeler &amp; Çalışma Alanları</span>
+            <span class="tab-badge" id="badgeProjCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnGithub" data-action="switchTab" data-tab="github">
+            <span class="ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+                </svg>
+            </span>
+            <span data-i18n="nav.github">GitHub Repolarım</span>
+            <span class="tab-badge" id="badgeGhCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnSessions" data-action="switchTab" data-tab="sessions">
+            <span class="ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+            </span>
+            <span data-i18n="nav.sessions">Son Yapılanlar &amp; Oturumlar</span>
+            <span class="tab-badge" id="badgeSessCount">0</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnRadar" data-action="switchTab" data-tab="radar">
+            <span class="ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+            </span>
+            <span data-i18n="nav.radar">Graphify Bilgi Radarı</span>
+            <span class="tab-badge" id="badgeGraphCount">Observatory</span>
+        </button>
+    </nav>
+
+    <!-- Search & Filters (Visible in Projects view) -->
+    <div class="filter-cockpit" id="filterBar">
+        <div class="search-box">
+            <span class="search-icon ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <input type="text" id="projectSearchInput" placeholder="Proje, repo veya commit ara... (Ctrl + K)" data-i18n-placeholder="filter.searchPlaceholder">
+            <kbd class="search-kbd">Ctrl K</kbd>
+        </div>
+        <div class="filter-chips">
+            <button class="chip-btn active" id="chipAll" data-action="setSubFilter" data-filter="all">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                </span>
+                <span data-i18n="filter.all">Tümü</span>
+            </button>
+            <button class="chip-btn fav-chip" id="chipFav" data-action="setSubFilter" data-filter="favorites">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </span>
+                <span><span data-i18n="filter.favorites">Favoriler</span> (<span id="favChipCount">0</span>)</span>
+            </button>
+            <button class="chip-btn" id="chipGit" data-action="setSubFilter" data-filter="git">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="6" y1="3" x2="6" y2="15"></line>
+                        <circle cx="18" cy="6" r="3"></circle>
+                        <circle cx="6" cy="18" r="3"></circle>
+                        <path d="M18 9a9 9 0 0 1-9 9"></path>
+                    </svg>
+                </span>
+                <span data-i18n="filter.git">Git Repoları</span>
+            </button>
+            <button class="chip-btn" id="chipGraph" data-action="setSubFilter" data-filter="graphify">
+                <span class="ag-icon">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <circle cx="19" cy="5" r="2"></circle>
+                        <circle cx="5" cy="19" r="2"></circle>
+                        <path d="m10.4 10.4-4 7.2"></path>
+                        <path d="m13.6 13.6 4-7.2"></path>
+                    </svg>
+                </span>
+                <span data-i18n="filter.graphify">Graphify Hazır</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN VIEW 1: Projects & Workspaces -->
+    <main class="section-view active" id="viewProjects">
+        <div class="cards-grid" id="projectsGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 2: Dedicated GitHub Repositories -->
+    <main class="section-view" id="viewGithub">
+        <div class="github-hero">
+            <div class="gh-hero-text">
+                <h2>
+                    <span class="ag-icon" style="color: #ffffff;">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+                        </svg>
+                    </span>
+                    <span>HasanKaan28 GitHub Ekosistemi</span>
+                </h2>
+                <p>Bulut repolarınız, yerel klonlama durumları ve tek tıkla Graphify mimari analiz entegrasyonu.</p>
+            </div>
+            <div class="gh-add-box">
+                <input type="text" id="customGhInput" placeholder="Yeni repo adı veya git URL ekle...">
+                <button data-action="submitCustomRepo">
+                    <span class="ag-icon">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </span>
+                    <span>Ekle</span>
+                </button>
+            </div>
+        </div>
+        <div class="cards-grid" id="githubGrid"></div>
+    </main>
+
+    <!-- MAIN VIEW 3: Sessions Timeline -->
+    <main class="section-view" id="viewSessions">
+        <div class="sessions-list" id="sessionsList"></div>
+    </main>
+
+    <!-- MAIN VIEW 4: Graphify Radar -->
+    <main class="section-view" id="viewRadar">
+        <div class="radar-hero">
+            <div>
+                <h2>
+                    <span class="ag-icon" style="color: var(--neon-cyan);">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <circle cx="19" cy="5" r="2"></circle>
+                            <circle cx="5" cy="19" r="2"></circle>
+                            <path d="m10.4 10.4-4 7.2"></path>
+                            <path d="m13.6 13.6 4-7.2"></path>
+                        </svg>
+                    </span>
+                    <span>Deep Space Graphify Bilgi Radarı</span>
+                </h2>
+                <p>
+                    Graphify mimarisi ile tüm projelerinizin fonksiyon çağrı ağları, topluluk tespiti ve god node analizleri Edge Observatory üzerinde dinamik olarak incelenebilir.
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="hud-btn primary" data-action="openGraphifyRoot">
+                    <span class="ag-icon">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </span>
+                    <span>Edge Observatory Aç</span>
+                </button>
+            </div>
+        </div>
+        <div class="radar-stats-grid">
+            <div class="radar-stat-box" style="grid-column: 1 / -1;">
+                <h3>
+                    <span class="ag-icon">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                    </span>
+                    <span>Aktif Graphify Bilgi Ağları &amp; Projeler</span>
+                </h3>
+                <ul class="radar-list" id="radarGraphList"></ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- DEDICATED DISCRETE ARCHIVE DRAWER -->
+    <div class="archive-drawer-wrap" id="archiveDrawerWrap">
+        <div class="archive-drawer-bar" data-action="toggleArchiveDrawer">
+            <div class="archive-drawer-left">
+                <span class="archive-drawer-icon ag-icon">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                        <rect x="1" y="3" width="22" height="5"></rect>
+                        <line x1="10" y1="12" x2="14" y2="12"></line>
+                    </svg>
+                </span>
+                <span class="archive-drawer-label">Arşivlenmiş Depo ve Projeler</span>
+                <span class="archive-count-pill" id="archCountBadge">0</span>
+            </div>
+            <div class="archive-drawer-right">
+                <span class="archive-toggle-text" id="archiveToggleHint">Genişlet / Gizle</span>
+                <span class="archive-arrow" id="archiveArrow">▾</span>
+            </div>
+        </div>
+        <div class="archive-drawer-content" id="archiveDrawerContent" style="display: none;">
+            <div class="archive-items-grid" id="archiveGrid"></div>
+        </div>
+    </div>
+
+    <!-- Antigravity Panel Details Holographic Modal -->
+    <div class="ag-modal-backdrop" id="agDetailsModal" data-action="closeAgDetailsModal">
+        <div class="ag-modal-content" data-stop-propagation="true">
+            <div class="ag-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="ag-icon" style="color: var(--neon-cyan);">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <h2 style="font-size: 17px; color: #ffffff; font-weight: 700;">Antigravity Panel Telemetri</h2>
+                        <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">HESAP &amp; MODEL KOTA DETAYLARI</div>
+                    </div>
+                </div>
+                <button class="ag-btn-icon" data-action="toggleAgDetailsModal">✕</button>
+            </div>
+            <div class="ag-modal-body">
+                <div class="ag-metric-row">
+                    <span class="lbl">Kullanıcı Hesabı:</span>
+                    <span class="val" id="modalUserEmail">user@developer.local</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Abonelik / Tier:</span>
+                    <span class="val" style="color: var(--neon-emerald); font-weight: 700;" id="modalUserTier">Google AI Pro</span>
+                </div>
+                <div class="ag-metric-row">
+                    <span class="lbl">Eklenti Durumu:</span>
+                    <span class="val" style="color: var(--neon-cyan); font-family: 'JetBrains Mono', monospace;">Antigravity Panel v2.8.0 (Bağlı)</span>
+                </div>
+
+                <div style="margin: 18px 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--vscode-blue); font-family: 'JetBrains Mono', monospace; font-weight: 700;">Aylık Kredi Durumu (Plan)</div>
+                
+                <div class="ag-credit-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Prompt Kredisi</span>
+                        <span id="modalPromptCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text-bright);">500 / 50.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill gemini" id="modalPromptBar" style="width: 1%;"></div>
+                    </div>
+                </div>
+
+                <div class="ag-credit-box" style="margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                        <span style="color: var(--text-dim);">Flow Kredisi</span>
+                        <span id="modalFlowCredits" style="font-family: 'JetBrains Mono', monospace; font-weight: 700; color: var(--text-bright);">100 / 150.0K</span>
+                    </div>
+                    <div class="ag-weekly-track">
+                        <div class="ag-weekly-fill claude" id="modalFlowBar" style="width: 0.1%;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="hud-btn" data-action="openAgSidebar">Sidebar'da Aç</button>
+                    <button class="hud-btn primary" data-action="openAgSettings">Panel Ayarları</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dedicated Settings Modal -->
+    <div class="ag-modal-backdrop" id="settingsModal" data-action="closeSettings">
+        <div class="ag-modal-content settings-modal-content" data-stop-propagation="true">
+            <div class="ag-modal-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="ag-icon" style="color: var(--vscode-blue);">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <h2 id="settingsModalTitle" style="font-size: 18px; color: var(--text-bright); font-weight: 700; margin: 0;" data-i18n="settings.modalTitle">Kontrol Paneli Ayarları</h2>
+                        <div id="settingsModalSubtitle" style="font-size: 12px; color: var(--text-dim); margin-top: 2px;" data-i18n="settings.modalSubtitle">Görünüm, dil, başlangıç tercihleri ve yerel motor yapılandırması</div>
+                    </div>
+                </div>
+                <button class="ag-btn-icon" id="closeSettingsBtn" data-action="closeSettings" title="Kapat" data-i18n-title="settings.close">✕</button>
+            </div>
+            
+            <div class="settings-modal-body">
+                <!-- Language Picker Section -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">🌐 <span data-i18n="settings.langTitle">Dil Seçimi / Language</span></span>
+                        <span class="settings-pill" id="currentLangBadge">🇹🇷 Türkçe</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px; margin-bottom: 10px;" data-i18n="settings.langDesc">
+                        Arayüz dilini seçin. Yeni kurulumlarda Antigravity IDE diline otomatik uyum sağlar.
+                    </div>
+                    <div class="language-picker-grid">
+                        <button class="lang-card-btn active" data-action="setLanguage" data-lang="auto" id="langCardAuto">
+                            <span class="lang-flag">🌐</span>
+                            <div class="lang-info">
+                                <span class="lang-name" data-i18n="lang.auto">Otomatik (IDE Dili)</span>
+                                <span class="lang-sub" id="autoLangDetectedLabel">Antigravity Default</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="en" id="langCardEn">
+                            <span class="lang-flag">🇺🇸</span>
+                            <div class="lang-info">
+                                <span class="lang-name">English</span>
+                                <span class="lang-sub">United States</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="tr" id="langCardTr">
+                            <span class="lang-flag">🇹🇷</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Türkçe</span>
+                                <span class="lang-sub">Türkiye</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="de" id="langCardDe">
+                            <span class="lang-flag">🇩🇪</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Deutsch</span>
+                                <span class="lang-sub">Deutschland</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="es" id="langCardEs">
+                            <span class="lang-flag">🇪🇸</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Español</span>
+                                <span class="lang-sub">España</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="fr" id="langCardFr">
+                            <span class="lang-flag">🇫🇷</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Français</span>
+                                <span class="lang-sub">France</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="zh" id="langCardZh">
+                            <span class="lang-flag">🇨🇳</span>
+                            <div class="lang-info">
+                                <span class="lang-name">简体中文</span>
+                                <span class="lang-sub">中国 (Chinese)</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="ja" id="langCardJa">
+                            <span class="lang-flag">🇯🇵</span>
+                            <div class="lang-info">
+                                <span class="lang-name">日本語</span>
+                                <span class="lang-sub">日本 (Japanese)</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Theme Picker Section -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">🎨 <span data-i18n="settings.themeTitle">Tema Seçimi</span></span>
+                        <span class="settings-pill" id="currentThemeBadge">Antigravity IDE Dark</span>
+                    </div>
+                    <div class="theme-picker-grid">
+                        <button class="theme-card-btn active" id="themeCardAntigravity" data-action="setThemeMode" data-theme="antigravity">
+                            <div class="theme-preview antigravity-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">🌌 Antigravity IDE</span>
+                                <span class="theme-desc">Yerleşik IDE Paneli</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardDark" data-action="setThemeMode" data-theme="dark">
+                            <div class="theme-preview dark-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">⚡ Deep Space</span>
+                                <span class="theme-desc">Cyberpunk Neon Void</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardMidnight" data-action="setThemeMode" data-theme="midnight">
+                            <div class="theme-preview midnight-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">🌑 Midnight</span>
+                                <span class="theme-desc">OLED Obsidian Black</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardLight" data-action="setThemeMode" data-theme="light">
+                            <div class="theme-preview light-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">☀️ Açık Tema</span>
+                                <span class="theme-desc">VS Code Temiz Light</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardSynchronized" data-action="setThemeMode" data-theme="synchronized">
+                            <div class="theme-preview synchronized-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">🌿 Synchronized</span>
+                                <span class="theme-desc">Digital Creative Studio</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardCockpitClassic" data-action="setThemeMode" data-theme="cockpit-classic">
+                            <div class="theme-preview cockpit-classic-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">🚀 Cockpit Classic</span>
+                                <span class="theme-desc">Klasik Grafit &amp; Elektrik Mavisi</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardTokyoNight" data-action="setThemeMode" data-theme="tokyo-night">
+                            <div class="theme-preview tokyo-night-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">🌃 Tokyo Night</span>
+                                <span class="theme-desc">Neon Cyber Indigo &amp; Mor</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardCatppuccin" data-action="setThemeMode" data-theme="catppuccin">
+                            <div class="theme-preview catppuccin-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">☕ Catppuccin</span>
+                                <span class="theme-desc">Mocha &amp; Latte Yatıştırıcı Pastel</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardSolarized" data-action="setThemeMode" data-theme="solarized">
+                            <div class="theme-preview solarized-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">☀️ Solarized</span>
+                                <span class="theme-desc">Hassas Kontrast &amp; Sakin Çalışma</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardHc" data-action="setThemeMode" data-theme="hc">
+                            <div class="theme-preview hc-theme-preview">
+                                <div class="prev-nav"></div>
+                                <div class="prev-cards">
+                                    <div class="prev-card"></div>
+                                    <div class="prev-card accent"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">👁️ Yüksek Kontrast</span>
+                                <span class="theme-desc">WCAG AAA &amp; Sıfır Göz Yorgunluğu</span>
+                            </div>
+                        </button>
+
+                        <button class="theme-card-btn" id="themeCardSystem" data-action="setThemeMode" data-theme="system">
+                            <div class="theme-preview system-theme-preview">
+                                <div class="prev-split">
+                                    <div class="split-dark"></div>
+                                    <div class="split-light"></div>
+                                </div>
+                            </div>
+                            <div class="theme-card-text">
+                                <span class="theme-title">💻 Sistem Teması</span>
+                                <span class="theme-desc">İşletim Sistemine Uyumlu</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hub & Bileşen Görünürlüğü (Dashboard Özelleştirme) -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">🎛️ Hub &amp; Bileşen Görünürlüğü (Dashboard Özelleştirme)</span>
+                        <span class="settings-pill" id="visActiveCountBadge">Tümü Açık</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px; margin-bottom: 8px;">
+                        Ana ekranda görünmesini istediğiniz kartları, sekmeleri ve panelleri seçin. İstemediğiniz her şeyi gizleyebilirsiniz.
+                    </div>
+
+                    <!-- Telemetri Kartları Grubu -->
+                    <div class="settings-subgroup-title">Telemetri &amp; Üst Kartlar</div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">GPU Mimarisi Kartı</div>
+                            <div class="settings-row-desc">Ekran kartı ve donanım kullanım kartını ana ekranda göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="GPU kartını göster/gizle">
+                            <input type="checkbox" id="visToggleGpu" data-action="toggleWidgetVisibility" data-widget="gpu" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Gemini Token &amp; Kota Kartı</div>
+                            <div class="settings-row-desc">Model kotaları ve token bakiyesini gösteren telemetri kartını göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Kota kartını göster/gizle">
+                            <input type="checkbox" id="visToggleQuota" data-action="toggleWidgetVisibility" data-widget="quota" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">GitHub Senkronizasyon Kartı</div>
+                            <div class="settings-row-desc">GitHub hesap durumu ve senkronizasyon kartını göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="GitHub kartını göster/gizle">
+                            <input type="checkbox" id="visToggleGithub" data-action="toggleWidgetVisibility" data-widget="github" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Sekmeler Grubu -->
+                    <div class="settings-subgroup-title" style="margin-top: 10px;">Sekmeler &amp; Sayfa Bölümleri</div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Projeler &amp; Çalışma Alanları Sekmesi</div>
+                            <div class="settings-row-desc">Yerel projelerin listelendiği ana sekmeyi göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Projeler sekmesini göster/gizle">
+                            <input type="checkbox" id="visToggleTabProjects" data-action="toggleWidgetVisibility" data-widget="tabProjects" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">GitHub Repolarım Sekmesi</div>
+                            <div class="settings-row-desc">GitHub depolarını listeleyen özel sekmeyi göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="GitHub sekmesini göster/gizle">
+                            <input type="checkbox" id="visToggleTabGithub" data-action="toggleWidgetVisibility" data-widget="tabGithub" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Son Yapılanlar &amp; Oturumlar Sekmesi</div>
+                            <div class="settings-row-desc">Geçmiş oturumlar ve AI sohbet döküm sekmesini göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Oturumlar sekmesini göster/gizle">
+                            <input type="checkbox" id="visToggleTabSessions" data-action="toggleWidgetVisibility" data-widget="tabSessions" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Graphify Bilgi Radarı Sekmesi</div>
+                            <div class="settings-row-desc">Derin mimari çağrı haritası sekmesini göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Radar sekmesini göster/gizle">
+                            <input type="checkbox" id="visToggleTabRadar" data-action="toggleWidgetVisibility" data-widget="tabRadar" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Hızlı Butonlar & Ekstra Bölümler -->
+                    <div class="settings-subgroup-title" style="margin-top: 10px;">Hızlı Butonlar &amp; Çekmeceler</div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Yeni Sohbet Butonu (Üst Çubuk)</div>
+                            <div class="settings-row-desc">Üst HUD bardaki 'Yeni Sohbet' başlatma butonunu göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Yeni sohbet butonunu göster/gizle">
+                            <input type="checkbox" id="visToggleNewChat" data-action="toggleWidgetVisibility" data-widget="newChat" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Arşivlenmiş Projeler Çekmecesi</div>
+                            <div class="settings-row-desc">Sayfanın en altındaki arşiv çekmecesini göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Arşiv çekmecesini göster/gizle">
+                            <input type="checkbox" id="visToggleArchiveDrawer" data-action="toggleWidgetVisibility" data-widget="archiveDrawer" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Arka Plan Parçacık Animasyonu</div>
+                            <div class="settings-row-desc">Sade ve dikkat dağıtmayan bir Antigravity IDE deneyimi için varsayılan olarak kapalıdır.</div>
+                        </div>
+                        <label class="switch-toggle" title="Arka plan parçacıklarını aç/kapat">
+                            <input type="checkbox" id="visToggleSpaceCanvas" data-action="toggleWidgetVisibility" data-widget="spaceCanvas">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Startup & Audio Preferences -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">⚙️ <span data-i18n="settings.startupTitle">Başlangıç &amp; Bildirim Tercihleri</span></span>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title" data-i18n="settings.startupAuto">IDE Açıldığında Otomatik Göster</div>
+                            <div class="settings-row-desc" data-i18n="settings.startupAutoDesc">Antigravity IDE veya VS Code açıldığında kontrol paneli otomatik olarak açılsın.</div>
+                        </div>
+                        <label class="switch-toggle" title="Açılışta otomatik başlatmayı aç/kapat">
+                            <input type="checkbox" id="settingsStartupInput" data-action="toggleStartup">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title" data-i18n="settings.sfx">Arayüz Ses Efektleri (SFX)</div>
+                            <div class="settings-row-desc" data-i18n="settings.sfxDesc">Tema değiştirildiğinde veya butonlara tıklandığında hafif sesli geri bildirim ver.</div>
+                        </div>
+                        <label class="switch-toggle" title="Ses efektlerini aç/kapat">
+                            <input type="checkbox" id="settingsAudioInput" data-action="toggleAudio">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Ekstra: Yerel Kod Motoru (Sadece sistemde herhangi bir yerel AI tespit edilirse görüntülenir) -->
+                <div class="settings-section" id="settingsExtraLocalAiSection" style="display: none;">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">⚡ <span data-i18n="settings.localAiTitle">Ekstra: Yerel Kod &amp; Model Motoru</span></span>
+                        <span class="settings-pill" id="settingsLocalAiPill" data-i18n="settings.localAiPill">Yerel AI</span>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title" id="settingsLocalAiTitle">Yerel Model Motoru</div>
+                            <div class="settings-row-desc" id="settingsLocalAiDesc" data-i18n="settings.localAiDesc">Bilgisayarınızda algılanan yerel motor üzerinden bağımsız kodlama ve algoritma çalıştırma.</div>
+                            <div style="margin-top: 6px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); display: flex; align-items: center; gap: 8px;">
+                                <span class="status-dot" id="settingsLocalAiDot" style="width: 7px; height: 7px; background: var(--neon-emerald);"></span>
+                                <span id="settingsLocalAiEndpoint">http://127.0.0.1:11434</span>
+                                <span id="settingsLocalAiModelTag" style="padding: 1px 6px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: var(--neon-cyan); font-size: 10px;"></span>
+                            </div>
+                        </div>
+                        <button class="hud-btn" id="settingsLocalAiBtn" data-action="toggleLocalAi">
+                            <span id="settingsLocalAiBtnText" data-i18n="settings.startEngine">Motoru Başlat</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Architectural Knowledge & Tools -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">🌐 <span data-i18n="settings.radarTitle">Mimari Gözlemci &amp; Araçlar</span></span>
+                    </div>
+                    
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Graphify Bilgi Grafı (Deep Space Observatory)</div>
+                            <div class="settings-row-desc" data-i18n="settings.radarDesc">Projenin interaktif çağrı ve modül haritasını Microsoft Edge tarayıcısında açar.</div>
+                        </div>
+                        <button class="hud-btn" data-action="openGraphifyRoot">
+                            <span class="ag-icon">🌐</span>
+                            <span data-i18n="settings.openMap">Haritayı Aç</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-modal-footer">
+                <button class="hud-btn" data-action="refresh">
+                    <span class="ag-icon">🔄</span>
+                    <span data-i18n="settings.refreshAll">Tüm Verileri Yenile</span>
+                </button>
+                <button class="hud-btn primary" data-action="closeSettings" data-i18n="settings.done">Tamam</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Element -->
+    <div id="cockpitToast">İşlem Tamamlandı</div>
+    <script nonce="{{NONCE}}">
+        window.__INITIAL_DATA__ = {{INITIAL_DATA}};
+    </script>
+    <script nonce="{{NONCE}}" src="{{JS_URI}}"></script>
+</body>
+</html>
