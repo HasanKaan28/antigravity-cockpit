@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 GEMINI_DIR="$HOME/.gemini"
-EXT_DIR="$HOME/.antigravity-ide/extensions/antigravity-local.antigravity-activity-dashboard-2.0.0"
+EXT_DIR="$HOME/.antigravity-ide/extensions/antigravity-local.antigravity-activity-dashboard-2.2.0"
 
 echo -e "\033[36m==========================================================\033[0m"
 echo -e "\033[33m       ANTIGRAVITY COCKPIT - ENVIRONMENT ADOPTION         \033[0m"

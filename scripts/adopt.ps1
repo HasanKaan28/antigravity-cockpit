@@ -9,7 +9,7 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoDir = Split-Path -Parent $scriptDir
 $geminiDir = Join-Path $env:USERPROFILE ".gemini"
-$extDir = Join-Path $env:USERPROFILE ".antigravity-ideextensionsantigravity-local.antigravity-activity-dashboard-2.0.0"
+$extDir = Join-Path $env:USERPROFILE ".antigravity-ide\extensions\antigravity-local.antigravity-activity-dashboard-2.2.0"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "       ANTIGRAVITY COCKPIT - ENVIRONMENT ADOPTION         " -ForegroundColor Yellow

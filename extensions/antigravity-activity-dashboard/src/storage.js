@@ -5,11 +5,10 @@
  */
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const logger = require('./logger');
 const { normalizeKey, parseRepoInput } = require('./util/security');
 
-const COCKPIT_DIR = path.join(os.homedir(), '.antigravity_cockpit');
+const COCKPIT_DIR = path.join(process.env.USERPROFILE || 'C:\\Users\\Kaan', '.antigravity_cockpit');
 const FAVORITES_FILE = path.join(COCKPIT_DIR, 'favorites.json');
 const ARCHIVED_FILE = path.join(COCKPIT_DIR, 'archived.json');
 const CUSTOM_REPOS_FILE = path.join(COCKPIT_DIR, 'custom_repos.json');

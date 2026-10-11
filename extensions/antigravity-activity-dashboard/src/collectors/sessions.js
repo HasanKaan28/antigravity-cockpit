@@ -6,7 +6,6 @@
  */
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const readline = require('readline');
 const logger = require('../logger');
 
@@ -74,7 +73,7 @@ async function parseTranscript(transcriptPath) {
 }
 
 async function getBrainSessions(limit = 25) {
-    const brainDir = path.join(os.homedir(), '.gemini', 'antigravity-ide', 'brain');
+    const brainDir = path.join(process.env.USERPROFILE || 'C:\\Users\\Kaan', '.gemini', 'antigravity-ide', 'brain');
     try {
         if (!fs.existsSync(brainDir)) return [];
         const dirents = await fs.promises.readdir(brainDir, { withFileTypes: true });

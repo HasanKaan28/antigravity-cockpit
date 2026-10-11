@@ -13,3 +13,4 @@ preview.html
 sync_and_build.js
 eslint.config.js
 **/*.map
+.playwright-cli/**

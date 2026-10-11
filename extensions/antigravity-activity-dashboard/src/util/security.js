@@ -18,7 +18,7 @@ function validateExternalUrl(rawUrl) {
     return null;
 }
 
-function parseRepoInput(input, defaultOwner = '') {
+function parseRepoInput(input, defaultOwner = 'HasanKaan28') {
     if (!input || typeof input !== 'string') return null;
     const clean = input.trim()
         .replace(/^https?:\/\/github\.com\//i, '')
@@ -37,14 +37,6 @@ function parseRepoInput(input, defaultOwner = '') {
         };
     }
 
-    if (!defaultOwner) {
-        return {
-            owner: '',
-            repo: clean,
-            fullName: clean,
-            url: `https://github.com/${clean}`
-        };
-    }
     return {
         owner: defaultOwner,
         repo: clean,

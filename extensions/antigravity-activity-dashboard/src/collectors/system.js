@@ -5,7 +5,6 @@
  * Never displays hardcoded fake strings.
  */
 const path = require('path');
-const os = require('os');
 const fs = require('fs');
 const { execFileAsync } = require('../util/proc');
 
@@ -24,16 +23,18 @@ async function probeGpu() {
     return 'GPU Algılanmadı';
 }
 
-const { probeOllamaStatus } = require('../util/ollama');
+const { probeOllamaStatus, findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');
 
 async function probeOllama(timeoutMs = 1200) {
     return await probeOllamaStatus(timeoutMs);
 }
 
 async function probeVault() {
-    const userDir = os.homedir();
+    const userDir = process.env.USERPROFILE || 'C:\\Users\\Kaan';
     const vaultCandidates = [
-        path.join(userDir, 'github-repos', 'antigravity-cockpit'), path.join(userDir, 'antigravity-cockpit'), path.join(userDir, '.gemini')
+        path.join(userDir, 'github-repos', 'antigravity-brain-sync'),
+        path.join(userDir, 'antigravity-brain-sync'),
+        path.join(userDir, '.gemini', 'antigravity-brain-sync')
     ];
 
     for (const vPath of vaultCandidates) {
@@ -41,14 +42,14 @@ async function probeVault() {
             try {
                 const { stdout } = await execFileAsync('git', ['status', '--short'], { cwd: vPath }, 1500);
                 const hasPending = Boolean(stdout && stdout.trim());
-                return hasPending ? 'Antigravity Cockpit (Değişiklikler var)' : 'Antigravity Cockpit (Senkronize)';
+                return hasPending ? 'HasanKaan28/antigravity-brain-sync (Değişiklikler var)' : 'HasanKaan28/antigravity-brain-sync (Senkronize)';
             } catch {
-                return 'Antigravity Cockpit (Yerel Depo)';
+                return 'HasanKaan28/antigravity-brain-sync (Yerel Depo)';
             }
         }
     }
 
-    return 'Antigravity Cockpit (Aktif)';
+    return 'HasanKaan28/antigravity-brain-sync (Bulunamadı)';
 }
 
 async function probePower() {
@@ -65,7 +66,7 @@ async function probePower() {
             return {
                 onAc,
                 percent: isNaN(pct) ? 100 : pct,
-                statusText: onAc ? `⚡ Prize Bağlı (%${pct})` : `🔋 Pilde (%${pct} - Eko Mod)`
+                statusText: onAc ? `Prize Bağlı (%${pct})` : `Pilde (%${pct} - Eko Mod)`
             };
         }
     } catch {
@@ -74,14 +75,14 @@ async function probePower() {
     return {
         onAc: true,
         percent: 100,
-        statusText: '⚡ Prize Bağlı'
+        statusText: 'Prize Bağlı'
     };
 }
 
 async function getSystemTelemetry(cbmData, graphifyCount = 0) {
-    const [gpu, ollama, vault, power] = await Promise.all([
+    const [gpu, localAi, vault, power] = await Promise.all([
         probeGpu(),
-        probeOllama(),
+        probeAllLocalAiEngines(),
         probeVault(),
         probePower()
     ]);
@@ -94,13 +95,31 @@ async function getSystemTelemetry(cbmData, graphifyCount = 0) {
         ? `Etkin (${graphifyCount} Harita Mevcut)`
         : 'Hazır (Observatory)';
 
-    let localModel = 'Antigravity Cloud Native (Gemini & Claude)'; (🔋 Pilde - Eko Mod)`;
+    const primary = localAi.primaryEngine;
+    let localModel = 'Yerel Model Bulunamadı';
+    if (primary) {
+        if (primary.online) {
+            localModel = primary.activeModel
+                ? `${primary.activeModel} (${primary.name} Aktif)`
+                : `${primary.name} (Aktif)`;
+        } else if (primary.installed) {
+            localModel = `${primary.name} (Kurulu - Çevrimdışı)`;
+        }
+        if (!power.onAc) {
+            localModel = `${primary.activeModel || primary.name} (Pilde - Eko Mod)`;
+        }
     }
+
+    const isOllamaOnline = Boolean(primary && primary.id === 'ollama' && primary.online);
+    const isOllamaInstalled = Boolean(findOllamaExecutable() || isOllamaOnline);
 
     return {
         gpu,
         localModel,
-        ollamaOnline: Boolean(ollama.online),
+        localAi,
+        hasLocalEngine: localAi.hasLocalEngine,
+        ollamaOnline: isOllamaOnline,
+        ollamaInstalled: isOllamaInstalled,
         power,
         remoteVault: vault,
         graphifyStatus,
