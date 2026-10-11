@@ -89,7 +89,7 @@ const finalHtml = `<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="{{CSP}}">
-    <title>Antigravity Deep Space Cockpit & Activity Dashboard v2.0</title>
+    <title>Antigravity Cockpit</title>
     <link rel="stylesheet" href="{{CSS_URI}}">
 </head>
 <body id="dashboardRoot">
