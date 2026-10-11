@@ -60,7 +60,7 @@ function activate(context) {
     // 3. Status Bar Item
     const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
     statusBar.text = '$(dashboard) Cockpit';
-    statusBar.tooltip = 'Antigravity Cockpit & Dashboard v2.1';
+    statusBar.tooltip = 'Antigravity Cockpit';
     statusBar.command = 'antigravity.openActivityDashboard';
     statusBar.show();
     context.subscriptions.push(statusBar);

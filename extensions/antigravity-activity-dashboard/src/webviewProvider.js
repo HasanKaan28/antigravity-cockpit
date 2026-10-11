@@ -522,7 +522,7 @@ async function openDashboardPanel(context, vscodeInstance) {
 
     currentPanel = vscodeInstance.window.createWebviewPanel(
         'antigravityActivityDashboard',
-        'Antigravity Cockpit & Dashboard v2.1',
+        'Antigravity Cockpit',
         vscodeInstance.ViewColumn.One,
         {
             enableScripts: true,
