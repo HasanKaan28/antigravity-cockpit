@@ -13,6 +13,9 @@ const { execFileAsync, launchInBrowser } = require('./util/proc');
 const {
     toggleFavorite,
     toggleArchive,
+    toggleItemFavorite,
+    toggleItemArchived,
+    applyUserFlags,
     addCustomRepo,
     getFavorites,
     getArchived
@@ -31,6 +34,14 @@ let currentPanel = null;
 
 function getNonce() {
     return crypto.randomBytes(16).toString('hex');
+}
+
+// The webview identifies projects by path and GitHub repos by URL (older builds sent the repo name).
+function findDashboardItem(data, id) {
+    if (!data || !id) return null;
+    return (data.projects || []).find(p => p.path === id || p.rawPath === id) ||
+        (data.githubRepos || []).find(r => r.url === id || r.name === id) ||
+        null;
 }
 
 async function collectAllDashboardData(vscodeInstance) {
@@ -135,55 +146,26 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             });
             break;
 
-        case 'toggleFavorite': {
-            toggleFavorite(message.id);
-            const favSet = getFavorites();
-            if (panel._lastData) {
-                if (Array.isArray(panel._lastData.projects)) {
-                    panel._lastData.projects.forEach(p => {
-                        if (p.path === message.id || p.rawPath === message.id) {
-                            p.isFavorite = favSet.has(p.path) || favSet.has(p.rawPath);
-                        }
-                    });
-                }
-                if (Array.isArray(panel._lastData.githubRepos)) {
-                    panel._lastData.githubRepos.forEach(r => {
-                        if (r.name === message.id || r.url === message.id) {
-                            r.isFavorite = favSet.has(r.name) || favSet.has(r.url);
-                        }
-                    });
-                }
-            }
-            panel.webview.postMessage({
-                command: 'updateData',
-                data: { ...panel._lastData, favCount: favSet.size }
-            });
-            break;
-        }
-
+        case 'toggleFavorite':
         case 'toggleArchive': {
-            toggleArchive(message.id);
-            const archSet = getArchived();
-            if (panel._lastData) {
-                if (Array.isArray(panel._lastData.projects)) {
-                    panel._lastData.projects.forEach(p => {
-                        if (p.path === message.id || p.rawPath === message.id) {
-                            p.isArchived = archSet.has(p.path) || archSet.has(p.rawPath);
-                        }
-                    });
-                }
-                if (Array.isArray(panel._lastData.githubRepos)) {
-                    panel._lastData.githubRepos.forEach(r => {
-                        if (r.name === message.id || r.url === message.id) {
-                            r.isArchived = archSet.has(r.name) || archSet.has(r.url);
-                        }
-                    });
-                }
+            // Toggle with the same keys the collectors read, then recompute every item's flags,
+            // so the data sent back matches what a full refresh would show.
+            const isFav = message.command === 'toggleFavorite';
+            const item = findDashboardItem(panel._lastData, message.id);
+            if (item) {
+                if (isFav) toggleItemFavorite(item); else toggleItemArchived(item);
+            } else if (isFav) {
+                toggleFavorite(message.id);
+            } else {
+                toggleArchive(message.id);
             }
-            panel.webview.postMessage({
-                command: 'updateData',
-                data: { ...panel._lastData, archCount: archSet.size }
-            });
+            if (panel._lastData) {
+                applyUserFlags(panel._lastData);
+                panel.webview.postMessage({
+                    command: 'updateData',
+                    data: { ...panel._lastData, favCount: getFavorites().size, archCount: getArchived().size }
+                });
+            }
             break;
         }
 

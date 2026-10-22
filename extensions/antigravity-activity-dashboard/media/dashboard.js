@@ -2197,7 +2197,7 @@
         }
 
         grid.innerHTML = '<div class="rows">' + list.map((r, i) => {
-            const favId = r.url || r.name;
+            const repoId = r.url || r.name;
             const pushedMs = toMs(r.pushedAt);
             const pushed = pushedMs ? relTime(pushedMs) : r.timeAgo;
             const tags =
@@ -2210,7 +2210,7 @@
                 ? `<button class="btn btn-sm btn-soft" data-action="openFolder" data-path="${escapeHtml(r.localPath)}" title="${escapeHtml(t('projects.ideTitle'))}">${icon('folder-open')}${escapeHtml(t('projects.ide'))}</button>`
                 : `<button class="btn btn-sm" data-action="cloneRepo" data-name="${escapeHtml(r.name)}">${icon('download')}${escapeHtml(t('projects.clone'))}</button>`;
             return `<div class="row" style="--i:${i}">` +
-                favButton(favId, Boolean(r.isFavorite)) +
+                favButton(repoId, Boolean(r.isFavorite)) +
                 `<div class="row-id"><div class="row-name"><span title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></div><div class="row-path" title="${escapeHtml(r.fullName)}"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-info">' +
                     `<div class="tags">${tags}</div>` +
@@ -2219,7 +2219,7 @@
                 '<div class="row-actions">' + primary +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
                     (r.isCloned && r.hasGraphify && r.graphifyPath ? iconAction('openGraphify', 'graph', t('projects.graph'), `data-path="${escapeHtml(r.graphifyPath)}"`) : '<span class="icon-slot"></span>') +
-                    archiveButton(r.name) +
+                    archiveButton(repoId) +
                 '</div>' +
                 '</div>';
         }).join('') + '</div>';
@@ -2433,7 +2433,7 @@
                 `<span class="type-glyph" title="GitHub">${icon('github')}</span>` +
                 `<div class="row-id"><div class="row-name"><span>${escapeHtml(r.name)}</span><span class="tag">GitHub</span></div><div class="row-path"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-actions">' +
-                    `<button class="btn btn-sm btn-soft" data-action="toggleArch" data-id="${escapeHtml(r.name)}">${icon('restore')}${escapeHtml(t('projects.unarchive'))}</button>` +
+                    `<button class="btn btn-sm btn-soft" data-action="toggleArch" data-id="${escapeHtml(r.url || r.name)}">${icon('restore')}${escapeHtml(t('projects.unarchive'))}</button>` +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
                 '</div></div>';
         }).join('') + '</div>';
