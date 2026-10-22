@@ -1,46 +1,46 @@
 # ⚡ Antigravity Activity Dashboard & Cockpit
 
-Antigravity IDE (ve VS Code) için Deep Space temalı kontrol paneli. IDE açıldığında
-yerel projeleri, GitHub depolarını, son Antigravity oturumlarını, Codebase Memory (CBM)
-indeks durumunu, Graphify haritalarını ve model kotalarını tek ekranda gösterir.
+A Deep Space themed control panel for Antigravity IDE (and VS Code). When the IDE opens, it shows
+local projects, GitHub repositories, recent Antigravity sessions, Codebase Memory (CBM)
+index status, Graphify maps, and model quotas on a single screen.
 
-## Özellikler
+## Features
 
-- **Projeler** — çalışma alanı, `~/github-repos` ve yapılandırılabilir tarama köklerindeki projeler;
-  git dalı, son commit, uncommitted değişiklik, Graphify ve CBM rozetleri. Favori / arşiv.
-- **GitHub** — `gh` CLI ile depo listesi, klonlama, özel depo ekleme (`owner/repo`).
-- **Oturumlar** — `~/.gemini/antigravity-ide/brain` altındaki son oturumlar, transcript ve klasör kısayolları.
-- **Radar** — CBM indeksli projeler ve Graphify haritaları.
-- **Antigravity Panel kotaları** — Gemini / Claude kota göstergeleri (`n2ns.antigravity-panel` verisinden).
-- **Sistem telemetrisi** — GPU, Ollama, brain-sync vault, CBM durumu (gerçek algılama).
+- **Projects** — projects in the workspace, `~/github-repos`, and configurable scan roots;
+  git branch, latest commit, uncommitted changes, Graphify and CBM badges. Favorites / archive.
+- **GitHub** — repository list, cloning, and adding custom repositories (`owner/repo`) via the `gh` CLI.
+- **Sessions** — recent sessions under `~/.gemini/antigravity-ide/brain`, with transcript and folder shortcuts.
+- **Radar** — CBM-indexed projects and Graphify maps.
+- **Antigravity Panel quotas** — Gemini / Claude quota gauges (from `n2ns.antigravity-panel` data).
+- **System telemetry** — GPU, Ollama, brain-sync vault, CBM status (real detection).
 
-## Kurulum
+## Installation
 
 ```powershell
 npm install
-npm run package        # antigravity-activity-dashboard-<version>.vsix üretir
-npm run install-local  # Antigravity IDE (yoksa VS Code) içine kurar
+npm run package        # produces antigravity-activity-dashboard-<version>.vsix
+npm run install-local  # installs into Antigravity IDE (or VS Code if it is missing)
 ```
 
-## Geliştirme
+## Development
 
-| Komut | Açıklama |
+| Command | Description |
 |---|---|
 | `npm run lint` | ESLint |
-| `npm run test:unit` | Mocha unit testleri (VS Code gerektirmez) |
-| `npm run test:integration` | `@vscode/test-electron` ile entegrasyon testi |
-| `npm run preview` | Örnek (PII'siz) veriyle `preview.html` üretir |
+| `npm run test:unit` | Mocha unit tests (no VS Code needed) |
+| `npm run test:integration` | Integration test with `@vscode/test-electron` |
+| `npm run preview` | Generates `preview.html` with sample (PII-free) data |
 
-## Gereksinimler (opsiyonel)
+## Requirements (optional)
 
-- `git`, `gh` (GitHub sekmesi), Python 3 (kota okuma), `nvidia-smi`, Ollama, codebase-memory-mcp.
-  Bulunamayan her bileşen panelde **"Algılanmadı"** olarak gösterilir.
+- `git`, `gh` (GitHub tab), Python 3 (quota reading), `nvidia-smi`, Ollama, codebase-memory-mcp.
+  Any component that is not found is shown in the panel as **"Algılanmadı"** ("Not detected").
 
-## Gizlilik
+## Privacy
 
-Eklenti ağ isteği olarak yalnızca `gh` CLI'ını ve yerel `127.0.0.1:11434` (Ollama) adresini kullanır.
-Webview sıkı bir Content-Security-Policy ile çalışır; tüm fontlar yerel olarak paketlenir.
+The only network access the extension uses is the `gh` CLI and the local `127.0.0.1:11434` (Ollama) address.
+The webview runs under a strict Content-Security-Policy; all fonts are bundled locally.
 
-## Lisans
+## License
 
 MIT
