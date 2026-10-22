@@ -101,6 +101,37 @@ describe('Transcript Viewer Tests', () => {
         assert.ok(html.includes('<span class="code-lang">js</span>'));
     });
 
+    it('renders quotes, level-4 headings and code blocks without stray line breaks', () => {
+        const html = renderMarkdownSimple('> Prompt: describe it\n#### Answer\n```text\nline one\n\nline two\n```\nafter');
+        assert.ok(html.includes('<blockquote class="t-quote">Prompt: describe it</blockquote>'));
+        assert.ok(html.includes('<h4 class="t-h4">Answer</h4>'));
+        const pre = html.slice(html.indexOf('<pre>'), html.indexOf('</pre>'));
+        assert.ok(pre.includes('line one\n\nline two'), 'code keeps its own newlines');
+        assert.ok(!pre.includes('<br>'), 'no <br> inside code blocks');
+        assert.ok(!/onclick=/.test(html), 'no inline handlers');
+    });
+
+    it('follows the dashboard theme and language and runs under a nonce CSP', () => {
+        const dialogue = parseTranscriptDialogue(sampleTranscriptPath);
+        const html = generateCleanTranscriptHtml(dialogue, 'Test Session', tmpDir, sampleTranscriptPath, {
+            theme: 'nord-light', lang: 'en', nonce: 'abc123', cspSource: 'vscode-resource:',
+            dashboardCssUri: 'res://dashboard.css', transcriptCssUri: 'res://transcript.css'
+        });
+        assert.ok(html.includes('data-theme="nord-light"'));
+        assert.ok(html.includes('<html lang="en"'));
+        assert.ok(html.includes("script-src 'nonce-abc123'"));
+        assert.ok(html.includes('<script nonce="abc123">'));
+        assert.ok(html.includes('href="res://dashboard.css"') && html.includes('href="res://transcript.css"'));
+        assert.ok(html.includes('Search this conversation'));
+        assert.ok(!/onclick=|oninput=/.test(html), 'no inline handlers');
+    });
+
+    it('rejects unexpected theme and language values', () => {
+        const html = generateCleanTranscriptHtml([], 'X', tmpDir, sampleTranscriptPath, { theme: '"><script>', lang: 'xx' });
+        assert.ok(html.includes('data-theme="antigravity"'));
+        assert.ok(html.includes('<html lang="tr"'));
+    });
+
     it('generates clean transcript HTML page with search and copy controls', () => {
         const dialogue = parseTranscriptDialogue(sampleTranscriptPath);
         const html = generateCleanTranscriptHtml(dialogue, 'Test Session', tmpDir, sampleTranscriptPath);

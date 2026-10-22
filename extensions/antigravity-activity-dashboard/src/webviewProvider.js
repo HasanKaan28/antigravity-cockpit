@@ -194,14 +194,14 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
 
         case 'openTranscript': {
             const fPath = (message.path || '').trim();
-            openCleanTranscript(fPath, vscodeInstance, _extensionUri);
+            openCleanTranscript(fPath, vscodeInstance, _extensionUri, { theme: message.theme, lang: message.lang });
             break;
         }
 
         case 'openFile': {
             const fPath = (message.path || '').trim();
             if (fPath.toLowerCase().endsWith('transcript.jsonl')) {
-                openCleanTranscript(fPath, vscodeInstance, _extensionUri);
+                openCleanTranscript(fPath, vscodeInstance, _extensionUri, { theme: message.theme, lang: message.lang });
                 break;
             }
             if (isExistingPath(fPath)) {
