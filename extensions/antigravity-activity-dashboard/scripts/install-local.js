@@ -6,6 +6,7 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
@@ -22,7 +23,7 @@ if (!vsix) {
 const vsixPath = path.join(root, vsix.f);
 
 // 1. Live reload folder sync
-const userDir = process.env.USERPROFILE || 'C:\\Users\\Kaan';
+const userDir = os.homedir();
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const extensionsDir = path.join(userDir, '.antigravity-ide', 'extensions');
 const activeDirName = `antigravity-local.antigravity-activity-dashboard-${pkg.version}`;

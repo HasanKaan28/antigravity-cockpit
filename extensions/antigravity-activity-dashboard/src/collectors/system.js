@@ -6,9 +6,11 @@
  */
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { execFileAsync } = require('../util/proc');
 
 async function probeGpu() {
+    // 1. Probe NVIDIA GPU with live utilization percentage
     try {
         const { stdout } = await execFileAsync('nvidia-smi', ['--query-gpu=name,utilization.gpu', '--format=csv,noheader'], {}, 2000);
         if (stdout) {
@@ -20,7 +22,54 @@ async function probeGpu() {
     } catch {
         // nvidia-smi not available or non-nvidia system
     }
-    return 'GPU Algılanmadı';
+
+    // 2. Windows CIM / WMI hardware probe (AMD Radeon, Intel ARC / Iris, etc.)
+    if (process.platform === 'win32') {
+        try {
+            const { stdout } = await execFileAsync('powershell', [
+                '-NoProfile', '-Command',
+                '(Get-CimInstance Win32_VideoController | Select-Object -First 1).Name'
+            ], {}, 2500);
+            if (stdout && stdout.trim()) {
+                return `${stdout.trim()} (Aktif)`;
+            }
+        } catch {
+            // ignore
+        }
+    }
+
+    // 3. macOS Metal / GPU probe
+    if (process.platform === 'darwin') {
+        try {
+            const { stdout } = await execFileAsync('system_profiler', ['SPDisplaysDataType'], {}, 2500);
+            if (stdout) {
+                const match = stdout.match(/Chipset Model:\s*(.+)/i);
+                if (match && match[1]) {
+                    return `${match[1].trim()} (Aktif)`;
+                }
+            }
+        } catch {
+            // ignore
+        }
+    }
+
+    // 4. Linux PCI display probe
+    if (process.platform === 'linux') {
+        try {
+            const { stdout } = await execFileAsync('lspci', [], {}, 2000);
+            if (stdout) {
+                const vgaLine = stdout.split('\n').find(l => /VGA compatible controller|3D controller/i.test(l));
+                if (vgaLine) {
+                    const clean = vgaLine.split(':').slice(2).join(':').trim();
+                    return `${clean} (Aktif)`;
+                }
+            }
+        } catch {
+            // ignore
+        }
+    }
+
+    return 'Standart Grafik Kartı';
 }
 
 const { probeOllamaStatus, findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');
@@ -30,11 +79,11 @@ async function probeOllama(timeoutMs = 1200) {
 }
 
 async function probeVault() {
-    const userDir = process.env.USERPROFILE || 'C:\\Users\\Kaan';
+    const userDir = os.homedir();
     const vaultCandidates = [
-        path.join(userDir, 'github-repos', 'antigravity-brain-sync'),
-        path.join(userDir, 'antigravity-brain-sync'),
-        path.join(userDir, '.gemini', 'antigravity-brain-sync')
+        path.join(userDir, '.gemini', 'config'),
+        path.join(userDir, '.gemini', 'sync'),
+        path.join(userDir, '.gemini', 'vault')
     ];
 
     for (const vPath of vaultCandidates) {
@@ -42,14 +91,14 @@ async function probeVault() {
             try {
                 const { stdout } = await execFileAsync('git', ['status', '--short'], { cwd: vPath }, 1500);
                 const hasPending = Boolean(stdout && stdout.trim());
-                return hasPending ? 'HasanKaan28/antigravity-brain-sync (Değişiklikler var)' : 'HasanKaan28/antigravity-brain-sync (Senkronize)';
+                return hasPending ? 'Bulut Senkronu (Değişiklikler var)' : 'Bulut Senkronu (Senkronize)';
             } catch {
-                return 'HasanKaan28/antigravity-brain-sync (Yerel Depo)';
+                return 'Bulut Senkronu (Aktif)';
             }
         }
     }
 
-    return 'HasanKaan28/antigravity-brain-sync (Bulunamadı)';
+    return 'Yerel Profil (Standart)';
 }
 
 async function probePower() {

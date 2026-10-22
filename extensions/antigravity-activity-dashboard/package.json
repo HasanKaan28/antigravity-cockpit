@@ -1,15 +1,15 @@
 {
   "name": "antigravity-activity-dashboard",
   "displayName": "Antigravity Activity Dashboard & Cockpit",
-  "description": "Antigravity IDE her açıldığında son yapılanları, oturumları ve canlı proje durumunu gösteren fütüristik kontrol paneli.",
+  "description": "Futuristic mission control dashboard and agent cockpit for Antigravity IDE, displaying local projects, active sessions, Graphify maps, and live AI model quotas on startup.",
   "version": "2.2.0",
   "publisher": "antigravity-local",
   "license": "MIT",
-  "author": "HasanKaan28",
+  "author": "Antigravity Open Source Community",
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HasanKaan28/antigravity-activity-dashboard.git"
+    "url": "https://github.com/antigravity-community/antigravity-cockpit.git"
   },
   "engines": {
     "vscode": "^1.80.0"
@@ -33,17 +33,17 @@
     "commands": [
       {
         "command": "antigravity.openActivityDashboard",
-        "title": "Antigravity: Son Yapılanları Göster (Dashboard)",
+        "title": "Antigravity: Open Activity Dashboard & Cockpit",
         "icon": "$(dashboard)"
       },
       {
         "command": "antigravity.refreshActivityDashboard",
-        "title": "Antigravity: Dashboard'u Yenile",
+        "title": "Antigravity: Refresh Dashboard",
         "icon": "$(refresh)"
       },
       {
         "command": "antigravity.cockpitNewChat",
-        "title": "Antigravity Cockpit: Yeni Sohbet Başlat",
+        "title": "Antigravity Cockpit: Start New Chat",
         "icon": "$(comment-discussion)"
       }
     ],
@@ -53,12 +53,18 @@
         "antigravity.dashboard.openOnStartup": {
           "type": "boolean",
           "default": true,
-          "description": "Antigravity IDE açıldığında Son Yapılanlar kontrol panelini otomatik olarak aç."
+          "description": "Automatically open the Antigravity Cockpit dashboard whenever Antigravity IDE launches."
+        },
+        "antigravity.dashboard.language": {
+          "type": "string",
+          "enum": ["auto", "en", "tr", "de", "es", "fr", "zh", "ja"],
+          "default": "auto",
+          "description": "Antigravity Cockpit interface language (auto: System / IDE language, en: English, tr: Turkish, de: German, es: Spanish, fr: French, zh: Simplified Chinese, ja: Japanese)."
         },
         "antigravity.dashboard.githubUser": {
           "type": "string",
           "default": "",
-          "description": "GitHub reposu listelenecek kullanıcı adı (boş bırakılırsa gh CLI ile otomatik algılanır)."
+          "description": "GitHub username to list repositories for (auto-detected via gh CLI if left empty)."
         },
         "antigravity.dashboard.scanRoots": {
           "type": "array",
@@ -66,7 +72,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Projelerin taranacağı ek ana dizinler (örn: C:/Users/Kaan/projects)."
+          "description": "Additional root directories to scan for local projects (e.g. ~/projects)."
         },
         "antigravity.dashboard.extraProjectPaths": {
           "type": "array",
@@ -74,7 +80,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "Doğrudan panoya eklenecek spesifik proje dizinleri."
+          "description": "Specific project directory paths to display directly on the dashboard."
         },
         "antigravity.dashboard.browser": {
           "type": "string",
@@ -83,22 +89,22 @@
             "systemDefault"
           ],
           "default": "edge",
-          "description": "Graphify ve harici linkleri açarken tercih edilen tarayıcı."
+          "description": "Preferred browser when opening Graphify visual maps and external links."
         },
         "antigravity.dashboard.pollIntervalSec": {
           "type": "number",
           "default": 60,
-          "description": "Arka plan model kotalarını sessiz kontrol aralığı (saniye)."
+          "description": "Background interval (in seconds) for silently polling AI model quotas."
         },
         "antigravity.dashboard.sessionLimit": {
           "type": "number",
           "default": 25,
-          "description": "Listelenecek maksimum son oturum sayısı."
+          "description": "Maximum number of recent chat sessions to display."
         },
         "antigravity.dashboard.soundEnabled": {
           "type": "boolean",
           "default": true,
-          "description": "Siber ses efektlerinin varsayılan durumu."
+          "description": "Default state for futuristic cyber audio sound effects."
         }
       }
     }
@@ -108,10 +114,14 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "mocha \"test/unit/**/*.test.js\"",
     "test:integration": "node test/integration/runTest.js",
+    "test:e2e": "node test/e2e-ui.js",
+    "docs:capture": "node scripts/capture-docs.js",
     "preview": "node scripts/dev-preview.js",
     "package": "vsce package --no-dependencies",
     "install-local": "node scripts/install-local.js",
-    "sync-live": "node scripts/sync-live.js"
+    "sync-live": "node scripts/sync-live.js",
+    "setup": "node scripts/setup.js",
+    "postinstall": "node scripts/setup.js --postinstall"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

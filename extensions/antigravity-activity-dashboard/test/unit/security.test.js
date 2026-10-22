@@ -5,7 +5,7 @@ const { validateExternalUrl, parseRepoInput, normalizeKey } = require('../../src
 describe('Security Utility Tests', () => {
     describe('normalizeKey', () => {
         it('normalizes backslashes to forward slashes', () => {
-            assert.strictEqual(normalizeKey('C:\\Users\\Kaan\\Project'), 'c:/users/kaan/project');
+            assert.strictEqual(normalizeKey('C:\\Users\\Developer\\Project'), 'c:/users/developer/project');
         });
 
         it('trims leading/trailing whitespace and slashes', () => {
@@ -20,7 +20,7 @@ describe('Security Utility Tests', () => {
 
     describe('validateExternalUrl', () => {
         it('allows valid http and https URLs', () => {
-            assert.strictEqual(validateExternalUrl('https://github.com/HasanKaan28'), 'https://github.com/HasanKaan28');
+            assert.strictEqual(validateExternalUrl('https://github.com/octocat'), 'https://github.com/octocat');
             assert.strictEqual(validateExternalUrl('http://localhost:9749'), 'http://localhost:9749/');
         });
 
@@ -49,22 +49,22 @@ describe('Security Utility Tests', () => {
         });
 
         it('applies default owner for bare repo names', () => {
-            const parsed = parseRepoInput('Market_Kasa', 'HasanKaan28');
+            const parsed = parseRepoInput('demo-repo', 'octocat');
             assert.deepStrictEqual(parsed, {
-                owner: 'HasanKaan28',
-                repo: 'Market_Kasa',
-                fullName: 'HasanKaan28/Market_Kasa',
-                url: 'https://github.com/HasanKaan28/Market_Kasa'
+                owner: 'octocat',
+                repo: 'demo-repo',
+                fullName: 'octocat/demo-repo',
+                url: 'https://github.com/octocat/demo-repo'
             });
         });
 
         it('handles full GitHub URLs with .git suffix', () => {
-            const parsed = parseRepoInput('https://github.com/HasanKaan28/antigravity-brain-sync.git');
+            const parsed = parseRepoInput('https://github.com/octocat/demo-repo.git');
             assert.deepStrictEqual(parsed, {
-                owner: 'HasanKaan28',
-                repo: 'antigravity-brain-sync',
-                fullName: 'HasanKaan28/antigravity-brain-sync',
-                url: 'https://github.com/HasanKaan28/antigravity-brain-sync'
+                owner: 'octocat',
+                repo: 'demo-repo',
+                fullName: 'octocat/demo-repo',
+                url: 'https://github.com/octocat/demo-repo'
             });
         });
 

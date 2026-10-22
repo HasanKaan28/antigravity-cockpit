@@ -1,9 +1,12 @@
 node_modules/
-*.vsix
 preview.html
 graphify-out/
 .vscode-test/
 coverage/
 *.log
 .playwright-cli/
+.agents/skills/
 
+# Allow release VSIX in git repo for zero-dependency instant install
+*.vsix
+!antigravity-activity-dashboard-*.vsix
