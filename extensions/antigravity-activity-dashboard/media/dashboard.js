@@ -2208,7 +2208,7 @@
                 (r.hasGraphify ? `<span class="tag accent">${icon('graph')}Graphify</span>` : '');
             const primary = r.isCloned
                 ? `<button class="btn btn-sm btn-soft" data-action="openFolder" data-path="${escapeHtml(r.localPath)}" title="${escapeHtml(t('projects.ideTitle'))}">${icon('folder-open')}${escapeHtml(t('projects.ide'))}</button>`
-                : `<button class="btn btn-sm" data-action="cloneRepo" data-name="${escapeHtml(r.name)}">${icon('download')}${escapeHtml(t('projects.clone'))}</button>`;
+                : `<button class="btn btn-sm" data-action="cloneRepo" data-name="${escapeHtml(r.fullName || r.name)}">${icon('download')}${escapeHtml(t('projects.clone'))}</button>`;
             return `<div class="row" style="--i:${i}">` +
                 favButton(repoId, Boolean(r.isFavorite)) +
                 `<div class="row-id"><div class="row-name"><span title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></div><div class="row-path" title="${escapeHtml(r.fullName)}"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +

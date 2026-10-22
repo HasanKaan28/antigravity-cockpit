@@ -80,7 +80,7 @@ function getRecentIdeWorkspaces() {
                             const decoded = decodeURIComponent(uriStr.replace(/^file:\/\/\/?/i, ''));
                             const normalized = path.normalize(decoded);
                             if (fs.existsSync(normalized)) results.push(normalized);
-                        } catch {}
+                        } catch { /* best effort */ }
                     }
                 }
             }
@@ -93,7 +93,7 @@ function getRecentIdeWorkspaces() {
                             const decoded = decodeURIComponent(f.folderUri.replace(/^file:\/\/\/?/i, ''));
                             const normalized = path.normalize(decoded);
                             if (fs.existsSync(normalized)) results.push(normalized);
-                        } catch {}
+                        } catch { /* best effort */ }
                     }
                 }
             }
@@ -106,7 +106,7 @@ function getRecentIdeWorkspaces() {
                         const decoded = decodeURIComponent(f.replace(/^file:\/\/\/?/i, ''));
                         const normalized = path.normalize(decoded);
                         if (fs.existsSync(normalized)) results.push(normalized);
-                    } catch {}
+                    } catch { /* best effort */ }
                 } else if (fs.existsSync(f)) {
                     results.push(path.normalize(f));
                 }
