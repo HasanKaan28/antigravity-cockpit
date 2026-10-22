@@ -5,12 +5,22 @@
  */
 const vscode = require('vscode');
 const logger = require('./logger');
-const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel } = require('./webviewProvider');
+const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel, refreshDashboardPanel } = require('./webviewProvider');
 const { getPanelData } = require('./collectors/panel');
 
 let quotaInterval = null;
 const lastKnownQuotas = { gemini: null, claude: null };
 let restoredFromSerializer = false;
+
+function hasDashboardTab() {
+    try {
+        const groups = (vscode.window.tabGroups && vscode.window.tabGroups.all) || [];
+        return groups.some(group => group.tabs.some(tab =>
+            tab.input && typeof tab.input.viewType === 'string' && tab.input.viewType.endsWith('antigravityActivityDashboard')));
+    } catch {
+        return false;
+    }
+}
 
 function activate(context) {
     logger.initLogger(vscode);
@@ -22,7 +32,7 @@ function activate(context) {
     });
 
     const refreshCmd = vscode.commands.registerCommand('antigravity.refreshActivityDashboard', () => {
-        collectAllDashboardData(vscode).then(_data => {
+        refreshDashboardPanel(vscode).then(() => {
             vscode.window.showInformationMessage('Dashboard verileri güncellendi.');
         }).catch(err => {
             logger.error('Manual refresh failed:', err);
@@ -136,7 +146,8 @@ function activate(context) {
     const openOnStartup = config.get('openOnStartup', true);
     if (openOnStartup) {
         setTimeout(() => {
-            if (!restoredFromSerializer) {
+            // A restored tab is only deserialized once it is shown, so also look for one in the tab strip.
+            if (!restoredFromSerializer && !hasDashboardTab()) {
                 openDashboardPanel(context, vscode);
             }
         }, 1200);

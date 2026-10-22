@@ -188,7 +188,7 @@ async function step(name, fn) {
         await page.click('#tabBtnGithub');
         assert.match(await page.textContent('#ghHeroTitle'), /sample-org/);
         await page.click('#githubGrid [data-action="cloneRepo"]');
-        assert.deepStrictEqual(await lastPost('cloneGithubRepo'), { command: 'cloneGithubRepo', name: 'design-tokens' });
+        assert.deepStrictEqual(await lastPost('cloneGithubRepo'), { command: 'cloneGithubRepo', name: 'sample-org/design-tokens' });
         await page.click('#githubGrid [data-action="openUrl"]');
         assert.strictEqual((await lastPost('openExternalUrl')).url, 'https://github.com/sample-org/orbit-api');
         await page.fill('#customGhInput', 'sample-org/new-repo');

@@ -36,6 +36,20 @@ function getNonce() {
     return crypto.randomBytes(16).toString('hex');
 }
 
+// Collects fresh data, keeps it as the panel state and sends it, so later toggles never act on stale data.
+async function pushFreshData(panel, vscodeInstance) {
+    const data = await collectAllDashboardData(vscodeInstance);
+    panel._lastData = data;
+    panel.webview.postMessage({ command: 'updateData', data });
+    return data;
+}
+
+// Refreshes the open dashboard, if any (used by the "Refresh Dashboard" command).
+async function refreshDashboardPanel(vscodeInstance) {
+    if (!currentPanel) return null;
+    return pushFreshData(currentPanel, vscodeInstance);
+}
+
 // The webview identifies projects by path and GitHub repos by URL (older builds sent the repo name).
 function findDashboardItem(data, id) {
     if (!data || !id) return null;
@@ -137,9 +151,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
 
     switch (message.command) {
         case 'refresh':
-            collectAllDashboardData(vscodeInstance).then(data => {
-                panel._lastData = data;
-                panel.webview.postMessage({ command: 'updateData', data });
+            pushFreshData(panel, vscodeInstance).then(() => {
                 vscodeInstance.window.showInformationMessage('Dashboard verileri güncellendi.');
             }).catch(err => {
                 logger.error('Refresh failed:', err);
@@ -241,7 +253,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             const userHome = os.homedir();
             const skillsDir = path.join(userHome, '.gemini', 'config', 'skills');
             if (!fs.existsSync(skillsDir)) {
-                try { fs.mkdirSync(skillsDir, { recursive: true }); } catch {}
+                try { fs.mkdirSync(skillsDir, { recursive: true }); } catch { /* best effort */ }
             }
             vscodeInstance.commands.executeCommand('revealFileInOS', vscodeInstance.Uri.file(skillsDir));
             break;
@@ -275,8 +287,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 } else {
                     vscodeInstance.window.showWarningMessage(res.message);
                 }
-                const freshData = await collectAllDashboardData(vscodeInstance);
-                panel.webview.postMessage({ command: 'updateData', data: freshData });
+                await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
                 vscodeInstance.window.showErrorMessage('Ollama işlem hatası: ' + (err.message || String(err)));
             });
@@ -291,8 +302,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 } else {
                     vscodeInstance.window.showWarningMessage(res.message);
                 }
-                const freshData = await collectAllDashboardData(vscodeInstance);
-                panel.webview.postMessage({ command: 'updateData', data: freshData });
+                await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
                 vscodeInstance.window.showErrorMessage('Yerel motor işlem hatası: ' + (err.message || String(err)));
             });
@@ -306,8 +316,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 } else {
                     vscodeInstance.window.showWarningMessage(res.message);
                 }
-                const freshData = await collectAllDashboardData(vscodeInstance);
-                panel.webview.postMessage({ command: 'updateData', data: freshData });
+                await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
                 vscodeInstance.window.showErrorMessage('Ollama başlatma hatası: ' + (err.message || String(err)));
             });
@@ -321,8 +330,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 } else {
                     vscodeInstance.window.showWarningMessage(res.message);
                 }
-                const freshData = await collectAllDashboardData(vscodeInstance);
-                panel.webview.postMessage({ command: 'updateData', data: freshData });
+                await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
                 vscodeInstance.window.showErrorMessage('Ollama durdurma hatası: ' + (err.message || String(err)));
             });
@@ -362,8 +370,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 try {
                     await execFileAsync('gh', ['repo', 'clone', parsed.fullName, targetDir], {}, 60000);
                     vscodeInstance.window.showInformationMessage(`${parsed.repo} başarıyla klonlandı: ${targetDir}`);
-                    const freshData = await collectAllDashboardData(vscodeInstance);
-                    panel.webview.postMessage({ command: 'updateData', data: freshData });
+                    await pushFreshData(panel, vscodeInstance);
                 } catch (err) {
                     vscodeInstance.window.showErrorMessage('Klonlama hatası: ' + (err.stderr || err.error?.message || 'Bilinmeyen hata'));
                 }
@@ -384,9 +391,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                     pushedAt: new Date().toISOString()
                 });
                 vscodeInstance.window.showInformationMessage(`⭐ GitHub deposu eklendi: ${parsed.fullName}`);
-                collectAllDashboardData(vscodeInstance).then(data => {
-                    panel.webview.postMessage({ command: 'updateData', data });
-                });
+                pushFreshData(panel, vscodeInstance).catch(err => logger.error('Refresh after adding a repository failed:', err));
             } else {
                 vscodeInstance.window.showWarningMessage('Geçersiz depo formatı. Örnek: owner/repo veya repo-adi');
             }
@@ -522,7 +527,7 @@ function setupLiveQuotaSync(panel) {
         liveQuotaSyncInterval = null;
     }
     if (liveQuotaWatchedPath) {
-        try { fs.unwatchFile(liveQuotaWatchedPath); } catch {}
+        try { fs.unwatchFile(liveQuotaWatchedPath); } catch { /* best effort */ }
         liveQuotaWatchedPath = null;
     }
 
@@ -568,10 +573,10 @@ function setupLiveQuotaSync(panel) {
                                 panel._lastData.panel = pData;
                             }
                         }
-                    } catch {}
+                    } catch { /* best effort */ }
                 }
             });
-        } catch {}
+        } catch { /* best effort */ }
     }
 
     // High-frequency live quota & token synchronization loop every 2.5s when panel is active
@@ -623,7 +628,7 @@ function attachPanelListeners(panel, context, vscodeInstance) {
     panel.onDidDispose(() => {
         if (currentPanel === panel) currentPanel = null;
         if (liveQuotaWatchedPath) {
-            try { fs.unwatchFile(liveQuotaWatchedPath); } catch {}
+            try { fs.unwatchFile(liveQuotaWatchedPath); } catch { /* best effort */ }
             liveQuotaWatchedPath = null;
         }
         if (liveQuotaSyncInterval) {
@@ -683,5 +688,6 @@ module.exports = {
     collectAllDashboardData,
     getWebviewHtml,
     attachPanelListeners,
-    getCurrentPanel
+    getCurrentPanel,
+    refreshDashboardPanel
 };
