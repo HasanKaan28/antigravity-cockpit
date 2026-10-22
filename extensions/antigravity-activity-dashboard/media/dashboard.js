@@ -2866,11 +2866,11 @@
                 break;
             case 'openTranscript':
                 AudioEngine.click();
-                post('openTranscript', { path: d.path });
+                post('openTranscript', { path: d.path, theme: currentTheme, lang: activeLocale });
                 break;
             case 'openFile':
                 AudioEngine.click();
-                post('openFile', { path: d.path });
+                post('openFile', { path: d.path, theme: currentTheme, lang: activeLocale });
                 break;
             case 'openSessionFolder':
                 AudioEngine.click();
