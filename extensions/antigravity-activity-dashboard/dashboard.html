@@ -3617,6 +3617,86 @@ body::before {
             border: 1px solid rgba(0, 120, 212, 0.3);
         }
 
+        /* Language Picker Grid & Cards */
+        .language-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        @media (max-width: 720px) {
+            .language-picker-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .language-picker-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lang-card-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            color: inherit;
+        }
+
+        .lang-card-btn:hover {
+            border-color: var(--border-card-hover);
+            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+        }
+
+        .lang-card-btn.active {
+            border-color: var(--vscode-blue);
+            background: var(--bg-card-hover);
+            box-shadow: 0 0 14px var(--vscode-blue-glow);
+        }
+
+        .lang-flag {
+            font-size: 22px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .lang-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .lang-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-bright);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lang-sub {
+            font-size: 10.5px;
+            color: var(--text-dim);
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         /* 5-Theme Responsive Picker Grid */
         .theme-picker-grid {
             display: grid;
@@ -4036,6 +4116,284 @@ body::before {
             margin-top: 16px;
             padding-top: 14px;
             border-top: 1px solid var(--border-card);
+        }
+
+        /* --- SKILLS ARSENAL STYLES --- */
+        .skills-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-glass-1);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skills-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple, #c084fc), var(--neon-cyan, #38bdf8), transparent);
+        }
+
+        .skills-hero-left h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-bright);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .skills-hero-left p {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin: 0;
+            max-width: 650px;
+            line-height: 1.5;
+        }
+
+        .skills-hero-stats {
+            display: flex;
+            gap: 14px;
+        }
+
+        .skill-stat-box {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 10px 18px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .skill-stat-box .stat-num {
+            display: block;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--neon-purple, #c084fc);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.1;
+        }
+
+        .skill-stat-box .stat-lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .skills-filter-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 16px;
+        }
+
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        .skill-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .skill-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .skill-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .skill-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-bright);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.2px;
+        }
+
+        .skill-badge {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .skill-badge.cat-architecture {
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .skill-badge.cat-design {
+            background: rgba(244, 114, 182, 0.12);
+            color: #f472b6;
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+
+        .skill-badge.cat-quality {
+            background: rgba(52, 211, 153, 0.12);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .skill-badge.cat-optimization {
+            background: rgba(251, 146, 60, 0.12);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.3);
+        }
+
+        .skill-badge.cat-local-ai {
+            background: rgba(168, 85, 247, 0.12);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .skill-badge.cat-general {
+            background: rgba(148, 163, 184, 0.12);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .skill-desc {
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-height: 36px;
+        }
+
+        .skill-prompt-box {
+            background: var(--bg-inset);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-code);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .skill-prompt-box:hover {
+            border-color: var(--neon-cyan);
+            background: var(--bg-subtle-hover);
+        }
+
+        .skill-prompt-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .skill-prompt-copy-icon {
+            opacity: 0.6;
+            transition: opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .skill-prompt-box:hover .skill-prompt-copy-icon {
+            opacity: 1;
+            color: var(--neon-cyan);
+        }
+
+        .skill-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-card);
+        }
+
+        .skill-btn {
+            background: var(--btn-secondary-bg);
+            border: 1px solid var(--btn-secondary-border);
+            color: var(--text-dim);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .skill-btn:hover {
+            background: var(--btn-secondary-hover-bg);
+            color: var(--text-bright);
+            border-color: var(--neon-cyan);
+        }
+
+        .skill-btn.primary {
+            background: var(--vscode-blue);
+            border-color: var(--vscode-blue);
+            color: #ffffff;
+        }
+
+        .skill-btn.primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 10px var(--vscode-blue-glow);
         }</style>
 </head>
 <body id="dashboardRoot">
@@ -4254,17 +4612,17 @@ body::before {
             </div>
 
             <!-- Primary Action: New Chat -->
-            <button class="hud-btn primary" id="hudBtnNewChat" data-action="startNewChat" title="Yeni Antigravity AI Sohbeti Başlat">
+            <button class="hud-btn primary" id="hudBtnNewChat" data-action="startNewChat" title="Yeni Antigravity AI Sohbeti Başlat" data-i18n-title="hud.newChatTitle">
                 <span class="ag-icon">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
                 </span>
-                <span>Yeni Sohbet</span>
+                <span data-i18n="hud.newChat">Yeni Sohbet</span>
             </button>
 
             <!-- Refresh Button -->
-            <button class="hud-btn" data-action="refresh" title="Dashboard Verilerini Yenile">
+            <button class="hud-btn" data-action="refresh" title="Dashboard Verilerini Yenile" data-i18n-title="hud.refreshTitle">
                 <span class="ag-icon">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M23 4v6h-6"></path>
@@ -4272,18 +4630,18 @@ body::before {
                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                     </svg>
                 </span>
-                <span>Yenile</span>
+                <span data-i18n="hud.refresh">Yenile</span>
             </button>
 
             <!-- Settings Button -->
-            <button class="hud-btn" id="openSettingsBtn" data-action="openSettings" title="Kontrol Paneli Ayarları">
+            <button class="hud-btn" id="openSettingsBtn" data-action="openSettings" title="Kontrol Paneli Ayarları" data-i18n-title="hud.settingsTitle">
                 <span class="ag-icon">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
                 </span>
-                <span>Ayarlar</span>
+                <span data-i18n="hud.settings">Ayarlar</span>
             </button>
         </div>
     </header>
@@ -4302,8 +4660,8 @@ body::before {
                 </svg>
             </div>
             <div class="tele-info">
-                <div class="label">GPU MİMARİSİ</div>
-                <div class="val" id="teleGpu">NVIDIA RTX 5070 Ti (Active)</div>
+                <div class="label" data-i18n="telemetry.gpu">GPU MİMARİSİ</div>
+                <div class="val" id="teleGpu">GPU Algılanıyor...</div>
             </div>
         </div>
         <div class="tele-card tele-quota-card" id="teleCardQuota">
@@ -4324,21 +4682,21 @@ body::before {
                 <div class="label" style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
                     <span style="display: flex; align-items: center; gap: 5px;">
                         <span class="status-dot" style="width: 6px; height: 6px;"></span>
-                        GEMINI TOKEN &amp; KOTA
+                        <span data-i18n="telemetry.quota">GEMINI TOKEN &amp; KOTA</span>
                     </span>
                     <span class="ag-tier-pill" id="agUserTier" style="font-size: 9px; padding: 1px 6px;">Google AI Pro</span>
                 </div>
                 <div class="val" style="display: flex; align-items: baseline; justify-content: space-between; gap: 6px;">
                     <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--neon-cyan);">
-                        Kalan: <strong id="teleGeminiPctText">—%</strong>
+                        <span data-i18n="telemetry.remaining">Kalan:</span> <strong id="teleGeminiPctText">—%</strong>
                     </span>
                     <span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; display: flex; align-items: center; gap: 5px;" id="geminiLiveStatusWrap" title="Canlı Anlık Model Kotası">
                         <span class="live-dot-pulse"></span>
-                        <span id="geminiTimerVal">Canlı</span>
+                        <span id="geminiTimerVal" data-i18n="telemetry.live">Canlı</span>
                     </span>
                 </div>
                 <div class="tele-quota-sub" style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px; font-size: 10px; color: var(--text-dark); font-family: 'JetBrains Mono', monospace;">
-                    <span>Haftalık: <strong style="color: var(--text-dim);" id="geminiWeeklyVal">—%</strong> (<span id="geminiWeeklyReset">—</span>)</span>
+                    <span><span data-i18n="telemetry.weekly">Haftalık:</span> <strong style="color: var(--text-dim);" id="geminiWeeklyVal">—%</strong> (<span id="geminiWeeklyReset">—</span>)</span>
                     <span id="teleTokenPill" style="color: var(--neon-emerald); font-weight: 600;" title="Kullanılabilir / Aylık Prompt Kredisi">Token: <strong id="teleTokenPromptVal">—</strong>/<span id="teleTokenPromptMonthly">—</span></span>
                     <span id="claudeMiniPill" style="color: #fb923c; font-weight: 600;">Claude: <strong id="claudePctVal">0%</strong></span>
                 </div>
@@ -4359,8 +4717,8 @@ body::before {
                 </svg>
             </div>
             <div class="tele-info">
-                <div class="label">GITHUB SENKRONİZASYONU</div>
-                <div class="val">HasanKaan28 (Aktif)</div>
+                <div class="label" data-i18n="telemetry.github">GITHUB SENKRONİZASYONU</div>
+                <div class="val" id="teleGithubUser">Bağlantı Bekleniyor</div>
             </div>
         </div>
     </div>
@@ -4374,7 +4732,7 @@ body::before {
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                 </svg>
             </span>
-            <span>Projeler &amp; Çalışma Alanları</span>
+            <span data-i18n="nav.projects">Projeler &amp; Çalışma Alanları</span>
             <span class="tab-badge" id="badgeProjCount">0</span>
         </button>
         <button class="nav-tab-btn" id="tabBtnGithub" data-action="switchTab" data-tab="github">
@@ -4383,7 +4741,7 @@ body::before {
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
                 </svg>
             </span>
-            <span>GitHub Repolarım</span>
+            <span data-i18n="nav.github">GitHub Repolarım</span>
             <span class="tab-badge" id="badgeGhCount">0</span>
         </button>
         <button class="nav-tab-btn" id="tabBtnSessions" data-action="switchTab" data-tab="sessions">
@@ -4393,7 +4751,7 @@ body::before {
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
             </span>
-            <span>Son Yapılanlar &amp; Oturumlar</span>
+            <span data-i18n="nav.sessions">Son Yapılanlar &amp; Oturumlar</span>
             <span class="tab-badge" id="badgeSessCount">0</span>
         </button>
         <button class="nav-tab-btn" id="tabBtnRadar" data-action="switchTab" data-tab="radar">
@@ -4406,8 +4764,17 @@ body::before {
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                 </svg>
             </span>
-            <span>Graphify Bilgi Radarı</span>
+            <span data-i18n="nav.radar">Graphify Bilgi Radarı</span>
             <span class="tab-badge" id="badgeGraphCount">Observatory</span>
+        </button>
+        <button class="nav-tab-btn" id="tabBtnSkills" data-action="switchTab" data-tab="skills">
+            <span class="ag-icon">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+            </span>
+            <span data-i18n="nav.skills">Agent Becerileri &amp; Arsenal</span>
+            <span class="tab-badge" id="badgeSkillCount">0</span>
         </button>
     </nav>
 
@@ -4420,7 +4787,7 @@ body::before {
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </span>
-            <input type="text" id="projectSearchInput" placeholder="Proje, repo veya commit ara... (Ctrl + K)">
+            <input type="text" id="projectSearchInput" placeholder="Proje, repo veya commit ara... (Ctrl + K)" data-i18n-placeholder="filter.searchPlaceholder">
             <kbd class="search-kbd">Ctrl K</kbd>
         </div>
         <div class="filter-chips">
@@ -4433,7 +4800,7 @@ body::before {
                         <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
                 </span>
-                <span>Tümü</span>
+                <span data-i18n="filter.all">Tümü</span>
             </button>
             <button class="chip-btn fav-chip" id="chipFav" data-action="setSubFilter" data-filter="favorites">
                 <span class="ag-icon">
@@ -4441,7 +4808,7 @@ body::before {
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                     </svg>
                 </span>
-                <span>Favoriler (<span id="favChipCount">0</span>)</span>
+                <span><span data-i18n="filter.favorites">Favoriler</span> (<span id="favChipCount">0</span>)</span>
             </button>
             <button class="chip-btn" id="chipGit" data-action="setSubFilter" data-filter="git">
                 <span class="ag-icon">
@@ -4452,7 +4819,7 @@ body::before {
                         <path d="M18 9a9 9 0 0 1-9 9"></path>
                     </svg>
                 </span>
-                <span>Git Repoları</span>
+                <span data-i18n="filter.git">Git Repoları</span>
             </button>
             <button class="chip-btn" id="chipGraph" data-action="setSubFilter" data-filter="graphify">
                 <span class="ag-icon">
@@ -4464,7 +4831,7 @@ body::before {
                         <path d="m13.6 13.6 4-7.2"></path>
                     </svg>
                 </span>
-                <span>Graphify Hazır</span>
+                <span data-i18n="filter.graphify">Graphify Hazır</span>
             </button>
         </div>
     </div>
@@ -4484,7 +4851,7 @@ body::before {
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
                         </svg>
                     </span>
-                    <span>HasanKaan28 GitHub Ekosistemi</span>
+                    <span id="ghHeroTitle">GitHub Repoları &amp; Ekosistem</span>
                 </h2>
                 <p>Bulut repolarınız, yerel klonlama durumları ve tek tıkla Graphify mimari analiz entegrasyonu.</p>
             </div>
@@ -4559,6 +4926,63 @@ body::before {
                 <ul class="radar-list" id="radarGraphList"></ul>
             </div>
         </div>
+    </main>
+
+    <!-- MAIN VIEW 5: Skills Arsenal -->
+    <main class="section-view" id="viewSkills">
+        <div class="skills-hero">
+            <div class="skills-hero-left">
+                <h2>
+                    <span class="ag-icon" style="color: var(--neon-purple, #c084fc);">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </span>
+                    <span data-i18n="skills.heroTitle">Antigravity Agent Becerileri &amp; Arsenal</span>
+                </h2>
+                <p data-i18n="skills.heroDesc">Yapay zeka ajanınızın kodlama, mimari analiz, UI tasarımı ve yerel model delegasyonunda kullandığı 21 özel yetenek.</p>
+            </div>
+            <div class="skills-hero-stats">
+                <div class="skill-stat-box">
+                    <span class="stat-num" id="skillsStatTotal">21</span>
+                    <span class="stat-lbl" data-i18n="skills.activeSkills">Aktif Beceri</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills-filter-bar">
+            <div class="search-box">
+                <span class="search-icon ag-icon">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </span>
+                <input type="text" id="skillSearchInput" placeholder="Beceri, tetikleyici veya açıklama ara..." data-i18n-placeholder="skills.searchPlaceholder">
+            </div>
+            <div class="filter-chips" id="skillsCatChips">
+                <button class="chip-btn active" data-action="filterSkills" data-category="all">
+                    <span data-i18n="filter.all">Tümü</span> (<span id="catCountAll">21</span>)
+                </button>
+                <button class="chip-btn" data-action="filterSkills" data-category="architecture">
+                    <span>🏛️ <span data-i18n="skills.catArchitecture">Mimari</span></span> (<span id="catCountArch">5</span>)
+                </button>
+                <button class="chip-btn" data-action="filterSkills" data-category="design">
+                    <span>🎨 <span data-i18n="skills.catDesign">Tasarım &amp; UI</span></span> (<span id="catCountDesign">3</span>)
+                </button>
+                <button class="chip-btn" data-action="filterSkills" data-category="quality">
+                    <span>🧼 <span data-i18n="skills.catQuality">Kod Kalitesi</span></span> (<span id="catCountQuality">4</span>)
+                </button>
+                <button class="chip-btn" data-action="filterSkills" data-category="optimization">
+                    <span>⚡ <span data-i18n="skills.catOptimization">Optimizasyon &amp; Bellek</span></span> (<span id="catCountOpt">5</span>)
+                </button>
+                <button class="chip-btn" data-action="filterSkills" data-category="local-ai">
+                    <span>🤖 <span data-i18n="skills.catLocalAi">Yerel AI &amp; Python</span></span> (<span id="catCountLocalAi">4</span>)
+                </button>
+            </div>
+        </div>
+
+        <div class="skills-grid" id="skillsGrid"></div>
     </main>
 
     <!-- DEDICATED DISCRETE ARCHIVE DRAWER -->
@@ -4658,18 +5082,87 @@ body::before {
                         </svg>
                     </span>
                     <div>
-                        <h2 style="font-size: 18px; color: var(--text-bright); font-weight: 700; margin: 0;">Kontrol Paneli Ayarları</h2>
-                        <div style="font-size: 12px; color: var(--text-dim); margin-top: 2px;">Görünüm, başlangıç tercihleri ve yerel motor yapılandırması</div>
+                        <h2 id="settingsModalTitle" style="font-size: 18px; color: var(--text-bright); font-weight: 700; margin: 0;" data-i18n="settings.modalTitle">Kontrol Paneli Ayarları</h2>
+                        <div id="settingsModalSubtitle" style="font-size: 12px; color: var(--text-dim); margin-top: 2px;" data-i18n="settings.modalSubtitle">Görünüm, dil, başlangıç tercihleri ve yerel motor yapılandırması</div>
                     </div>
                 </div>
-                <button class="ag-btn-icon" data-action="closeSettings" title="Kapat">✕</button>
+                <button class="ag-btn-icon" id="closeSettingsBtn" data-action="closeSettings" title="Kapat" data-i18n-title="settings.close">✕</button>
             </div>
             
             <div class="settings-modal-body">
+                <!-- Language Picker Section -->
+                <div class="settings-section">
+                    <div class="settings-section-title">
+                        <span style="font-weight: 700;">🌐 <span data-i18n="settings.langTitle">Dil Seçimi / Language</span></span>
+                        <span class="settings-pill" id="currentLangBadge">🇹🇷 Türkçe</span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px; margin-bottom: 10px;" data-i18n="settings.langDesc">
+                        Arayüz dilini seçin. Yeni kurulumlarda Antigravity IDE diline otomatik uyum sağlar.
+                    </div>
+                    <div class="language-picker-grid">
+                        <button class="lang-card-btn active" data-action="setLanguage" data-lang="auto" id="langCardAuto">
+                            <span class="lang-flag">🌐</span>
+                            <div class="lang-info">
+                                <span class="lang-name" data-i18n="lang.auto">Otomatik (IDE Dili)</span>
+                                <span class="lang-sub" id="autoLangDetectedLabel">Antigravity Default</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="en" id="langCardEn">
+                            <span class="lang-flag">🇺🇸</span>
+                            <div class="lang-info">
+                                <span class="lang-name">English</span>
+                                <span class="lang-sub">United States</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="tr" id="langCardTr">
+                            <span class="lang-flag">🇹🇷</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Türkçe</span>
+                                <span class="lang-sub">Türkiye</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="de" id="langCardDe">
+                            <span class="lang-flag">🇩🇪</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Deutsch</span>
+                                <span class="lang-sub">Deutschland</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="es" id="langCardEs">
+                            <span class="lang-flag">🇪🇸</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Español</span>
+                                <span class="lang-sub">España</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="fr" id="langCardFr">
+                            <span class="lang-flag">🇫🇷</span>
+                            <div class="lang-info">
+                                <span class="lang-name">Français</span>
+                                <span class="lang-sub">France</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="zh" id="langCardZh">
+                            <span class="lang-flag">🇨🇳</span>
+                            <div class="lang-info">
+                                <span class="lang-name">简体中文</span>
+                                <span class="lang-sub">中国 (Chinese)</span>
+                            </div>
+                        </button>
+                        <button class="lang-card-btn" data-action="setLanguage" data-lang="ja" id="langCardJa">
+                            <span class="lang-flag">🇯🇵</span>
+                            <div class="lang-info">
+                                <span class="lang-name">日本語</span>
+                                <span class="lang-sub">日本 (Japanese)</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Theme Picker Section -->
                 <div class="settings-section">
                     <div class="settings-section-title">
-                        <span style="font-weight: 700;">🎨 Tema Seçimi</span>
+                        <span style="font-weight: 700;">🎨 <span data-i18n="settings.themeTitle">Tema Seçimi</span></span>
                         <span class="settings-pill" id="currentThemeBadge">Antigravity IDE Dark</span>
                     </div>
                     <div class="theme-picker-grid">
@@ -4921,6 +5414,17 @@ body::before {
                         </label>
                     </div>
 
+                    <div class="settings-row">
+                        <div class="settings-row-info">
+                            <div class="settings-row-title">Agent Becerileri &amp; Arsenal Sekmesi</div>
+                            <div class="settings-row-desc">21 özel yetenek ve tetikleyici prompt kataloğu sekmesini göster/gizle.</div>
+                        </div>
+                        <label class="switch-toggle" title="Beceriler sekmesini göster/gizle">
+                            <input type="checkbox" id="visToggleTabSkills" data-action="toggleWidgetVisibility" data-widget="tabSkills" checked>
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
                     <!-- Hızlı Butonlar & Ekstra Bölümler -->
                     <div class="settings-subgroup-title" style="margin-top: 10px;">Hızlı Butonlar &amp; Çekmeceler</div>
 
@@ -4961,13 +5465,13 @@ body::before {
                 <!-- Startup & Audio Preferences -->
                 <div class="settings-section">
                     <div class="settings-section-title">
-                        <span style="font-weight: 700;">⚙️ Başlangıç &amp; Bildirim Tercihleri</span>
+                        <span style="font-weight: 700;">⚙️ <span data-i18n="settings.startupTitle">Başlangıç &amp; Bildirim Tercihleri</span></span>
                     </div>
                     
                     <div class="settings-row">
                         <div class="settings-row-info">
-                            <div class="settings-row-title">IDE Açıldığında Otomatik Göster</div>
-                            <div class="settings-row-desc">Antigravity IDE veya VS Code açıldığında kontrol paneli otomatik olarak açılsın.</div>
+                            <div class="settings-row-title" data-i18n="settings.startupAuto">IDE Açıldığında Otomatik Göster</div>
+                            <div class="settings-row-desc" data-i18n="settings.startupAutoDesc">Antigravity IDE veya VS Code açıldığında kontrol paneli otomatik olarak açılsın.</div>
                         </div>
                         <label class="switch-toggle" title="Açılışta otomatik başlatmayı aç/kapat">
                             <input type="checkbox" id="settingsStartupInput" data-action="toggleStartup">
@@ -4977,8 +5481,8 @@ body::before {
 
                     <div class="settings-row">
                         <div class="settings-row-info">
-                            <div class="settings-row-title">Arayüz Ses Efektleri (SFX)</div>
-                            <div class="settings-row-desc">Tema değiştirildiğinde veya butonlara tıklandığında hafif sesli geri bildirim ver.</div>
+                            <div class="settings-row-title" data-i18n="settings.sfx">Arayüz Ses Efektleri (SFX)</div>
+                            <div class="settings-row-desc" data-i18n="settings.sfxDesc">Tema değiştirildiğinde veya butonlara tıklandığında hafif sesli geri bildirim ver.</div>
                         </div>
                         <label class="switch-toggle" title="Ses efektlerini aç/kapat">
                             <input type="checkbox" id="settingsAudioInput" data-action="toggleAudio">
@@ -4990,14 +5494,14 @@ body::before {
                 <!-- Ekstra: Yerel Kod Motoru (Sadece sistemde herhangi bir yerel AI tespit edilirse görüntülenir) -->
                 <div class="settings-section" id="settingsExtraLocalAiSection" style="display: none;">
                     <div class="settings-section-title">
-                        <span style="font-weight: 700;">⚡ Ekstra: Yerel Kod &amp; Model Motoru</span>
-                        <span class="settings-pill" id="settingsLocalAiPill">Yerel AI</span>
+                        <span style="font-weight: 700;">⚡ <span data-i18n="settings.localAiTitle">Ekstra: Yerel Kod &amp; Model Motoru</span></span>
+                        <span class="settings-pill" id="settingsLocalAiPill" data-i18n="settings.localAiPill">Yerel AI</span>
                     </div>
                     
                     <div class="settings-row">
                         <div class="settings-row-info">
                             <div class="settings-row-title" id="settingsLocalAiTitle">Yerel Model Motoru</div>
-                            <div class="settings-row-desc" id="settingsLocalAiDesc">Bilgisayarınızda algılanan yerel motor üzerinden bağımsız kodlama ve algoritma çalıştırma.</div>
+                            <div class="settings-row-desc" id="settingsLocalAiDesc" data-i18n="settings.localAiDesc">Bilgisayarınızda algılanan yerel motor üzerinden bağımsız kodlama ve algoritma çalıştırma.</div>
                             <div style="margin-top: 6px; font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text-dim); display: flex; align-items: center; gap: 8px;">
                                 <span class="status-dot" id="settingsLocalAiDot" style="width: 7px; height: 7px; background: var(--neon-emerald);"></span>
                                 <span id="settingsLocalAiEndpoint">http://127.0.0.1:11434</span>
@@ -5005,7 +5509,7 @@ body::before {
                             </div>
                         </div>
                         <button class="hud-btn" id="settingsLocalAiBtn" data-action="toggleLocalAi">
-                            <span id="settingsLocalAiBtnText">Motoru Başlat</span>
+                            <span id="settingsLocalAiBtnText" data-i18n="settings.startEngine">Motoru Başlat</span>
                         </button>
                     </div>
                 </div>
@@ -5013,17 +5517,17 @@ body::before {
                 <!-- Architectural Knowledge & Tools -->
                 <div class="settings-section">
                     <div class="settings-section-title">
-                        <span style="font-weight: 700;">🌐 Mimari Gözlemci &amp; Araçlar</span>
+                        <span style="font-weight: 700;">🌐 <span data-i18n="settings.radarTitle">Mimari Gözlemci &amp; Araçlar</span></span>
                     </div>
                     
                     <div class="settings-row">
                         <div class="settings-row-info">
                             <div class="settings-row-title">Graphify Bilgi Grafı (Deep Space Observatory)</div>
-                            <div class="settings-row-desc">Projenin interaktif çağrı ve modül haritasını Microsoft Edge tarayıcısında açar.</div>
+                            <div class="settings-row-desc" data-i18n="settings.radarDesc">Projenin interaktif çağrı ve modül haritasını Microsoft Edge tarayıcısında açar.</div>
                         </div>
                         <button class="hud-btn" data-action="openGraphifyRoot">
                             <span class="ag-icon">🌐</span>
-                            <span>Haritayı Aç</span>
+                            <span data-i18n="settings.openMap">Haritayı Aç</span>
                         </button>
                     </div>
                 </div>
@@ -5032,9 +5536,9 @@ body::before {
             <div class="settings-modal-footer">
                 <button class="hud-btn" data-action="refresh">
                     <span class="ag-icon">🔄</span>
-                    <span>Tüm Verileri Yenile</span>
+                    <span data-i18n="settings.refreshAll">Tüm Verileri Yenile</span>
                 </button>
-                <button class="hud-btn primary" data-action="closeSettings">Tamam</button>
+                <button class="hud-btn primary" data-action="closeSettings" data-i18n="settings.done">Tamam</button>
             </div>
         </div>
     </div>
@@ -5042,7 +5546,7 @@ body::before {
     <!-- Toast Notification Element -->
     <div id="cockpitToast">İşlem Tamamlandı</div>
     <script nonce="preview-nonce">
-        window.__INITIAL_DATA__ = {"sessions":[{"id":"session-sample-uuid-001","time":"05/10 12:30","timeAgo":"Az Önce","timestamp":1791719727013,"prompt":"Antigravity Activity Dashboard v2.0 mimari refactoring ve güvenlik denetimi","activeDoc":"src/extension.js","toolCount":18,"transcriptPath":"C:/Users/Kaan/.gemini/antigravity-ide/brain/session/transcript.jsonl","path":"C:/Users/Kaan/.gemini/antigravity-ide/brain/session","status":"Tamamlandı"}],"projects":[{"name":"antigravity-activity-dashboard","path":"c:/users/kaan/.gemini/antigravity-ide/scratch/antigravity-activity-dashboard","rawPath":"C:\\Users\\Kaan\\.gemini\\antigravity-ide\\scratch\\antigravity-activity-dashboard","isGit":true,"branch":"main","gitLog":[{"hash":"96afe05","msg":"chore(infra): complete Phase 0 setup with git, manifest, metadata and cyberpunk graph","ago":"5 dk önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity IDE v2.0 Cockpit Dashboard","hasGraphify":true,"graphifyPath":"C:/Users/Kaan/.gemini/antigravity-ide/scratch/antigravity-activity-dashboard/graphify-out/graph.html","cbmIndexed":true,"cbmDbSize":"4.2 MB","isFavorite":true,"isArchived":false},{"name":"Market_Kasa","path":"c:/users/kaan/github-repos/market_kasa","rawPath":"C:\\Users\\Kaan\\github-repos\\Market_Kasa","isGit":true,"branch":"main","gitLog":[{"hash":"7da8ae2","msg":"fix(veresiye): customer balance auto-heal v1.4.0","ago":"2 hafta önce"}],"hasUncommitted":true,"sessionNotes":"","hasGraphify":false,"graphifyPath":null,"cbmIndexed":true,"cbmDbSize":"2.8 MB","isFavorite":false,"isArchived":false}],"githubRepos":[{"name":"antigravity-brain-sync","fullName":"HasanKaan28/antigravity-brain-sync","description":"Antigravity IDE persona, skills, persistent memory, and rules sync vault","isPrivate":true,"language":"Python","stars":0,"url":"https://github.com/HasanKaan28/antigravity-brain-sync","pushedAt":"2026-10-11T11:55:27.013Z","timeAgo":"Bugün","defaultBranch":"main","isCloned":true,"localPath":"C:/Users/Kaan/github-repos/antigravity-brain-sync","cbmIndexed":true,"cbmDbSize":"1.9 MB","hasGraphify":false,"isFavorite":true,"isArchived":false}],"favCount":2,"archCount":0,"ghCount":1,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":46.94202,"resetTime":"2h 23m","resetDate":1791728266000,"themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":43.72532,"resetTime":"2d 23h","resetDate":1791977778000}},{"id":"non-google","label":"Claude","remaining":0,"resetTime":"4h 27m","resetDate":1791735686000,"themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":48.39392,"resetTime":"6d 9h","resetDate":1792273771000}}],"user":{"email":"ufukkarabulut35@gmail.com","tier":"Google AI Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.06666666666666667},"userCredits":[{"creditType":"GOOGLE_ONE_AI","creditAmount":"0"}],"formatted":{"promptAvailable":"500","promptMonthly":"50.0K","flowAvailable":"100","flowMonthly":"150.0K"}},"historyCount":1240,"rawViewState":{"groups":[{"id":"gemini","label":"Gemini","remaining":46.94202,"resetTime":"2h 23m","resetDate":1791728266000,"themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":43.72532,"resetTime":"2d 23h","resetDate":1791977778000}},{"id":"non-google","label":"Claude","remaining":0,"resetTime":"4h 27m","resetDate":1791735686000,"themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":48.39392,"resetTime":"6d 9h","resetDate":1792273771000}}],"activeGroupId":"gemini","chart":{"buckets":[{"endTime":1791714533612,"items":[{"groupId":"gemini","usage":3.7602800000000087,"color":"#40C4FF"}]},{"endTime":1791714773612,"items":[{"groupId":"gemini","usage":2.6521299999999997,"color":"#40C4FF"}]},{"endTime":1791715013612,"items":[{"groupId":"gemini","usage":3.064329999999998,"color":"#40C4FF"}]},{"endTime":1791715253612,"items":[{"groupId":"gemini","usage":3.906080000000003,"color":"#40C4FF"}]},{"endTime":1791715493612,"items":[]},{"endTime":1791715733612,"items":[{"groupId":"gemini","usage":1.0863799999999983,"color":"#40C4FF"}]},{"endTime":1791715973612,"items":[]},{"endTime":1791716213612,"items":[]},{"endTime":1791716453612,"items":[]},{"endTime":1791716693612,"items":[]},{"endTime":1791716933612,"items":[{"groupId":"gemini","usage":0.6286899999999989,"color":"#40C4FF"}]},{"endTime":1791717173612,"items":[]},{"endTime":1791717413612,"items":[{"groupId":"gemini","usage":0.10005999999999915,"color":"#40C4FF"}]},{"endTime":1791717653612,"items":[]},{"endTime":1791717893612,"items":[]},{"endTime":1791718133612,"items":[{"groupId":"non-google","usage":67.72896,"color":"#FFAB40"}]},{"endTime":1791718373612,"items":[{"groupId":"gemini","usage":1.8066099999999992,"color":"#40C4FF"},{"groupId":"non-google","usage":32.27104,"color":"#FFAB40"}]},{"endTime":1791718613612,"items":[]},{"endTime":1791718853612,"items":[{"groupId":"gemini","usage":4.527710000000006,"color":"#40C4FF"}]},{"endTime":1791719093612,"items":[{"groupId":"gemini","usage":1.5212900000000005,"color":"#40C4FF"}]},{"endTime":1791719333612,"items":[]},{"endTime":1791719573612,"items":[{"groupId":"gemini","usage":0.4900999999999982,"color":"#40C4FF"}]},{"endTime":1791719693612,"items":[{"groupId":"gemini","usage":1.5699699999999979,"color":"#40C4FF"}]}],"groupLabels":{"gemini":"Gemini","non-google":"Claude"},"displayMinutes":90,"interval":240,"prediction":{"usageRate":16.742420000000006,"runway":"Stable"}},"displayItems":[{"label":"Gemini","remaining":46.94202,"resetTime":"2h 23m","resetDate":1791728266000,"hasData":true,"themeColor":"#40C4FF","weekly":{"remaining":43.72532,"resetTime":"2d 23h","resetDate":1791977778000}},{"label":"Claude","remaining":0,"resetTime":"4h 27m","resetDate":1791735686000,"hasData":true,"themeColor":"#FFAB40","weekly":{"remaining":48.39392,"resetTime":"6d 9h","resetDate":1792273771000}}]},"lastSyncTimestamp":1791719693855},"cbm":{"installed":true,"version":"0.11.0","path":"C:/Users/Kaan/AppData/Local/Programs/codebase-memory-mcp/codebase-memory-mcp.exe","uiUrl":"http://localhost:9749","totalDbSizeMb":"185.0 MB","indexedProjectsCount":10},"system":{"gpu":"NVIDIA RTX 5070 Ti (Active)","localModel":"qwen2.5-coder:14b (Ollama Aktif)","hasLocalEngine":true,"localAi":{"hasLocalEngine":true,"primaryEngine":{"id":"ollama","name":"Ollama","endpoint":"http://127.0.0.1:11434","online":true,"installed":true,"activeModel":"qwen2.5-coder:14b","models":["qwen2.5-coder:14b"]},"detectedEngines":[{"id":"ollama","name":"Ollama","endpoint":"http://127.0.0.1:11434","online":true,"installed":true,"activeModel":"qwen2.5-coder:14b"}]},"ollamaOnline":true,"ollamaInstalled":true,"remoteVault":"HasanKaan28/antigravity-brain-sync (Senkronize)","graphifyStatus":"Etkin (Cyberpunk Deep Space Observatory)","cbmStatus":"Etkin (10 Repo, 185.0 MB)"}};
+        window.__INITIAL_DATA__ = {"ideLanguage":"tr","configuredLanguage":"auto","sessions":[{"id":"session-sample-uuid-001","time":"10:30","timeAgo":"Az Önce","timestamp":1791740709179,"prompt":"Örnek oturum: Proje mimarisi ve bileşen oluşturma","activeDoc":"src/index.js","toolCount":8,"transcriptPath":null,"path":"/workspaces/sample-project","status":"Tamamlandı"}],"projects":[{"name":"sample-project","path":"/workspaces/sample-project","rawPath":"/workspaces/sample-project","isGit":true,"branch":"main","gitLog":[{"hash":"a1b2c3d","msg":"feat: initial project structure","ago":"1 saat önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity Cockpit Çalışma Alanı","hasGraphify":false,"graphifyPath":null,"cbmIndexed":false,"cbmDbSize":null,"isFavorite":false,"isArchived":false}],"githubRepos":[],"githubUser":null,"githubConnected":false,"favCount":0,"archCount":0,"ghCount":0,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":90,"resetTime":"4h 00m","themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":80,"resetTime":"4d 12h"}},{"id":"non-google","label":"Claude","remaining":95,"resetTime":"4h 15m","themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":85,"resetTime":"5d 20h"}}],"user":{"email":"developer@example.com","tier":"Antigravity Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.1}}},"cbm":{"installed":false,"version":null,"path":null,"uiUrl":null,"totalDbSizeMb":"0 MB","indexedProjectsCount":0},"system":{"gpu":"Sistem GPU (Aktif)","localModel":"Yerel Model Bulunamadı","hasLocalEngine":false,"localAi":{"hasLocalEngine":false,"primaryEngine":null,"detectedEngines":[]},"ollamaOnline":false,"ollamaInstalled":false,"remoteVault":"Yapılandırılmadı","graphifyStatus":"Hazır (Observatory)","cbmStatus":"Kurulu Değil"},"skills":{"totalCount":3,"categories":{"architecture":1,"design":1,"quality":1,"optimization":0,"local-ai":0},"skills":[{"id":"code-review","displayName":"Code Review Excellence","category":"quality","description":"Systematic code analysis, clean architecture patterns, and collaborative feedback.","promptHint":"@skill:code-review","skillPath":null},{"id":"api-design","displayName":"API Design Principles","category":"architecture","description":"Master REST and GraphQL API design principles for scalable and maintainable systems.","promptHint":"@skill:api-design-principles","skillPath":null},{"id":"frontend-design","displayName":"Frontend Design Guidelines","category":"design","description":"Distinctive frontend implementations, design tokens, and accessibility standards.","promptHint":"@skill:frontend-design","skillPath":null}]}};
     </script>
     <script>(function () {
     'use strict';
@@ -5054,6 +5558,848 @@ body::before {
     let isArchiveDrawerOpen = false;
     let isAgDetailsModalOpen = false;
     let isAgPanelCollapsed = false;
+
+    // --- Internationalization (i18n) Subsystem ---
+    const SUPPORTED_LOCALES = ['en', 'tr', 'de', 'es', 'fr', 'zh', 'ja'];
+    const LOCALE_NAMES = {
+        auto: 'Otomatik (IDE Dili)',
+        en: 'English',
+        tr: 'Türkçe',
+        de: 'Deutsch',
+        es: 'Español',
+        fr: 'Français',
+        zh: '简体中文',
+        ja: '日本語'
+    };
+    const LOCALE_FLAGS = {
+        auto: '🌐',
+        en: '🇺🇸',
+        tr: '🇹🇷',
+        de: '🇩🇪',
+        es: '🇪🇸',
+        fr: '🇫🇷',
+        zh: '🇨🇳',
+        ja: '🇯🇵'
+    };
+
+    const LOCALES = {
+        en: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': 'New Chat',
+            'hud.newChatTitle': 'Start New Antigravity AI Chat',
+            'hud.refresh': 'Refresh',
+            'hud.refreshTitle': 'Refresh Dashboard Data',
+            'hud.settings': 'Settings',
+            'hud.settingsTitle': 'Cockpit Settings',
+            'telemetry.gpu': 'GPU ARCHITECTURE',
+            'telemetry.quota': 'GEMINI TOKEN & QUOTA',
+            'telemetry.github': 'GITHUB SYNC',
+            'telemetry.remaining': 'Remaining:',
+            'telemetry.live': 'Live',
+            'telemetry.weekly': 'Weekly:',
+            'nav.projects': 'Projects & Workspaces',
+            'nav.github': 'My GitHub Repos',
+            'nav.sessions': 'Recent Activity & Sessions',
+            'nav.radar': 'Graphify Knowledge Radar',
+            'filter.searchPlaceholder': 'Search project, repo, or commit... (Ctrl + K)',
+            'filter.all': 'All',
+            'filter.favorites': 'Favorites',
+            'filter.git': 'Git Repos',
+            'filter.graphify': 'Graphify Ready',
+            'filter.archive': 'Archive Drawer',
+            'projects.emptyTitle': 'No Projects Found',
+            'projects.emptyDesc': 'No project matches the selected filter or search query.',
+            'projects.graph': 'Graph',
+            'projects.ide': 'Open in IDE',
+            'projects.github': 'GitHub',
+            'projects.clone': 'Clone',
+            'projects.local': 'Local',
+            'projects.unarchive': 'Restore',
+            'projects.open': 'Open',
+            'projects.archiveEmpty': 'No archived repositories or projects.',
+            'sessions.emptyTitle': 'No Sessions Found',
+            'sessions.emptyDesc': 'Antigravity IDE conversations will appear here chronologically.',
+            'sessions.transcript': 'Transcript',
+            'sessions.folder': 'Folder',
+            'sessions.toolCalls': 'Tool Calls',
+            'radar.maps': 'Maps',
+            'radar.empty': 'No Graphify maps detected yet.',
+            'radar.openEdge': 'Open in Edge',
+            'nav.skills': 'Agent Skills & Arsenal',
+            'skills.heroTitle': 'Antigravity Agent Skills & Arsenal',
+            'skills.heroDesc': '21 elite capabilities powering autonomous coding, architecture review, UI design, and local AI delegation.',
+            'skills.activeSkills': 'Active Skills',
+            'skills.searchPlaceholder': 'Search skill, trigger, or description...',
+            'skills.catArchitecture': 'Architecture',
+            'skills.catDesign': 'Design & UI',
+            'skills.catQuality': 'Code Quality',
+            'skills.catOptimization': 'Optimization & Memory',
+            'skills.catLocalAi': 'Local AI & Python',
+            'skills.promptCopied': 'Trigger prompt for {name} copied!',
+            'skills.rulesFile': 'Rule File',
+            'skills.startChat': 'Start Chat',
+            'skills.copyHint': 'Click to copy trigger prompt',
+            'skills.emptyTitle': 'No Skills Found',
+            'skills.emptyDesc': 'No skill matches your search or category filter.',
+            'settings.modalTitle': 'Cockpit Settings',
+            'settings.modalSubtitle': 'Appearance, language, startup preferences, and local engine configuration',
+            'settings.close': 'Close',
+            'settings.langTitle': 'Interface Language',
+            'settings.langDesc': 'Select your preferred display language. Defaults to Antigravity IDE language.',
+            'settings.themeTitle': 'Theme Selection',
+            'settings.widgetsTitle': 'Hub & Component Visibility (Dashboard Customization)',
+            'settings.widgetsDesc': 'Choose which cards, tabs, and panels to display. Toggle off any unused items.',
+            'settings.widgetsAllOpen': 'All Visible',
+            'settings.widgetsAllHidden': 'All Hidden',
+            'settings.widgetsPartial': '{count} Visible',
+            'settings.subgroupTele': 'Telemetry & Top Cards',
+            'settings.subgroupTabs': 'Main Navigation Tabs',
+            'settings.subgroupPanels': 'Information Panels',
+            'settings.startupTitle': 'Startup & Notification Preferences',
+            'settings.startupAuto': 'Auto-Launch on IDE Startup',
+            'settings.startupAutoDesc': 'Automatically open the Cockpit when Antigravity IDE launches.',
+            'settings.sfx': 'Interface Sound Effects (SFX)',
+            'settings.sfxDesc': 'Subtle futuristic audio feedback when changing themes or clicking buttons.',
+            'settings.localAiTitle': 'Extra: Local Code & Model Engine',
+            'settings.localAiPill': 'Local AI',
+            'settings.localAiDesc': 'Autonomous local coding engine (e.g. Ollama, LM Studio) on local GPU / NPU.',
+            'settings.startEngine': 'Start Engine',
+            'settings.stopEngine': 'Stop Engine',
+            'settings.testConn': 'Test Connection',
+            'settings.refreshConn': 'Refresh Link',
+            'settings.radarTitle': 'Architecture Observatory & Tools',
+            'settings.radarDesc': 'Opens interactive call and dependency graph in Microsoft Edge.',
+            'settings.openMap': 'Open Map',
+            'settings.refreshAll': 'Refresh All Data',
+            'settings.done': 'Done',
+            'toast.langChanged': 'Language updated: {lang}',
+            'toast.themeChanged': 'Theme set to: {theme}',
+            'toast.audioOn': 'Interface SFX Enabled',
+            'toast.audioOff': 'Interface SFX Muted',
+            'toast.startupOn': 'Auto-startup enabled',
+            'toast.startupOff': 'Auto-startup disabled',
+            'toast.copied': 'Copied to clipboard',
+            'power.acOnline': 'AC Power Online',
+            'power.batteryEco': 'Battery Eco Mode',
+            'power.batteryDesc': 'Device running on battery ({percent}%). Local engine is kept in Eco Mode.',
+            'lang.auto': 'Auto (IDE Language)',
+            'lang.autoSub': 'System & Antigravity IDE default'
+        },
+        tr: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': 'Yeni Sohbet',
+            'hud.newChatTitle': 'Yeni Antigravity AI Sohbeti Başlat',
+            'hud.refresh': 'Yenile',
+            'hud.refreshTitle': 'Dashboard Verilerini Yenile',
+            'hud.settings': 'Ayarlar',
+            'hud.settingsTitle': 'Kontrol Paneli Ayarları',
+            'telemetry.gpu': 'GPU MİMARİSİ',
+            'telemetry.quota': 'GEMINI TOKEN & KOTA',
+            'telemetry.github': 'GITHUB SENKRONİZASYONU',
+            'telemetry.remaining': 'Kalan:',
+            'telemetry.live': 'Canlı',
+            'telemetry.weekly': 'Haftalık:',
+            'nav.projects': 'Projeler & Çalışma Alanları',
+            'nav.github': 'GitHub Repolarım',
+            'nav.sessions': 'Son Yapılanlar & Oturumlar',
+            'nav.radar': 'Graphify Bilgi Radarı',
+            'filter.searchPlaceholder': 'Proje, repo veya commit ara... (Ctrl + K)',
+            'filter.all': 'Tümü',
+            'filter.favorites': 'Favoriler',
+            'filter.git': 'Git Repoları',
+            'filter.graphify': 'Graphify Hazır',
+            'filter.archive': 'Arşiv Çekmecesi',
+            'projects.emptyTitle': 'Proje Bulunamadı',
+            'projects.emptyDesc': 'Seçilen filtreye veya arama terimine uyan bir proje yok.',
+            'projects.graph': 'Grafik',
+            'projects.ide': 'IDE\'de Aç',
+            'projects.github': 'GitHub',
+            'projects.clone': 'Klonla',
+            'projects.local': 'Yerel',
+            'projects.unarchive': 'Geri Yükle',
+            'projects.open': 'Aç',
+            'projects.archiveEmpty': 'Arşivlenmiş herhangi bir depo veya proje bulunmuyor.',
+            'sessions.emptyTitle': 'Oturum Kaydı Bulunamadı',
+            'sessions.emptyDesc': 'Antigravity IDE oturumları burada kronolojik olarak listelenir.',
+            'sessions.transcript': 'Transkript',
+            'sessions.folder': 'Klasör',
+            'sessions.toolCalls': 'Araç Çağrısı',
+            'radar.maps': 'Harita',
+            'radar.empty': 'Henüz Graphify haritası yok.',
+            'radar.openEdge': 'Edge ile Aç',
+            'nav.skills': 'Agent Becerileri & Arsenal',
+            'skills.heroTitle': 'Antigravity Agent Becerileri & Arsenal',
+            'skills.heroDesc': 'Yapay zeka ajanınızın kodlama, mimari analiz, UI tasarımı ve yerel model delegasyonunda kullandığı 21 özel yetenek.',
+            'skills.activeSkills': 'Aktif Beceri',
+            'skills.searchPlaceholder': 'Beceri, tetikleyici veya açıklama ara...',
+            'skills.catArchitecture': 'Mimari',
+            'skills.catDesign': 'Tasarım & UI',
+            'skills.catQuality': 'Kod Kalitesi',
+            'skills.catOptimization': 'Optimizasyon & Bellek',
+            'skills.catLocalAi': 'Yerel AI & Python',
+            'skills.promptCopied': '{name} tetikleyici promptu panoya kopyalandı!',
+            'skills.rulesFile': 'Kural Dosyası',
+            'skills.startChat': 'Sohbet Başlat',
+            'skills.copyHint': 'Tetikleyici promptu kopyalamak için tıkla',
+            'skills.emptyTitle': 'Beceri Bulunamadı',
+            'skills.emptyDesc': 'Seçilen filtreye veya aramaya uygun beceri bulunamadı.',
+            'settings.modalTitle': 'Kontrol Paneli Ayarları',
+            'settings.modalSubtitle': 'Görünüm, dil, başlangıç tercihleri ve yerel motor yapılandırması',
+            'settings.close': 'Kapat',
+            'settings.langTitle': 'Dil Seçimi / Language',
+            'settings.langDesc': 'Arayüz dilini seçin. Yeni kurulumlarda Antigravity IDE diline otomatik uyum sağlar.',
+            'settings.themeTitle': 'Tema Seçimi',
+            'settings.widgetsTitle': 'Hub & Bileşen Görünürlüğü (Dashboard Özelleştirme)',
+            'settings.widgetsDesc': 'Ana ekranda görünmesini istediğiniz kartları, sekmeleri ve panelleri seçin.',
+            'settings.widgetsAllOpen': 'Tümü Açık',
+            'settings.widgetsAllHidden': 'Tümü Gizli',
+            'settings.widgetsPartial': '{count} Açık',
+            'settings.subgroupTele': 'Telemetri & Üst Kartlar',
+            'settings.subgroupTabs': 'Ana Gezinme Sekmeleri',
+            'settings.subgroupPanels': 'Bilgi Panelleri',
+            'settings.startupTitle': 'Başlangıç & Bildirim Tercihleri',
+            'settings.startupAuto': 'IDE Açıldığında Otomatik Göster',
+            'settings.startupAutoDesc': 'Antigravity IDE veya VS Code açıldığında kontrol paneli otomatik olarak açılsın.',
+            'settings.sfx': 'Arayüz Ses Efektleri (SFX)',
+            'settings.sfxDesc': 'Tema değiştirildiğinde veya butonlara tıklandığında hafif sesli geri bildirim ver.',
+            'settings.localAiTitle': 'Ekstra: Yerel Kod & Model Motoru',
+            'settings.localAiPill': 'Yerel AI',
+            'settings.localAiDesc': 'Bilgisayarınızda algılanan yerel motor üzerinden bağımsız kodlama ve algoritma çalıştırma.',
+            'settings.startEngine': 'Motoru Başlat',
+            'settings.stopEngine': 'Motoru Durdur',
+            'settings.testConn': 'Bağlantıyı Sına',
+            'settings.refreshConn': 'Bağlantıyı Yenile',
+            'settings.radarTitle': 'Mimari Gözlemci & Araçlar',
+            'settings.radarDesc': 'Projenin interaktif çağrı ve modül haritasını Microsoft Edge tarayıcısında açar.',
+            'settings.openMap': 'Haritayı Aç',
+            'settings.refreshAll': 'Tüm Verileri Yenile',
+            'settings.done': 'Tamam',
+            'toast.langChanged': 'Dil değiştirildi: {lang}',
+            'toast.themeChanged': 'Tema ayarlandı: {theme}',
+            'toast.audioOn': 'Ses Efektleri Açıldı',
+            'toast.audioOff': 'Ses Efektleri Kapatıldı',
+            'toast.startupOn': 'Açılışta başlatma aktif',
+            'toast.startupOff': 'Açılışta başlatma devre dışı',
+            'toast.copied': 'Panoya kopyalandı',
+            'power.acOnline': 'Priz / Şarj Bağlı',
+            'power.batteryEco': 'Pil Modu (Eko)',
+            'power.batteryDesc': 'Cihaz pilde (%{percent}). Batarya koruması için yerel motor Eko Modunda tutuluyor.',
+            'lang.auto': 'Otomatik (IDE Dili)',
+            'lang.autoSub': 'Sistem ve IDE varsayılanı'
+        },
+        de: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': 'Neuer Chat',
+            'hud.newChatTitle': 'Neuen Antigravity KI-Chat starten',
+            'hud.refresh': 'Aktualisieren',
+            'hud.refreshTitle': 'Dashboard-Daten aktualisieren',
+            'hud.settings': 'Einstellungen',
+            'hud.settingsTitle': 'Cockpit-Einstellungen',
+            'telemetry.gpu': 'GPU-ARCHITEKTUR',
+            'telemetry.quota': 'GEMINI TOKEN & KONTINGENT',
+            'telemetry.github': 'GITHUB-SYNCHRONISATION',
+            'telemetry.remaining': 'Verbleibend:',
+            'telemetry.live': 'Live',
+            'telemetry.weekly': 'Wöchentlich:',
+            'nav.projects': 'Projekte & Arbeitsbereiche',
+            'nav.github': 'Meine GitHub-Repos',
+            'nav.sessions': 'Letzte Aktivitäten & Sitzungen',
+            'nav.radar': 'Graphify Wissensradar',
+            'filter.searchPlaceholder': 'Projekt, Repo oder Commit suchen... (Strg + K)',
+            'filter.all': 'Alle',
+            'filter.favorites': 'Favoriten',
+            'filter.git': 'Git-Repositories',
+            'filter.graphify': 'Graphify bereit',
+            'filter.archive': 'Archiv-Schublade',
+            'projects.emptyTitle': 'Keine Projekte gefunden',
+            'projects.emptyDesc': 'Kein Projekt entspricht dem ausgewählten Filter.',
+            'projects.graph': 'Grafik',
+            'projects.ide': 'In IDE öffnen',
+            'projects.github': 'GitHub',
+            'projects.clone': 'Klonen',
+            'projects.local': 'Lokal',
+            'projects.unarchive': 'Wiederherstellen',
+            'projects.open': 'Öffnen',
+            'projects.archiveEmpty': 'Keine archivierten Repositories oder Projekte.',
+            'sessions.emptyTitle': 'Keine Sitzungen gefunden',
+            'sessions.emptyDesc': 'Antigravity IDE Sitzungen werden hier chronologisch aufgeführt.',
+            'sessions.transcript': 'Transkript',
+            'sessions.folder': 'Ordner',
+            'sessions.toolCalls': 'Tool-Aufrufe',
+            'radar.maps': 'Karten',
+            'radar.empty': 'Noch keine Graphify-Karten vorhanden.',
+            'radar.openEdge': 'In Edge öffnen',
+            'nav.skills': 'Agent-Fähigkeiten & Arsenal',
+            'skills.heroTitle': 'Antigravity Agent-Fähigkeiten & Arsenal',
+            'skills.heroDesc': '21 Elite-Fähigkeiten für autonome Codierung, Architektur, UI-Design und lokale KI.',
+            'skills.activeSkills': 'Aktive Fähigkeiten',
+            'skills.searchPlaceholder': 'Fähigkeit, Trigger oder Beschreibung suchen...',
+            'skills.catArchitecture': 'Architektur',
+            'skills.catDesign': 'Design & UI',
+            'skills.catQuality': 'Code-Qualität',
+            'skills.catOptimization': 'Optimierung & Speicher',
+            'skills.catLocalAi': 'Lokale KI & Python',
+            'skills.promptCopied': 'Trigger-Prompt für {name} kopiert!',
+            'skills.rulesFile': 'Regeldatei',
+            'skills.startChat': 'Chat starten',
+            'skills.copyHint': 'Klicken, um Trigger-Prompt zu kopieren',
+            'skills.emptyTitle': 'Keine Fähigkeiten gefunden',
+            'skills.emptyDesc': 'Keine Fähigkeit entspricht Ihrem Filter oder Ihrer Suche.',
+            'settings.modalTitle': 'Cockpit-Einstellungen',
+            'settings.modalSubtitle': 'Erscheinungsbild, Sprache, Startpräferenzen und lokale Engine',
+            'settings.close': 'Schließen',
+            'settings.langTitle': 'Oberflächensprache / Language',
+            'settings.langDesc': 'Wählen Sie Ihre Anzeigesprache. Standardmäßig an die Antigravity IDE-Sprache angepasst.',
+            'settings.themeTitle': 'Designauswahl',
+            'settings.widgetsTitle': 'Widget- & Komponenten-Sichtbarkeit',
+            'settings.widgetsDesc': 'Wählen Sie die auf dem Dashboard sichtbaren Karten und Registerkarten.',
+            'settings.widgetsAllOpen': 'Alle sichtbar',
+            'settings.widgetsAllHidden': 'Alle ausgeblendet',
+            'settings.widgetsPartial': '{count} sichtbar',
+            'settings.subgroupTele': 'Telemetrie & Kopfkarten',
+            'settings.subgroupTabs': 'Hauptnavigation',
+            'settings.subgroupPanels': 'Infobereiche',
+            'settings.startupTitle': 'Start- & Benachrichtigungseinstellungen',
+            'settings.startupAuto': 'Beim IDE-Start automatisch öffnen',
+            'settings.startupAutoDesc': 'Cockpit beim Starten der IDE automatisch laden.',
+            'settings.sfx': 'Audio-Effekte (SFX)',
+            'settings.sfxDesc': 'Dezentes akustisches Feedback bei Aktionen.',
+            'settings.localAiTitle': 'Extra: Lokale Code-Engine',
+            'settings.localAiPill': 'Lokale KI',
+            'settings.localAiDesc': 'Autonome lokale Code-Engine (z.B. Ollama Qwen 2.5 Coder 14B).',
+            'settings.startEngine': 'Engine starten',
+            'settings.stopEngine': 'Engine stoppen',
+            'settings.testConn': 'Verbindung prüfen',
+            'settings.refreshConn': 'Link erneuern',
+            'settings.radarTitle': 'Architektur-Observatorium & Tools',
+            'settings.radarDesc': 'Öffnet interaktive Architekturkarte in Microsoft Edge.',
+            'settings.openMap': 'Karte öffnen',
+            'settings.refreshAll': 'Alle Daten aktualisieren',
+            'settings.done': 'Fertig',
+            'toast.langChanged': 'Sprache geändert: {lang}',
+            'toast.themeChanged': 'Design festgelegt: {theme}',
+            'toast.audioOn': 'Audioeffekte aktiviert',
+            'toast.audioOff': 'Audioeffekte stummgeschaltet',
+            'toast.startupOn': 'Autostart aktiviert',
+            'toast.startupOff': 'Autostart deaktiviert',
+            'toast.copied': 'In die Zwischenablage kopiert',
+            'power.acOnline': 'Netzstrom verbunden',
+            'power.batteryEco': 'Batteriesparmodus',
+            'power.batteryDesc': 'Gerät läuft im Akkubetrieb ({percent}%). Lokale Engine im Sparmodus.',
+            'lang.auto': 'Automatisch (IDE-Sprache)',
+            'lang.autoSub': 'System- und IDE-Standard'
+        },
+        es: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': 'Nuevo Chat',
+            'hud.newChatTitle': 'Iniciar Nuevo Chat Antigravity AI',
+            'hud.refresh': 'Actualizar',
+            'hud.refreshTitle': 'Actualizar Datos del Panel',
+            'hud.settings': 'Configuración',
+            'hud.settingsTitle': 'Configuración de Cockpit',
+            'telemetry.gpu': 'ARQUITECTURA GPU',
+            'telemetry.quota': 'TOKEN Y CUOTA GEMINI',
+            'telemetry.github': 'SINCRONIZACIÓN GITHUB',
+            'telemetry.remaining': 'Restante:',
+            'telemetry.live': 'En Vivo',
+            'telemetry.weekly': 'Semanal:',
+            'nav.projects': 'Proyectos y Espacios de Trabajo',
+            'nav.github': 'Mis Repositorios GitHub',
+            'nav.sessions': 'Actividad Reciente y Sesiones',
+            'nav.radar': 'Radar de Conocimiento Graphify',
+            'filter.searchPlaceholder': 'Buscar proyecto, repo o commit... (Ctrl + K)',
+            'filter.all': 'Todos',
+            'filter.favorites': 'Favoritos',
+            'filter.git': 'Repos Git',
+            'filter.graphify': 'Graphify Listo',
+            'filter.archive': 'Cajón de Archivo',
+            'projects.emptyTitle': 'No se encontraron proyectos',
+            'projects.emptyDesc': 'Ningún proyecto coincide con el filtro seleccionado.',
+            'projects.graph': 'Gráfico',
+            'projects.ide': 'Abrir en IDE',
+            'projects.github': 'GitHub',
+            'projects.clone': 'Clonar',
+            'projects.local': 'Local',
+            'projects.unarchive': 'Restaurar',
+            'projects.open': 'Abrir',
+            'projects.archiveEmpty': 'No hay repositorios ni proyectos archivados.',
+            'sessions.emptyTitle': 'No se encontraron sesiones',
+            'sessions.emptyDesc': 'Las sesiones de Antigravity IDE aparecerán aquí cronológicamente.',
+            'sessions.transcript': 'Transcripción',
+            'sessions.folder': 'Carpeta',
+            'sessions.toolCalls': 'Llamadas de Herramientas',
+            'radar.maps': 'Mapas',
+            'radar.empty': 'Aún no hay mapas Graphify.',
+            'radar.openEdge': 'Abrir en Edge',
+            'nav.skills': 'Habilidades del Agente y Arsenal',
+            'skills.heroTitle': 'Habilidades del Agente y Arsenal Antigravity',
+            'skills.heroDesc': '21 habilidades de élite para codificación autónoma, arquitectura, diseño y delegación local de IA.',
+            'skills.activeSkills': 'Habilidades Activas',
+            'skills.searchPlaceholder': 'Buscar habilidad, disparador o descripción...',
+            'skills.catArchitecture': 'Arquitectura',
+            'skills.catDesign': 'Diseño y UI',
+            'skills.catQuality': 'Calidad de Código',
+            'skills.catOptimization': 'Optimización y Memoria',
+            'skills.catLocalAi': 'IA Local y Python',
+            'skills.promptCopied': '¡Prompt activador para {name} copiado!',
+            'skills.rulesFile': 'Archivo de Reglas',
+            'skills.startChat': 'Iniciar Chat',
+            'skills.copyHint': 'Haz clic para copiar el prompt',
+            'skills.emptyTitle': 'No se encontraron habilidades',
+            'skills.emptyDesc': 'Ninguna habilidad coincide con el filtro o la búsqueda.',
+            'settings.modalTitle': 'Configuración de Cockpit',
+            'settings.modalSubtitle': 'Apariencia, idioma, preferencias de inicio y motor local',
+            'settings.close': 'Cerrar',
+            'settings.langTitle': 'Idioma de Interfaz / Language',
+            'settings.langDesc': 'Seleccione su idioma preferido. Por defecto se adapta al idioma de Antigravity IDE.',
+            'settings.themeTitle': 'Selección de Tema',
+            'settings.widgetsTitle': 'Visibilidad de Widgets y Componentes',
+            'settings.widgetsDesc': 'Elija qué tarjetas y pestañas desea mostrar en el panel.',
+            'settings.widgetsAllOpen': 'Todo Visible',
+            'settings.widgetsAllHidden': 'Todo Oculto',
+            'settings.widgetsPartial': '{count} Visible',
+            'settings.subgroupTele': 'Telemetría y Tarjetas Superiores',
+            'settings.subgroupTabs': 'Pestañas de Navegación',
+            'settings.subgroupPanels': 'Paneles Informativos',
+            'settings.startupTitle': 'Preferencias de Inicio y Notificación',
+            'settings.startupAuto': 'Abrir Automáticamente al Iniciar IDE',
+            'settings.startupAutoDesc': 'Abre Cockpit al iniciar Antigravity IDE.',
+            'settings.sfx': 'Efectos de Sonido (SFX)',
+            'settings.sfxDesc': 'Retroalimentación de audio sutil al interactuar.',
+            'settings.localAiTitle': 'Extra: Motor de Código Local',
+            'settings.localAiPill': 'IA Local',
+            'settings.localAiDesc': 'Motor de código local autónomo (ej. Ollama Qwen 2.5 Coder 14B).',
+            'settings.startEngine': 'Iniciar Motor',
+            'settings.stopEngine': 'Detener Motor',
+            'settings.testConn': 'Probar Conexión',
+            'settings.refreshConn': 'Actualizar Enlace',
+            'settings.radarTitle': 'Observatorio y Herramientas',
+            'settings.radarDesc': 'Abre el mapa interactivo de llamadas en Microsoft Edge.',
+            'settings.openMap': 'Abrir Mapa',
+            'settings.refreshAll': 'Actualizar Datos',
+            'settings.done': 'Aceptar',
+            'toast.langChanged': 'Idioma actualizado: {lang}',
+            'toast.themeChanged': 'Tema aplicado: {theme}',
+            'toast.audioOn': 'Efectos de sonido activados',
+            'toast.audioOff': 'Efectos de sonido silenciados',
+            'toast.startupOn': 'Inicio automático activado',
+            'toast.startupOff': 'Inicio automático desactivado',
+            'toast.copied': 'Copiado al portapapeles',
+            'power.acOnline': 'Conectado a la Corriente',
+            'power.batteryEco': 'Modo Batería (Ecológico)',
+            'power.batteryDesc': 'Dispositivo en batería ({percent}%). Motor local en modo ecológico.',
+            'lang.auto': 'Automático (Idioma IDE)',
+            'lang.autoSub': 'Predeterminado del sistema e IDE'
+        },
+        fr: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': 'Nouvelle Discussion',
+            'hud.newChatTitle': 'Démarrer une Nouvelle Discussion IA',
+            'hud.refresh': 'Actualiser',
+            'hud.refreshTitle': 'Actualiser les Données du Tableau de Bord',
+            'hud.settings': 'Paramètres',
+            'hud.settingsTitle': 'Paramètres Cockpit',
+            'telemetry.gpu': 'ARCHITECTURE GPU',
+            'telemetry.quota': 'JETON & QUOTA GEMINI',
+            'telemetry.github': 'SYNCHRONISATION GITHUB',
+            'telemetry.remaining': 'Restant :',
+            'telemetry.live': 'En Direct',
+            'telemetry.weekly': 'Hebdo :',
+            'nav.projects': 'Projets & Espaces de Travail',
+            'nav.github': 'Mes Dépôts GitHub',
+            'nav.sessions': 'Activités Récentes & Sessions',
+            'nav.radar': 'Radar de Connaissances Graphify',
+            'filter.searchPlaceholder': 'Rechercher projet, dépôt ou commit... (Ctrl + K)',
+            'filter.all': 'Tous',
+            'filter.favorites': 'Favoris',
+            'filter.git': 'Dépôts Git',
+            'filter.graphify': 'Graphify Prêt',
+            'filter.archive': 'Tiroir d\'Archives',
+            'projects.emptyTitle': 'Aucun projet trouvé',
+            'projects.emptyDesc': 'Aucun projet ne correspond au filtre sélectionné.',
+            'projects.graph': 'Graphe',
+            'projects.ide': 'Ouvrir dans l\'IDE',
+            'projects.github': 'GitHub',
+            'projects.clone': 'Cloner',
+            'projects.local': 'Local',
+            'projects.unarchive': 'Restaurer',
+            'projects.open': 'Ouvrir',
+            'projects.archiveEmpty': 'Aucun dépôt ni projet archivé.',
+            'sessions.emptyTitle': 'Aucune session trouvée',
+            'sessions.emptyDesc': 'Les conversations de l\'IDE Antigravity apparaîtront ici chronologiquement.',
+            'sessions.transcript': 'Transcription',
+            'sessions.folder': 'Dossier',
+            'sessions.toolCalls': 'Appels d\'outils',
+            'radar.maps': 'Cartes',
+            'radar.empty': 'Aucune carte Graphify détectée.',
+            'radar.openEdge': 'Ouvrir dans Edge',
+            'nav.skills': 'Compétences de l\'Agent & Arsenal',
+            'skills.heroTitle': 'Compétences de l\'Agent & Arsenal Antigravity',
+            'skills.heroDesc': '21 compétences d\'élite pour le codage autonome, l\'architecture, l\'interface utilisateur et l\'IA locale.',
+            'skills.activeSkills': 'Compétences Actives',
+            'skills.searchPlaceholder': 'Rechercher une compétence, un déclencheur...',
+            'skills.catArchitecture': 'Architecture',
+            'skills.catDesign': 'Design & UI',
+            'skills.catQuality': 'Qualité du Code',
+            'skills.catOptimization': 'Optimisation & Mémoire',
+            'skills.catLocalAi': 'IA Locale & Python',
+            'skills.promptCopied': 'Prompt de déclenchement pour {name} copié !',
+            'skills.rulesFile': 'Fichier de Règles',
+            'skills.startChat': 'Démarrer Discussion',
+            'skills.copyHint': 'Cliquer pour copier le prompt',
+            'skills.emptyTitle': 'Aucune compétence trouvée',
+            'skills.emptyDesc': 'Aucune compétence ne correspond à votre filtre.',
+            'settings.modalTitle': 'Paramètres Cockpit',
+            'settings.modalSubtitle': 'Apparence, langue, démarrage et moteur local',
+            'settings.close': 'Fermer',
+            'settings.langTitle': 'Langue de l\'Interface / Language',
+            'settings.langDesc': 'Sélectionnez votre langue d\'affichage. Par défaut aligné sur l\'IDE Antigravity.',
+            'settings.themeTitle': 'Sélection du Thème',
+            'settings.widgetsTitle': 'Visibilité des Widgets et Composants',
+            'settings.widgetsDesc': 'Personnalisez les éléments affichés sur le tableau de bord.',
+            'settings.widgetsAllOpen': 'Tous Visibles',
+            'settings.widgetsAllHidden': 'Tous Masqués',
+            'settings.widgetsPartial': '{count} Visibles',
+            'settings.subgroupTele': 'Télémétrie & Cartes Hautes',
+            'settings.subgroupTabs': 'Onglets de Navigation',
+            'settings.subgroupPanels': 'Panneaux d\'Information',
+            'settings.startupTitle': 'Préférences de Démarrage et Notifications',
+            'settings.startupAuto': 'Lancement Automatique au Démarrage',
+            'settings.startupAutoDesc': 'Ouvrir automatiquement le Cockpit au lancement de l\'IDE.',
+            'settings.sfx': 'Effets Sonores (SFX)',
+            'settings.sfxDesc': 'Retour sonore discret lors des interactions.',
+            'settings.localAiTitle': 'Extra : Moteur de Code Local',
+            'settings.localAiPill': 'IA Locale',
+            'settings.localAiDesc': 'Moteur de code local autonome (ex. Ollama Qwen 2.5 Coder 14B).',
+            'settings.startEngine': 'Démarrer le Moteur',
+            'settings.stopEngine': 'Arrêter le Moteur',
+            'settings.testConn': 'Tester Connexion',
+            'settings.refreshConn': 'Actualiser Lien',
+            'settings.radarTitle': 'Observatoire & Outils',
+            'settings.radarDesc': 'Ouvre la cartographie d\'architecture dans Microsoft Edge.',
+            'settings.openMap': 'Ouvrir la Carte',
+            'settings.refreshAll': 'Actualiser Tout',
+            'settings.done': 'Valider',
+            'toast.langChanged': 'Langue mise à jour : {lang}',
+            'toast.themeChanged': 'Thème appliqué : {theme}',
+            'toast.audioOn': 'Effets sonores activés',
+            'toast.audioOff': 'Effets sonores désactivés',
+            'toast.startupOn': 'Démarrage automatique activé',
+            'toast.startupOff': 'Démarrage automatique désactivé',
+            'toast.copied': 'Copié dans le presse-papiers',
+            'power.acOnline': 'Sur Secteur (Alimenté)',
+            'power.batteryEco': 'Mode Batterie (Éco)',
+            'power.batteryDesc': 'Appareil sur batterie ({percent}%). Moteur local en mode économie.',
+            'lang.auto': 'Automatique (Langue IDE)',
+            'lang.autoSub': 'Par défaut du système et de l\'IDE'
+        },
+        zh: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': '新建对话',
+            'hud.newChatTitle': '开启全新 Antigravity AI 对话',
+            'hud.refresh': '刷新',
+            'hud.refreshTitle': '刷新控制面板数据',
+            'hud.settings': '设置',
+            'hud.settingsTitle': '控制面板设置',
+            'telemetry.gpu': 'GPU 硬件架构',
+            'telemetry.quota': 'GEMINI 额度与 TOKEN',
+            'telemetry.github': 'GITHUB 同步状态',
+            'telemetry.remaining': '剩余：',
+            'telemetry.live': '实时',
+            'telemetry.weekly': '每周：',
+            'nav.projects': '项目与工作区',
+            'nav.github': 'GitHub 仓库',
+            'nav.sessions': '会话历史与活动',
+            'nav.radar': 'Graphify 知识雷达',
+            'filter.searchPlaceholder': '搜索项目、仓库或提交记录... (Ctrl + K)',
+            'filter.all': '全部',
+            'filter.favorites': '收藏项目',
+            'filter.git': 'Git 仓库',
+            'filter.graphify': 'Graphify 已就绪',
+            'filter.archive': '归档抽屉',
+            'projects.emptyTitle': '未找到项目',
+            'projects.emptyDesc': '没有与当前筛选或搜索关键词匹配的项目。',
+            'projects.graph': '拓扑图',
+            'projects.ide': 'IDE 打开',
+            'projects.github': 'GitHub',
+            'projects.clone': '克隆',
+            'projects.local': '本地',
+            'projects.unarchive': '还原',
+            'projects.open': '打开',
+            'projects.archiveEmpty': '当前暂无已归档的仓库或项目。',
+            'sessions.emptyTitle': '未找到会话记录',
+            'sessions.emptyDesc': 'Antigravity IDE 的所有对话将在此按时间倒序排列。',
+            'sessions.transcript': '对话实录',
+            'sessions.folder': '打开目录',
+            'sessions.toolCalls': '工具调用',
+            'radar.maps': '张图谱',
+            'radar.empty': '尚未检测到 Graphify 拓扑图。',
+            'radar.openEdge': 'Edge 打开',
+            'nav.skills': '智能体技能库与 Arsenal',
+            'skills.heroTitle': 'Antigravity 智能体技能库与 Arsenal',
+            'skills.heroDesc': '驱动自主编程、架构审查、UI 设计及本地模型委托的 21 项专属顶尖能力。',
+            'skills.activeSkills': '项活跃技能',
+            'skills.searchPlaceholder': '搜索技能名称、触发词或描述...',
+            'skills.catArchitecture': '架构设计',
+            'skills.catDesign': '界面与 UI',
+            'skills.catQuality': '代码质量',
+            'skills.catOptimization': '优化与上下文',
+            'skills.catLocalAi': '本地 AI 与 Python',
+            'skills.promptCopied': '已复制 {name} 的触发词 Prompt！',
+            'skills.rulesFile': '规则文件',
+            'skills.startChat': '发起对话',
+            'skills.copyHint': '点击复制触发词 Prompt',
+            'skills.emptyTitle': '未找到相关技能',
+            'skills.emptyDesc': '没有与当前筛选条件匹配的智能体技能。',
+            'settings.modalTitle': '控制面板设置',
+            'settings.modalSubtitle': '外观、界面语言、启动偏好与本地引擎配置',
+            'settings.close': '关闭',
+            'settings.langTitle': '界面语言 / Language',
+            'settings.langDesc': '选择显示语言。新安装时默认自动匹配 Antigravity IDE 语言。',
+            'settings.themeTitle': '界面主题风格',
+            'settings.widgetsTitle': '组件与面板可见性自定义',
+            'settings.widgetsDesc': '选择要在主界面显示的卡片与选项卡。',
+            'settings.widgetsAllOpen': '全部显示',
+            'settings.widgetsAllHidden': '全部隐藏',
+            'settings.widgetsPartial': '{count} 项可见',
+            'settings.subgroupTele': '遥测与顶部卡片',
+            'settings.subgroupTabs': '主导航选项卡',
+            'settings.subgroupPanels': '信息面板',
+            'settings.startupTitle': '启动偏好与系统反馈',
+            'settings.startupAuto': 'IDE 启动时自动打开',
+            'settings.startupAutoDesc': '启动 Antigravity IDE 时自动显示本控制台。',
+            'settings.sfx': '未来感界面音效 (SFX)',
+            'settings.sfxDesc': '切换主题或点击按钮时播放轻微操作音效反馈。',
+            'settings.localAiTitle': '扩展：本地代码与模型引擎',
+            'settings.localAiPill': '本地 AI',
+            'settings.localAiDesc': '基于本地 GPU 的独立本地离线编码引擎 (如 Ollama 等)。',
+            'settings.startEngine': '启动引擎',
+            'settings.stopEngine': '停止引擎',
+            'settings.testConn': '测试连接',
+            'settings.refreshConn': '刷新链路',
+            'settings.radarTitle': '架构全景观测与工具',
+            'settings.radarDesc': '在 Microsoft Edge 中打开可交互的代码调用依赖拓扑图。',
+            'settings.openMap': '打开地图',
+            'settings.refreshAll': '刷新全部数据',
+            'settings.done': '完成',
+            'toast.langChanged': '语言已更新：{lang}',
+            'toast.themeChanged': '主题已切换：{theme}',
+            'toast.audioOn': '界面音效已开启',
+            'toast.audioOff': '界面音效已静音',
+            'toast.startupOn': '自启动已启用',
+            'toast.startupOff': '自启动已禁用',
+            'toast.copied': '已复制到剪贴板',
+            'power.acOnline': '已接通电源 (AC)',
+            'power.batteryEco': '电池节能模式',
+            'power.batteryDesc': '当前使用电池供电 ({percent}%)。本地引擎已启用节能保护。',
+            'lang.auto': '自动 (IDE 语言)',
+            'lang.autoSub': '跟随系统与 IDE 默认设置'
+        },
+        ja: {
+            'hud.title': 'Antigravity Cockpit',
+            'hud.newChat': '新規チャット',
+            'hud.newChatTitle': '新規 Antigravity AI チャットを開始',
+            'hud.refresh': '更新',
+            'hud.refreshTitle': 'ダッシュボードのデータを更新',
+            'hud.settings': '設定',
+            'hud.settingsTitle': 'Cockpit 設定',
+            'telemetry.gpu': 'GPU アーキテクチャ',
+            'telemetry.quota': 'GEMINI トークン＆クォータ',
+            'telemetry.github': 'GITHUB 同期状態',
+            'telemetry.remaining': '残り：',
+            'telemetry.live': 'リアルタイム',
+            'telemetry.weekly': '週間：',
+            'nav.projects': 'プロジェクト＆ワークスペース',
+            'nav.github': 'GitHub リポジトリ',
+            'nav.sessions': '最近の履歴＆セッション',
+            'nav.radar': 'Graphify 知識レーダー',
+            'filter.searchPlaceholder': 'プロジェクト、リポ、コミットを検索... (Ctrl + K)',
+            'filter.all': 'すべて',
+            'filter.favorites': 'お気に入り',
+            'filter.git': 'Git リポジトリ',
+            'filter.graphify': 'Graphify 準備完了',
+            'filter.archive': 'アーカイブ引き出し',
+            'projects.emptyTitle': 'プロジェクトが見つかりません',
+            'projects.emptyDesc': '検索条件またはフィルターに一致するプロジェクトがありません。',
+            'projects.graph': 'グラフ',
+            'projects.ide': 'IDE で開く',
+            'projects.github': 'GitHub',
+            'projects.clone': 'クローン',
+            'projects.local': 'ローカル',
+            'projects.unarchive': '復元',
+            'projects.open': '開く',
+            'projects.archiveEmpty': 'アーカイブされたプロジェクトはありません。',
+            'sessions.emptyTitle': 'セッションが見つかりません',
+            'sessions.emptyDesc': 'Antigravity IDE の会話履歴が時系列でここに表示されます。',
+            'sessions.transcript': '文字起こし',
+            'sessions.folder': 'フォルダを開く',
+            'sessions.toolCalls': 'ツール呼び出し',
+            'radar.maps': 'マップ',
+            'radar.empty': 'Graphify マップはまだありません。',
+            'radar.openEdge': 'Edge で開く',
+            'nav.skills': 'エージェントスキル＆アーセナル',
+            'skills.heroTitle': 'Antigravity エージェントスキル＆アーセナル',
+            'skills.heroDesc': '自律型コーディング、アーキテクチャレビュー、UI デザイン、ローカル AI を強化する 21 の専用機能。',
+            'skills.activeSkills': '個のアクティブスキル',
+            'skills.searchPlaceholder': 'スキル名、トリガー、説明を検索...',
+            'skills.catArchitecture': 'アーキテクチャ',
+            'skills.catDesign': 'デザイン＆UI',
+            'skills.catQuality': 'コード品質',
+            'skills.catOptimization': '最適化＆メモリ',
+            'skills.catLocalAi': 'ローカル AI＆Python',
+            'skills.promptCopied': '{name} のトリガープ prompt をコピーしました！',
+            'skills.rulesFile': 'ルールファイル',
+            'skills.startChat': 'チャット開始',
+            'skills.copyHint': 'クリックしてプロンプトをコピー',
+            'skills.emptyTitle': 'スキルが見つかりません',
+            'skills.emptyDesc': '条件に一致するスキルはありません。',
+            'settings.modalTitle': 'Cockpit 設定',
+            'settings.modalSubtitle': '外観、言語、起動設定およびローカル AI エンジン構成',
+            'settings.close': '閉じる',
+            'settings.langTitle': '表示言語 / Language',
+            'settings.langDesc': 'インターフェース言語を選択します。初回時は Antigravity IDE の言語に自動適応します。',
+            'settings.themeTitle': 'テーマ選択',
+            'settings.widgetsTitle': 'ウィジェット＆コンポーネント表示設定',
+            'settings.widgetsDesc': 'メイン画面に表示するカードやタブを選択します。',
+            'settings.widgetsAllOpen': 'すべて表示',
+            'settings.widgetsAllHidden': 'すべて非表示',
+            'settings.widgetsPartial': '{count} 件表示中',
+            'settings.subgroupTele': 'テレメトリ＆ヘッダーカード',
+            'settings.subgroupTabs': 'メインナビゲーションタブ',
+            'settings.subgroupPanels': '情報パネル',
+            'settings.startupTitle': '起動および通知設定',
+            'settings.startupAuto': 'IDE 起動時に自動で開く',
+            'settings.startupAutoDesc': 'Antigravity IDE 起動時にコントロールパネルを自動起動します。',
+            'settings.sfx': '効果音 (SFX)',
+            'settings.sfxDesc': 'テーマ変更やボタン操作時に心地よいサウンドフィードバックを提供します。',
+            'settings.localAiTitle': '追加機能: ローカルコード＆モデルエンジン',
+            'settings.localAiPill': 'ローカル AI',
+            'settings.localAiDesc': 'ローカル GPU を活用した完全オフラインの自律型コーディングエンジン (Ollama 等)。',
+            'settings.startEngine': 'エンジン開始',
+            'settings.stopEngine': 'エンジン停止',
+            'settings.testConn': '接続テスト',
+            'settings.refreshConn': 'リンク更新',
+            'settings.radarTitle': 'アーキテクチャ構造ビューア＆ツール',
+            'settings.radarDesc': 'インタラクティブな依存関係マップを Microsoft Edge で表示します。',
+            'settings.openMap': 'マップを開く',
+            'settings.refreshAll': '全データを更新',
+            'settings.done': '完了',
+            'toast.langChanged': '言語を変更しました: {lang}',
+            'toast.themeChanged': 'テーマを適用しました: {theme}',
+            'toast.audioOn': '効果音をオンにしました',
+            'toast.audioOff': '効果音をミュートにしました',
+            'toast.startupOn': '自動起動を有効化しました',
+            'toast.startupOff': '自動起動を無効化しました',
+            'toast.copied': 'クリップボードにコピーしました',
+            'power.acOnline': 'AC電源接続中',
+            'power.batteryEco': 'バッテリー省電力モード',
+            'power.batteryDesc': 'バッテリー駆動中 ({percent}%)。ローカルエンジンは保護のため省電力モードです。',
+            'lang.auto': '自動 (IDE 言語)',
+            'lang.autoSub': 'システムおよび IDE の既定値'
+        }
+    };
+
+    let currentLanguage = 'auto';
+    let activeLocale = 'tr';
+
+    function resolveActiveLocale(prefLang) {
+        if (prefLang && prefLang !== 'auto' && SUPPORTED_LOCALES.includes(prefLang)) {
+            return prefLang;
+        }
+        const ideLang = (appData && (appData.ideLanguage || appData.configuredLanguage)) ||
+                        (window.__INITIAL_DATA__ && (window.__INITIAL_DATA__.ideLanguage || window.__INITIAL_DATA__.configuredLanguage)) ||
+                        (navigator.language || 'en');
+        const norm = String(ideLang).toLowerCase().split(/[-_]/)[0];
+        if (SUPPORTED_LOCALES.includes(norm)) {
+            return norm;
+        }
+        return 'en';
+    }
+
+    function t(key, params = {}) {
+        const dict = LOCALES[activeLocale] || LOCALES.en;
+        let text = dict[key] || LOCALES.en[key] || key;
+        if (params && typeof params === 'object') {
+            Object.keys(params).forEach(p => {
+                text = text.replace(new RegExp(`\\{${p}\\}`, 'g'), params[p]);
+            });
+        }
+        return text;
+    }
+
+    function applyLanguage(prefLang, showFeedback = false) {
+        currentLanguage = prefLang || 'auto';
+        activeLocale = resolveActiveLocale(currentLanguage);
+
+        try {
+            localStorage.setItem('antigravity_language', currentLanguage);
+        } catch (_) {}
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const k = el.getAttribute('data-i18n');
+            const v = t(k);
+            if (v) el.textContent = v;
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const k = el.getAttribute('data-i18n-placeholder');
+            const v = t(k);
+            if (v) el.setAttribute('placeholder', v);
+        });
+
+        document.querySelectorAll('[data-i18n-title]').forEach(el => {
+            const k = el.getAttribute('data-i18n-title');
+            const v = t(k);
+            if (v) el.setAttribute('title', v);
+        });
+
+        const langBadge = document.getElementById('currentLangBadge');
+        if (langBadge) {
+            if (currentLanguage === 'auto') {
+                langBadge.textContent = `🌐 ${t('lang.auto')} (${LOCALE_NAMES[activeLocale]})`;
+            } else {
+                langBadge.textContent = `${LOCALE_FLAGS[activeLocale]} ${LOCALE_NAMES[activeLocale]}`;
+            }
+        }
+
+        const autoSub = document.getElementById('autoLangDetectedLabel');
+        if (autoSub) {
+            autoSub.textContent = `IDE: ${LOCALE_NAMES[activeLocale] || activeLocale}`;
+        }
+
+        document.querySelectorAll('.lang-card-btn').forEach(btn => {
+            const bLang = btn.getAttribute('data-lang');
+            btn.classList.toggle('active', bLang === currentLanguage);
+        });
+
+        if (vscode) {
+            vscode.postMessage({ command: 'setLanguage', language: currentLanguage });
+        }
+
+        if (currentNavTab === 'projects') renderProjects();
+        else if (currentNavTab === 'github') renderGithub();
+        else if (currentNavTab === 'sessions') renderSessions();
+        else if (currentNavTab === 'radar') renderRadar();
+        else if (currentNavTab === 'skills') renderSkills();
+
+        if (isArchiveDrawerOpen) renderArchive();
+
+        if (showFeedback) {
+            const langName = currentLanguage === 'auto' ? `${t('lang.auto')} (${LOCALE_NAMES[activeLocale]})` : LOCALE_NAMES[activeLocale];
+            showToast(t('toast.langChanged', { lang: langName }));
+        }
+    }
+
+    function initLanguage() {
+        let savedLang = null;
+        try {
+            savedLang = localStorage.getItem('antigravity_language');
+        } catch (_) {}
+        if (!savedLang) {
+            savedLang = (appData && appData.configuredLanguage) || 'auto';
+        }
+        applyLanguage(savedLang, false);
+    }
 
     // --- High-Fidelity SVG Icon Set for Antigravity IDE Cockpit ---
     const ICONS = {
@@ -5302,6 +6648,18 @@ body::before {
         },
         archive() {
             this.playTone(280, 'sine', 0.12, 0.08);
+        },
+        toggle() {
+            this.enabled = !this.enabled;
+            if (this.enabled) this.click();
+            saveState();
+            return this.enabled;
+        },
+        setEnabled(val) {
+            this.enabled = Boolean(val);
+            if (this.enabled) this.click();
+            saveState();
+            return this.enabled;
         }
     };
 
@@ -5526,6 +6884,7 @@ body::before {
         else if (currentNavTab === 'github') renderGithub();
         else if (currentNavTab === 'sessions') renderSessions();
         else if (currentNavTab === 'radar') renderRadar();
+        else if (currentNavTab === 'skills') renderSkills();
         renderArchive();
 
         saveState();
@@ -5665,6 +7024,24 @@ body::before {
         // Sync Hub & Widget Visibility switches
         applyWidgetVisibility(false);
 
+        // Sync Language picker selection
+        document.querySelectorAll('.lang-card-btn').forEach(btn => {
+            const bLang = btn.getAttribute('data-lang');
+            btn.classList.toggle('active', bLang === currentLanguage);
+        });
+        const langBadge = document.getElementById('currentLangBadge');
+        if (langBadge) {
+            if (currentLanguage === 'auto') {
+                langBadge.textContent = `🌐 ${t('lang.auto')} (${LOCALE_NAMES[activeLocale]})`;
+            } else {
+                langBadge.textContent = `${LOCALE_FLAGS[activeLocale]} ${LOCALE_NAMES[activeLocale]}`;
+            }
+        }
+        const autoSub = document.getElementById('autoLangDetectedLabel');
+        if (autoSub) {
+            autoSub.textContent = `IDE: ${LOCALE_NAMES[activeLocale] || activeLocale}`;
+        }
+
         // Sync Extra / Local AI section visibility (only display if ANY local engine is detected)
         const localAi = appData.system && appData.system.localAi;
         const hasLocal = Boolean(
@@ -5750,6 +7127,7 @@ body::before {
         tabGithub: true,
         tabSessions: true,
         tabRadar: true,
+        tabSkills: true,
         newChat: true,
         archiveDrawer: true,
         spaceCanvas: false // Varsayılan olarak kapalı (sade, dikkat dağıtmayan Antigravity Workbench deneyimi)
@@ -5765,6 +7143,7 @@ body::before {
         tabGithub: '#tabBtnGithub',
         tabSessions: '#tabBtnSessions',
         tabRadar: '#tabBtnRadar',
+        tabSkills: '#tabBtnSkills',
         newChat: '#hudBtnNewChat',
         archiveDrawer: '#archiveDrawerWrap',
         spaceCanvas: '#spaceCanvas'
@@ -5778,6 +7157,7 @@ body::before {
         tabGithub: 'GitHub Sekmesi',
         tabSessions: 'Oturumlar Sekmesi',
         tabRadar: 'Graphify Radar Sekmesi',
+        tabSkills: 'Agent Becerileri Sekmesi',
         newChat: 'Yeni Sohbet Butonu',
         archiveDrawer: 'Arşiv Çekmecesi',
         spaceCanvas: 'Parçacık Animasyonu'
@@ -5860,10 +7240,11 @@ body::before {
             projects: 'tabProjects',
             github: 'tabGithub',
             sessions: 'tabSessions',
-            radar: 'tabRadar'
+            radar: 'tabRadar',
+            skills: 'tabSkills'
         };
         if (widgetVisibility[tabMap[currentNavTab]] === false) {
-            const order = ['projects', 'github', 'sessions', 'radar'];
+            const order = ['projects', 'github', 'sessions', 'radar', 'skills'];
             const firstVisible = order.find(t => widgetVisibility[tabMap[t]] !== false);
             if (firstVisible) {
                 switchNavTab(firstVisible);
@@ -6059,12 +7440,13 @@ body::before {
         else if (tabId === 'github') renderGithub();
         else if (tabId === 'sessions') renderSessions();
         else if (tabId === 'radar') renderRadar();
+        else if (tabId === 'skills') renderSkills();
     }
 
     function setSubFilter(filterId) {
         AudioEngine.click();
         currentSubFilter = filterId;
-        document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#filterBar .chip-btn').forEach(b => b.classList.remove('active'));
         const chip = document.getElementById('chip' + filterId.charAt(0).toUpperCase() + filterId.slice(1));
         if (chip) chip.classList.add('active');
         renderProjects();
@@ -6095,11 +7477,26 @@ body::before {
         });
 
         if (list.length === 0) {
-            grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
-                `<div class="icon">${ICONS.search}</div>` +
-                '<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">Proje Bulunamadı</h3>' +
-                '<p style="font-size: 13px;">Seçilen filtreye veya arama terimine uyan bir proje yok.</p>' +
-                '</div>';
+            const hasAny = (appData.projects || []).length > 0;
+            if (hasAny) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
+                    `<div class="icon">${ICONS.search}</div>` +
+                    `<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">${escapeHtml(t('projects.emptyTitle'))}</h3>` +
+                    `<p style="font-size: 13px;">${escapeHtml(t('projects.emptyDesc'))}</p>` +
+                    '</div>';
+            } else {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1; padding: 48px 24px; text-align: center;">' +
+                    '<div class="icon" style="font-size: 36px; margin-bottom: 12px;">📁</div>' +
+                    '<h3 style="font-size: 18px; margin-bottom: 8px; color: #fff;">Henüz Kayıtlı Proje Bulunamadı</h3>' +
+                    '<p style="font-size: 13px; color: var(--text-dim); max-width: 480px; margin: 0 auto 20px;">' +
+                    'Çalıştığınız projeleri Cockpit\'te anında görmek için bir klasör açabilir veya Ayarlar panelinden taranacak proje dizinleri ekleyebilirsiniz.' +
+                    '</p>' +
+                    '<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">' +
+                    `<button class="card-btn primary" data-action="openNewWorkspace">${ICONS.folderOpen} Klasör Aç</button>` +
+                    `<button class="card-btn" data-action="openSettings">${ICONS.settings} Taranacak Dizin Ekle</button>` +
+                    '</div>' +
+                    '</div>';
+            }
             return;
         }
 
@@ -6128,9 +7525,9 @@ body::before {
                 (lastCommit ? `<div class="card-commit"><span>${ICONS.gitCommit} ${escapeHtml(lastCommit.msg.slice(0, 75))} <em style="color:var(--text-dark); margin-left:6px;">(${escapeHtml(lastCommit.ago)})</em></span></div>` : '') +
                 (!lastCommit && p.sessionNotes ? `<div class="card-commit"><span>${escapeHtml(p.sessionNotes.slice(0, 90))}...</span></div>` : '') +
                 '<div class="card-footer">' +
-                    `<button class="card-btn primary" data-action="openFolder" data-path="${escapeHtml(p.rawPath)}">${ICONS.folderOpen} IDE'de Aç</button>` +
-                    `<button class="card-btn" data-action="openFolderNewWin" data-path="${escapeHtml(p.rawPath)}" title="Yeni Pencerede Aç">${ICONS.window} Yeni</button>` +
-                    (p.hasGraphify ? `<button class="card-btn graph-btn" data-action="openGraphify" data-path="${escapeHtml(p.graphifyPath)}">${ICONS.observatory} Graphify</button>` : '') +
+                    `<button class="card-btn primary" data-action="openFolder" data-path="${escapeHtml(p.rawPath)}">${ICONS.folderOpen} ${escapeHtml(t('projects.ide'))}</button>` +
+                    `<button class="card-btn" data-action="openFolderNewWin" data-path="${escapeHtml(p.rawPath)}" title="${escapeHtml(t('projects.open'))}">${ICONS.window} ${escapeHtml(t('projects.open'))}</button>` +
+                    (p.hasGraphify ? `<button class="card-btn graph-btn" data-action="openGraphify" data-path="${escapeHtml(p.graphifyPath)}">${ICONS.observatory} ${escapeHtml(t('projects.graph'))}</button>` : '') +
                 '</div>' +
             '</div>';
         }
@@ -6149,11 +7546,26 @@ body::before {
         }
 
         if (list.length === 0) {
-            grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
-                `<div class="icon">${ICONS.github}</div>` +
-                '<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">GitHub Deposu Bulunamadı</h3>' +
-                '<p style="font-size: 13px;">gh CLI kurulu ve giriş yapılmışsa depolarınız burada listelenir.</p>' +
-                '</div>';
+            const hasAny = (appData.githubRepos || []).length > 0;
+            if (hasAny || q) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
+                    `<div class="icon">${ICONS.github}</div>` +
+                    `<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">${escapeHtml(t('projects.emptyTitle'))}</h3>` +
+                    `<p style="font-size: 13px;">${escapeHtml(t('projects.emptyDesc'))}</p>` +
+                    '</div>';
+            } else {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1; padding: 48px 24px; text-align: center;">' +
+                    `<div class="icon" style="font-size: 36px; margin-bottom: 12px;">${ICONS.github}</div>` +
+                    '<h3 style="font-size: 18px; margin-bottom: 8px; color: #fff;">GitHub Hesabınızı Bağlayın</h3>' +
+                    '<p style="font-size: 13px; color: var(--text-dim); max-width: 480px; margin: 0 auto 20px;">' +
+                    'GitHub repolarınızı Cockpit\'te anında listelemek ve tek tıkla açmak için Ayarlar\'dan kullanıcı adınızı girin veya terminalde <code style="color:var(--neon-cyan); background:rgba(255,255,255,0.06); padding:2px 6px; border-radius:4px;">gh auth login</code> çalıştırın.' +
+                    '</p>' +
+                    '<div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">' +
+                    `<button class="card-btn primary" data-action="openSettings">${ICONS.settings} Kullanıcı Adı Ayarla</button>` +
+                    '<button class="card-btn" data-action="copyGhAuthCommand">📋 "gh auth login" Kopyala</button>' +
+                    '</div>' +
+                    '</div>';
+            }
             return;
         }
 
@@ -6186,9 +7598,9 @@ body::before {
                 '<div class="card-footer">' +
                     `<button class="card-btn primary" data-action="openUrl" data-url="${escapeHtml(r.url)}">${ICONS.github} GitHub.com</button>` +
                     (r.isCloned ? (
-                        `<button class="card-btn" data-action="openFolder" data-path="${escapeHtml(r.localPath)}">${ICONS.folderOpen} IDE'de Aç</button>`
+                        `<button class="card-btn" data-action="openFolder" data-path="${escapeHtml(r.localPath)}">${ICONS.folderOpen} ${escapeHtml(t('projects.ide'))}</button>`
                     ) : (
-                        `<button class="card-btn" style="background: rgba(129, 140, 248, 0.15); border-color: var(--neon-purple);" data-action="cloneRepo" data-name="${escapeHtml(r.name)}">${ICONS.download} Klonla</button>`
+                        `<button class="card-btn" style="background: rgba(129, 140, 248, 0.15); border-color: var(--neon-purple);" data-action="cloneRepo" data-name="${escapeHtml(r.name)}">${ICONS.download} ${escapeHtml(t('projects.clone'))}</button>`
                     )) +
                 '</div>' +
             '</div>';
@@ -6210,8 +7622,8 @@ body::before {
         if (list.length === 0) {
             listEl.innerHTML = '<div class="empty-state">' +
                 `<div class="icon">${ICONS.history}</div>` +
-                '<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">Oturum Kaydı Bulunamadı</h3>' +
-                '<p style="font-size: 13px;">Antigravity IDE oturumları burada kronolojik olarak listelenir.</p>' +
+                `<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">${escapeHtml(t('sessions.emptyTitle'))}</h3>` +
+                `<p style="font-size: 13px;">${escapeHtml(t('sessions.emptyDesc'))}</p>` +
                 '</div>';
             return;
         }
@@ -6223,13 +7635,13 @@ body::before {
                     `<div class="sess-prompt">${escapeHtml(s.prompt)}</div>` +
                     '<div class="sess-meta">' +
                         `<span>${ICONS.clock} ${escapeHtml(s.time)} (${escapeHtml(s.timeAgo)})</span>` +
-                        `<span>${ICONS.tools} ${s.toolCount} Araç Çağrısı</span>` +
+                        `<span>${ICONS.tools} ${s.toolCount} ${escapeHtml(t('sessions.toolCalls'))}</span>` +
                         (s.activeDoc ? `<span style="color: var(--neon-cyan);">${ICONS.fileCode} ${escapeHtml(s.activeDoc.split('/').pop())}</span>` : '') +
                     '</div>' +
                 '</div>' +
                 '<div class="sess-actions">' +
-                    `<button class="card-btn primary" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${ICONS.fileCode} Transkript</button>` +
-                    `<button class="card-btn" data-action="openSessionFolder" data-path="${escapeHtml(s.path)}">${ICONS.folder} Klasör</button>` +
+                    `<button class="card-btn primary" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${ICONS.fileCode} ${escapeHtml(t('sessions.transcript'))}</button>` +
+                    `<button class="card-btn" data-action="openSessionFolder" data-path="${escapeHtml(s.path)}">${ICONS.folder} ${escapeHtml(t('sessions.folder'))}</button>` +
                 '</div>' +
             '</div>';
         }
@@ -6243,7 +7655,7 @@ body::before {
             let html = '';
             const graphs = (appData.projects || []).filter(p => p.hasGraphify);
             const badge = document.getElementById('badgeGraphCount');
-            if (badge) badge.textContent = `${graphs.length} Harita`;
+            if (badge) badge.textContent = `${graphs.length} ${t('radar.maps')}`;
 
             for (const p of graphs) {
                 html += '<li class="radar-item" style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">' +
@@ -6251,12 +7663,122 @@ body::before {
                         `<span class="ag-icon" style="color: var(--neon-cyan);">${ICONS.network}</span>` +
                         `<span style="color: #fff; font-weight: 600; font-size: 13px;">${escapeHtml(p.name)}</span>` +
                     '</div>' +
-                    `<button class="chip-btn" style="padding: 4px 10px; font-size: 11px;" data-action="openGraphify" data-path="${escapeHtml(p.graphifyPath)}">${ICONS.externalLink} Edge ile Aç</button>` +
+                    `<button class="chip-btn" style="padding: 4px 10px; font-size: 11px;" data-action="openGraphify" data-path="${escapeHtml(p.graphifyPath)}">${ICONS.externalLink} ${escapeHtml(t('radar.openEdge'))}</button>` +
                 '</li>';
             }
-            if (!html) html = '<li class="radar-item" style="opacity: 0.5;">Henüz Graphify haritası yok.</li>';
+            if (!html) html = `<li class="radar-item" style="opacity: 0.5;">${escapeHtml(t('radar.empty'))}</li>`;
             graphList.innerHTML = html;
         }
+    }
+
+    let currentSkillCategory = 'all';
+
+    const SKILL_CAT_ICONS = {
+        'architecture': '🏛️',
+        'design': '🎨',
+        'quality': '🧼',
+        'optimization': '⚡',
+        'local-ai': '🤖',
+        'general': '⚙️'
+    };
+
+    function renderSkills() {
+        const grid = document.getElementById('skillsGrid');
+        if (!grid) return;
+
+        const skillsData = appData.skills || { skills: [], categories: {}, totalCount: 0 };
+        const rawList = skillsData.skills || [];
+
+        // Update stats and badge counts
+        const totalCount = typeof skillsData.totalCount === 'number' ? skillsData.totalCount : rawList.length;
+        const statTotal = document.getElementById('skillsStatTotal');
+        if (statTotal) statTotal.textContent = totalCount;
+
+        const badgeSkill = document.getElementById('badgeSkillCount');
+        if (badgeSkill) badgeSkill.textContent = totalCount;
+
+        const cats = skillsData.categories || {};
+        const countAll = document.getElementById('catCountAll');
+        if (countAll) countAll.textContent = totalCount;
+        const countArch = document.getElementById('catCountArch');
+        if (countArch) countArch.textContent = cats.architecture || 0;
+        const countDesign = document.getElementById('catCountDesign');
+        if (countDesign) countDesign.textContent = cats.design || 0;
+        const countQuality = document.getElementById('catCountQuality');
+        if (countQuality) countQuality.textContent = cats.quality || 0;
+        const countOpt = document.getElementById('catCountOpt');
+        if (countOpt) countOpt.textContent = cats.optimization || 0;
+        const countLocalAi = document.getElementById('catCountLocalAi');
+        if (countLocalAi) countLocalAi.textContent = cats['local-ai'] || 0;
+
+        // Filter list by category and search query
+        const q = (document.getElementById('skillSearchInput')?.value || '').trim().toLowerCase();
+        const list = rawList.filter(s => {
+            if (currentSkillCategory !== 'all' && s.category !== currentSkillCategory) {
+                return false;
+            }
+            if (q) {
+                const inName = (s.name || '').toLowerCase().includes(q);
+                const inDisplay = (s.displayName || '').toLowerCase().includes(q);
+                const inDesc = (s.description || '').toLowerCase().includes(q);
+                const inPrompt = (s.promptHint || '').toLowerCase().includes(q);
+                return inName || inDisplay || inDesc || inPrompt;
+            }
+            return true;
+        });
+
+        if (list.length === 0) {
+            if (totalCount === 0) {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1; padding: 48px 24px; text-align: center;">' +
+                    '<div class="icon" style="font-size: 36px; margin-bottom: 12px;">🧠</div>' +
+                    '<h3 style="font-size: 18px; margin-bottom: 8px; color: #fff;">Henüz Kayıtlı Ajan Yeteneği Bulunamadı</h3>' +
+                    '<p style="font-size: 13px; color: var(--text-dim); max-width: 480px; margin: 0 auto 20px;">' +
+                    'Antigravity yetenekleri ~/.gemini/config/skills/ klasöründen taranır. Kendi yeteneklerinizi ekleyebilir veya Antigravity Agent\'tan yüklemesini isteyebilirsiniz.' +
+                    '</p>' +
+                    `<button class="card-btn primary" data-action="openSkillsFolder">${ICONS.folderOpen} Skills Klasörünü Aç</button>` +
+                    '</div>';
+            } else {
+                grid.innerHTML = '<div class="empty-state" style="grid-column: 1 / -1;">' +
+                    `<div class="icon">${ICONS.search}</div>` +
+                    `<h3 style="font-size: 18px; margin-bottom: 6px; color: #fff;">${escapeHtml(t('skills.emptyTitle'))}</h3>` +
+                    `<p style="font-size: 13px;">${escapeHtml(t('skills.emptyDesc'))}</p>` +
+                    '</div>';
+            }
+            return;
+        }
+
+        let html = '';
+        for (const s of list) {
+            const catIcon = SKILL_CAT_ICONS[s.category] || '⚡';
+            const catKey = 'skills.cat' + s.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+            const catLabel = t(catKey) || s.category;
+
+            html += `<div class="skill-card" data-category="${escapeHtml(s.category)}">` +
+                '<div class="skill-card-top">' +
+                    '<div class="skill-title-wrap">' +
+                        `<span class="skill-icon">${catIcon}</span>` +
+                        `<span class="skill-name">${escapeHtml(s.displayName)}</span>` +
+                    '</div>' +
+                    `<span class="skill-badge cat-${escapeHtml(s.category)}">${escapeHtml(catLabel)}</span>` +
+                '</div>' +
+                `<div class="skill-desc">${escapeHtml(s.description)}</div>` +
+                `<div class="skill-prompt-box" data-action="copySkillPrompt" data-prompt="${escapeHtml(s.promptHint)}" data-name="${escapeHtml(s.displayName)}" title="${escapeHtml(t('skills.copyHint', { name: s.displayName }))}">` +
+                    `<code>${escapeHtml(s.promptHint)}</code>` +
+                    '<span class="skill-prompt-copy-icon">📋</span>' +
+                '</div>' +
+                '<div class="skill-actions">' +
+                    `<button class="skill-btn" data-action="openSkillFile" data-path="${escapeHtml(s.skillPath)}" title="${escapeHtml(t('skills.rulesFile'))}">` +
+                        '<span>📄</span>' +
+                        `<span>${escapeHtml(t('skills.rulesFile'))}</span>` +
+                    '</button>' +
+                    `<button class="skill-btn primary" data-action="chatWithSkill" data-prompt="${escapeHtml(s.promptHint)}" title="${escapeHtml(t('skills.startChat'))}">` +
+                        '<span>💬</span>' +
+                        `<span>${escapeHtml(t('skills.startChat'))}</span>` +
+                    '</button>' +
+                '</div>' +
+            '</div>';
+        }
+        grid.innerHTML = html;
     }
 
     function renderArchive() {
@@ -6271,7 +7793,7 @@ body::before {
         if (badge) badge.textContent = totalArchived;
 
         if (totalArchived === 0) {
-            grid.innerHTML = `<div class="empty-archive">${ICONS.archive} Arşivlenmiş herhangi bir depo veya proje bulunmuyor.</div>`;
+            grid.innerHTML = `<div class="empty-archive">${ICONS.archive} ${escapeHtml(t('projects.archiveEmpty'))}</div>`;
             return;
         }
 
@@ -6279,12 +7801,12 @@ body::before {
         for (const p of archivedProjects) {
             html += '<div class="archived-card">' +
                 '<div class="archived-info">' +
-                    `<div class="archived-title">${ICONS.folder} ${escapeHtml(p.name)} <span class="archived-type local">Yerel</span></div>` +
+                    `<div class="archived-title">${ICONS.folder} ${escapeHtml(p.name)} <span class="archived-type local">${escapeHtml(t('projects.local'))}</span></div>` +
                     `<div class="archived-sub" title="${escapeHtml(p.path)}">${escapeHtml(p.path)}</div>` +
                 '</div>' +
                 '<div class="archived-actions">' +
-                    `<button class="unarch-btn" data-action="toggleArch" data-id="${escapeHtml(p.path)}">${ICONS.undo} Geri Yükle</button>` +
-                    `<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" data-action="openFolder" data-path="${escapeHtml(p.rawPath)}">${ICONS.folderOpen} Aç</button>` +
+                    `<button class="unarch-btn" data-action="toggleArch" data-id="${escapeHtml(p.path)}">${ICONS.undo} ${escapeHtml(t('projects.unarchive'))}</button>` +
+                    `<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" data-action="openFolder" data-path="${escapeHtml(p.rawPath)}">${ICONS.folderOpen} ${escapeHtml(t('projects.open'))}</button>` +
                 '</div>' +
             '</div>';
         }
@@ -6292,12 +7814,12 @@ body::before {
         for (const r of archivedGithub) {
             html += '<div class="archived-card">' +
                 '<div class="archived-info">' +
-                    `<div class="archived-title">${ICONS.github} ${escapeHtml(r.name)} <span class="archived-type gh">GitHub</span></div>` +
+                    `<div class="archived-title">${ICONS.github} ${escapeHtml(r.name)} <span class="archived-type gh">${escapeHtml(t('projects.github'))}</span></div>` +
                     `<div class="archived-sub" title="${escapeHtml(r.fullName)}">${escapeHtml(r.fullName)}</div>` +
                 '</div>' +
                 '<div class="archived-actions">' +
-                    `<button class="unarch-btn" data-action="toggleArch" data-id="${escapeHtml(r.name)}">${ICONS.undo} Geri Yükle</button>` +
-                    `<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" data-action="openUrl" data-url="${escapeHtml(r.url)}">${ICONS.github} GitHub</button>` +
+                    `<button class="unarch-btn" data-action="toggleArch" data-id="${escapeHtml(r.name)}">${ICONS.undo} ${escapeHtml(t('projects.unarchive'))}</button>` +
+                    `<button class="card-btn" style="padding: 6px 10px; font-size: 11px;" data-action="openUrl" data-url="${escapeHtml(r.url)}">${ICONS.github} ${escapeHtml(t('projects.github'))}</button>` +
                 '</div>' +
             '</div>';
         }
@@ -6474,6 +7996,15 @@ body::before {
         if (!data) return;
         appData = data;
 
+        let savedLang = null;
+        try {
+            savedLang = localStorage.getItem('antigravity_language');
+        } catch (_) {}
+        if (!savedLang && data.configuredLanguage) {
+            currentLanguage = data.configuredLanguage;
+        }
+        applyLanguage(currentLanguage, false);
+
         const pCount = (data.projects || []).filter(p => !p.isArchived).length;
         const ghCount = (data.githubRepos || []).filter(r => !r.isArchived).length;
         const sessCount = (data.sessions || []).length;
@@ -6484,6 +8015,8 @@ body::before {
         if (bGh) bGh.textContent = ghCount;
         const bSess = document.getElementById('badgeSessCount');
         if (bSess) bSess.textContent = sessCount;
+        const bSkills = document.getElementById('badgeSkillCount');
+        if (bSkills) bSkills.textContent = (data.skills && typeof data.skills.totalCount === 'number') ? data.skills.totalCount : (data.skills?.skills?.length || 0);
 
         const favCountEl = document.getElementById('favChipCount');
         if (favCountEl) favCountEl.textContent = data.favCount || 0;
@@ -6505,6 +8038,22 @@ body::before {
         if (teleGraphify && data.system) {
             teleGraphify.textContent = data.system.graphifyStatus || 'Canlı Mimari Harita';
         }
+
+        const teleGh = document.getElementById('teleGithubUser');
+        if (teleGh) {
+            if (data.githubUser) {
+                teleGh.textContent = `${data.githubUser} (Aktif)`;
+                teleGh.style.color = 'var(--neon-emerald)';
+            } else {
+                teleGh.textContent = 'Bağlı Değil (Hesap Ekle)';
+                teleGh.style.color = 'var(--text-dim)';
+            }
+        }
+        const heroTitle = document.getElementById('ghHeroTitle');
+        if (heroTitle) {
+            heroTitle.textContent = data.githubUser ? `${data.githubUser} GitHub Ekosistemi` : 'GitHub Repoları & Ekosistem';
+        }
+
         if (data.system) {
             const teleGpu = document.getElementById('teleGpu');
             if (teleGpu) teleGpu.textContent = data.system.gpu || 'GPU Algılanmadı';
@@ -6580,6 +8129,7 @@ body::before {
         renderGithub();
         renderSessions();
         renderRadar();
+        renderSkills();
         renderArchive();
         renderAntigravityPanel(data.panel);
     }
@@ -6652,6 +8202,9 @@ body::before {
                 break;
 
             case 'closeSettings':
+                if (el.id === 'settingsModal' && event && event.target !== el) {
+                    break;
+                }
                 AudioEngine.click();
                 closeSettingsModal();
                 break;
@@ -6682,17 +8235,22 @@ body::before {
                 break;
             }
 
-            case 'toggleAudio':
-                AudioEngine.enabled = !AudioEngine.enabled;
-                saveState();
-                {
-                    const chk = document.getElementById('settingsAudioInput');
-                    if (chk) chk.checked = !!AudioEngine.enabled;
-                    const icon = document.getElementById('audioIcon');
-                    if (icon) icon.innerHTML = AudioEngine.enabled ? ICONS.volumeOn : ICONS.volumeOff;
-                }
-                showToast(AudioEngine.enabled ? 'Arayüz ses efektleri etkinleştirildi' : 'Ses efektleri kapatıldı');
+            case 'setLanguage': {
+                const lang = el.dataset.lang || 'auto';
+                AudioEngine.click();
+                applyLanguage(lang, true);
                 break;
+            }
+
+            case 'toggleAudio': {
+                const enabled = el.tagName === 'INPUT' ? AudioEngine.setEnabled(el.checked) : AudioEngine.toggle();
+                const chk = document.getElementById('settingsAudioInput');
+                if (chk && chk !== el) chk.checked = enabled;
+                const icon = document.getElementById('audioIcon');
+                if (icon) icon.innerHTML = enabled ? ICONS.volumeOn : ICONS.volumeOff;
+                showToast(enabled ? 'Arayüz ses efektleri etkinleştirildi' : 'Ses efektleri kapatıldı');
+                break;
+            }
 
             case 'refresh':
                 AudioEngine.click();
@@ -6702,10 +8260,10 @@ body::before {
 
             case 'toggleStartup': {
                 AudioEngine.click();
-                const newVal = !appData.openOnStartup;
+                const newVal = (el.tagName === 'INPUT') ? el.checked : !appData.openOnStartup;
                 appData.openOnStartup = newVal;
                 const chk = document.getElementById('settingsStartupInput');
-                if (chk) chk.checked = newVal;
+                if (chk && chk !== el) chk.checked = newVal;
                 const icon = document.getElementById('startupIcon');
                 if (icon) icon.innerHTML = newVal ? ICONS.checkSquare : ICONS.square;
                 if (vscode) vscode.postMessage({ command: 'toggleStartup', value: newVal });
@@ -6725,10 +8283,71 @@ body::before {
                 break;
             }
 
+            case 'filterSkills': {
+                const cat = el.dataset.category || 'all';
+                currentSkillCategory = cat;
+                document.querySelectorAll('#skillsCatChips .chip-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.category === cat);
+                });
+                AudioEngine.click();
+                renderSkills();
+                break;
+            }
+
+            case 'copySkillPrompt': {
+                const prompt = el.dataset.prompt || '';
+                const name = el.dataset.name || 'Skill';
+                if (prompt) {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(prompt).catch(() => {});
+                    }
+                    if (vscode) vscode.postMessage({ command: 'copySkillPrompt', prompt });
+                    AudioEngine.click();
+                    showToast(t('skills.promptCopied', { name }));
+                }
+                break;
+            }
+
+            case 'openSkillFile': {
+                const fPath = el.dataset.path || '';
+                if (fPath) {
+                    AudioEngine.click();
+                    showToast('Kural dosyası açılıyor...');
+                    if (vscode) {
+                        vscode.postMessage({ command: 'openSkillFile', path: fPath });
+                    } else {
+                        window.open('file:///' + fPath, '_blank');
+                    }
+                }
+                break;
+            }
+
+            case 'chatWithSkill': {
+                const prompt = el.dataset.prompt || '';
+                AudioEngine.click();
+                if (navigator.clipboard && prompt) {
+                    navigator.clipboard.writeText(prompt).catch(() => {});
+                }
+                const previewText = prompt.length > 35 ? prompt.slice(0, 35) + '...' : prompt;
+                showToast(`💬 Sohbet başlatılıyor: "${previewText}"`);
+                if (vscode) {
+                    vscode.postMessage({ command: 'chatWithSkill', prompt });
+                }
+                break;
+            }
+
             case 'toggleFav': {
                 const id = el.dataset.id;
                 if (!id) break;
                 AudioEngine.favorite();
+                (appData.projects || []).forEach(p => {
+                    if (p.path === id || p.rawPath === id) p.isFavorite = !p.isFavorite;
+                });
+                (appData.githubRepos || []).forEach(r => {
+                    if (r.name === id || r.url === id) r.isFavorite = !r.isFavorite;
+                });
+                renderProjects();
+                renderGithub();
                 if (vscode) vscode.postMessage({ command: 'toggleFavorite', id });
                 break;
             }
@@ -6737,6 +8356,15 @@ body::before {
                 const id = el.dataset.id;
                 if (!id) break;
                 AudioEngine.archive();
+                (appData.projects || []).forEach(p => {
+                    if (p.path === id || p.rawPath === id) p.isArchived = !p.isArchived;
+                });
+                (appData.githubRepos || []).forEach(r => {
+                    if (r.name === id || r.url === id) r.isArchived = !r.isArchived;
+                });
+                renderProjects();
+                renderGithub();
+                renderArchive();
                 if (vscode) vscode.postMessage({ command: 'toggleArchive', id });
                 break;
             }
@@ -6835,8 +8463,12 @@ body::before {
                 break;
 
             case 'closeAgDetailsModal':
-                if (event.target.id === 'agDetailsModal') {
-                    isAgDetailsModalOpen = false;
+                if (el.id === 'agDetailsModal' && event && event.target !== el) {
+                    break;
+                }
+                AudioEngine.click();
+                isAgDetailsModalOpen = false;
+                {
                     const modal = document.getElementById('agDetailsModal');
                     if (modal) modal.classList.remove('open');
                 }
@@ -6859,11 +8491,13 @@ body::before {
             case 'openAgSettings':
                 AudioEngine.click();
                 if (vscode) vscode.postMessage({ command: 'openAgSettings' });
+                else showToast('Antigravity ayarları açılıyor...');
                 break;
 
             case 'openAgSidebar':
                 AudioEngine.click();
                 if (vscode) vscode.postMessage({ command: 'openAgSidebar' });
+                else showToast('Antigravity yan paneli açılıyor...');
                 break;
 
             case 'refreshAgQuota': {
@@ -6885,6 +8519,26 @@ body::before {
                 }, 2000);
                 break;
             }
+
+            case 'openNewWorkspace':
+                AudioEngine.click();
+                if (vscode) vscode.postMessage({ command: 'openFolderDialog' });
+                else showToast('Klasör seçimi tetiklendi');
+                break;
+
+            case 'openSkillsFolder':
+                AudioEngine.click();
+                if (vscode) vscode.postMessage({ command: 'openSkillsFolder' });
+                else showToast('Yetenekler klasörü açılıyor...');
+                break;
+
+            case 'copyGhAuthCommand':
+                AudioEngine.click();
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText('gh auth login').catch(() => {});
+                }
+                showToast('💬 "gh auth login" komutu panoya kopyalandı!');
+                break;
         }
     }
 
@@ -6897,12 +8551,18 @@ body::before {
         }
 
         const stopEl = e.target.closest('[data-stop-propagation="true"]');
+        const actionEl = e.target.closest('[data-action]');
+
+        // If click occurred inside modal content but actionEl is outside (e.g. backdrop close action), ignore
+        if (actionEl && stopEl && !stopEl.contains(actionEl)) {
+            return;
+        }
+
         if (stopEl && e.target === stopEl) {
             e.stopPropagation();
             return;
         }
 
-        const actionEl = e.target.closest('[data-action]');
         if (actionEl) {
             const action = actionEl.dataset.action;
             handleAction(action, actionEl, e);
@@ -6928,6 +8588,24 @@ body::before {
             if (currentNavTab === 'projects') renderProjects();
             else if (currentNavTab === 'github') renderGithub();
             else if (currentNavTab === 'sessions') renderSessions();
+        });
+    }
+
+    const skillSearchInput = document.getElementById('skillSearchInput');
+    if (skillSearchInput) {
+        skillSearchInput.addEventListener('input', () => {
+            renderSkills();
+        });
+    }
+
+    const customGhInput = document.getElementById('customGhInput');
+    if (customGhInput) {
+        customGhInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const btn = document.querySelector('[data-action="submitCustomRepo"]');
+                if (btn) btn.click();
+            }
         });
     }
 
@@ -6987,6 +8665,7 @@ body::before {
 
     // --- Initial Render ---
     initTheme();
+    initLanguage();
     loadWidgetVisibility();
     applyWidgetVisibility(false);
     updateDashboardUI(appData);

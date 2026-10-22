@@ -251,11 +251,47 @@ async function runE2E() {
                          (solarizedLight === 'solarized-light') &&
                          (hcDark === 'hc-dark');
         results.push({ step: 13, name: 'Verify New Professional Theme Suite (Tokyo Night, Catppuccin, Solarized, High Contrast)', success: step13Ok });
-        console.log('✅ Step 13: New Professional Themes verified');
+        // --- Step 14: Verify Multi-Language i18n Switching (en, de, ja, auto) ---
+        await page.click('#openSettingsBtn');
+        await page.waitForSelector('#settingsModal.open');
 
-        // Screenshot
+        // Switch to English
+        await page.click('#langCardEn');
+        const enSettingsTitle = await page.locator('#settingsModalTitle').innerText();
+        console.log(`EN Settings Title: "${enSettingsTitle}"`);
+
+        // Switch to German
+        await page.click('#langCardDe');
+        const deSettingsTitle = await page.locator('#settingsModalTitle').innerText();
+        console.log(`DE Settings Title: "${deSettingsTitle}"`);
+
+        // Switch to Japanese
+        await page.click('#langCardJa');
+        const jaSettingsTitle = await page.locator('#settingsModalTitle').innerText();
+        console.log(`JA Settings Title: "${jaSettingsTitle}"`);
+
+        // Switch back to Auto (IDE Language fallback)
+        await page.click('#langCardAuto');
+        const autoBadge = await page.locator('#currentLangBadge').innerText();
+        console.log(`Auto Mode Badge: "${autoBadge}"`);
+
+        // Screenshot of Language Picker in Settings Modal
         const outDir = path.join(__dirname, '..', '.playwright-cli', 'screenshots');
         fs.mkdirSync(outDir, { recursive: true });
+        const langScreenPath = path.join(outDir, 'language-picker-verified.png');
+        await page.screenshot({ path: langScreenPath });
+        console.log('📸 Language Picker Screenshot saved at:', langScreenPath);
+
+        await page.click('#closeSettingsBtn');
+
+        const step14Ok = enSettingsTitle.includes('Cockpit Settings') &&
+                         deSettingsTitle.includes('Cockpit-Einstellungen') &&
+                         jaSettingsTitle.includes('Cockpit 設定') &&
+                         autoBadge.includes('Otomatik');
+        results.push({ step: 14, name: 'Verify Multi-Language Engine (English, German, Japanese, and Auto IDE fallback)', success: step14Ok });
+        console.log('✅ Step 14: Multi-Language Engine verified');
+
+        // Screenshot
         const screenPath = path.join(outDir, 'cockpit-classic-verified.png');
         await page.screenshot({ path: screenPath });
         console.log('📸 Screenshot saved at:', screenPath);

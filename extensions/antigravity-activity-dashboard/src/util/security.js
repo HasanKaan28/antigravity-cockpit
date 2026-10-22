@@ -18,7 +18,7 @@ function validateExternalUrl(rawUrl) {
     return null;
 }
 
-function parseRepoInput(input, defaultOwner = 'HasanKaan28') {
+function parseRepoInput(input, defaultOwner = '') {
     if (!input || typeof input !== 'string') return null;
     const clean = input.trim()
         .replace(/^https?:\/\/github\.com\//i, '')
@@ -37,11 +37,20 @@ function parseRepoInput(input, defaultOwner = 'HasanKaan28') {
         };
     }
 
+    if (defaultOwner) {
+        return {
+            owner: defaultOwner,
+            repo: clean,
+            fullName: `${defaultOwner}/${clean}`,
+            url: `https://github.com/${defaultOwner}/${clean}`
+        };
+    }
+
     return {
-        owner: defaultOwner,
+        owner: '',
         repo: clean,
-        fullName: `${defaultOwner}/${clean}`,
-        url: `https://github.com/${defaultOwner}/${clean}`
+        fullName: clean,
+        url: `https://github.com/${clean}`
     };
 }
 

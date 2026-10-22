@@ -20,82 +20,48 @@ if (!fs.existsSync(templatePath)) {
 }
 
 const mockData = {
+    ideLanguage: "tr",
+    configuredLanguage: "auto",
     sessions: [
         {
             id: "session-sample-uuid-001",
-            time: "05/10 12:30",
+            time: "10:30",
             timeAgo: "Az Önce",
             timestamp: Date.now(),
-            prompt: "Antigravity Activity Dashboard v2.0 mimari refactoring ve güvenlik denetimi",
-            activeDoc: "src/extension.js",
-            toolCount: 18,
-            transcriptPath: "C:/Users/Kaan/.gemini/antigravity-ide/brain/session/transcript.jsonl",
-            path: "C:/Users/Kaan/.gemini/antigravity-ide/brain/session",
+            prompt: "Örnek oturum: Proje mimarisi ve bileşen oluşturma",
+            activeDoc: "src/index.js",
+            toolCount: 8,
+            transcriptPath: null,
+            path: "/workspaces/sample-project",
             status: "Tamamlandı"
         }
     ],
     projects: [
         {
-            name: "antigravity-activity-dashboard",
-            path: "c:/users/kaan/.gemini/antigravity-ide/scratch/antigravity-activity-dashboard",
-            rawPath: "C:\\Users\\Kaan\\.gemini\\antigravity-ide\\scratch\\antigravity-activity-dashboard",
+            name: "sample-project",
+            path: "/workspaces/sample-project",
+            rawPath: "/workspaces/sample-project",
             isGit: true,
             branch: "main",
             gitLog: [
-                { hash: "96afe05", msg: "chore(infra): complete Phase 0 setup with git, manifest, metadata and cyberpunk graph", ago: "5 dk önce" }
+                { hash: "a1b2c3d", msg: "feat: initial project structure", ago: "1 saat önce" }
             ],
             hasUncommitted: false,
-            sessionNotes: "Antigravity IDE v2.0 Cockpit Dashboard",
-            hasGraphify: true,
-            graphifyPath: "C:/Users/Kaan/.gemini/antigravity-ide/scratch/antigravity-activity-dashboard/graphify-out/graph.html",
-            cbmIndexed: true,
-            cbmDbSize: "4.2 MB",
-            isFavorite: true,
-            isArchived: false
-        },
-        {
-            name: "Market_Kasa",
-            path: "c:/users/kaan/github-repos/market_kasa",
-            rawPath: "C:\\Users\\Kaan\\github-repos\\Market_Kasa",
-            isGit: true,
-            branch: "main",
-            gitLog: [
-                { hash: "7da8ae2", msg: "fix(veresiye): customer balance auto-heal v1.4.0", ago: "2 hafta önce" }
-            ],
-            hasUncommitted: true,
-            sessionNotes: "",
+            sessionNotes: "Antigravity Cockpit Çalışma Alanı",
             hasGraphify: false,
             graphifyPath: null,
-            cbmIndexed: true,
-            cbmDbSize: "2.8 MB",
+            cbmIndexed: false,
+            cbmDbSize: null,
             isFavorite: false,
             isArchived: false
         }
     ],
-    githubRepos: [
-        {
-            name: "antigravity-brain-sync",
-            fullName: "HasanKaan28/antigravity-brain-sync",
-            description: "Antigravity IDE persona, skills, persistent memory, and rules sync vault",
-            isPrivate: true,
-            language: "Python",
-            stars: 0,
-            url: "https://github.com/HasanKaan28/antigravity-brain-sync",
-            pushedAt: new Date().toISOString(),
-            timeAgo: "Bugün",
-            defaultBranch: "main",
-            isCloned: true,
-            localPath: "C:/Users/Kaan/github-repos/antigravity-brain-sync",
-            cbmIndexed: true,
-            cbmDbSize: "1.9 MB",
-            hasGraphify: false,
-            isFavorite: true,
-            isArchived: false
-        }
-    ],
-    favCount: 2,
+    githubRepos: [],
+    githubUser: null,
+    githubConnected: false,
+    favCount: 0,
     archCount: 0,
-    ghCount: 1,
+    ghCount: 0,
     openOnStartup: true,
     panel: {
         status: "ok",
@@ -103,11 +69,11 @@ const mockData = {
             {
                 id: "gemini",
                 label: "Gemini",
-                remaining: 85,
-                resetTime: "3h 40m",
+                remaining: 90,
+                resetTime: "4h 00m",
                 themeColor: "#40C4FF",
                 hasData: true,
-                weekly: { remaining: 75, resetTime: "3d 12h" }
+                weekly: { remaining: 80, resetTime: "4d 12h" }
             },
             {
                 id: "non-google",
@@ -116,12 +82,12 @@ const mockData = {
                 resetTime: "4h 15m",
                 themeColor: "#FFAB40",
                 hasData: true,
-                weekly: { remaining: 90, resetTime: "5d 20h" }
+                weekly: { remaining: 85, resetTime: "5d 20h" }
             }
         ],
         user: {
-            email: "user@developer.local",
-            tier: "Google AI Pro"
+            email: "developer@example.com",
+            tier: "Antigravity Pro"
         },
         tokenUsage: {
             promptCredits: { available: 500, monthly: 50000, remainingPercentage: 1 },
@@ -129,77 +95,85 @@ const mockData = {
         }
     },
     cbm: {
-        installed: true,
-        version: "0.11.0",
-        path: "C:/Users/Kaan/AppData/Local/Programs/codebase-memory-mcp/codebase-memory-mcp.exe",
-        uiUrl: "http://localhost:9749",
-        totalDbSizeMb: "185.0 MB",
-        indexedProjectsCount: 10
+        installed: false,
+        version: null,
+        path: null,
+        uiUrl: null,
+        totalDbSizeMb: "0 MB",
+        indexedProjectsCount: 0
     },
     system: {
-        gpu: "NVIDIA RTX 5070 Ti (Active)",
-        localModel: "qwen2.5-coder:14b (Ollama Aktif)",
-        hasLocalEngine: true,
+        gpu: "Sistem GPU (Aktif)",
+        localModel: "Yerel Model Bulunamadı",
+        hasLocalEngine: false,
         localAi: {
-            hasLocalEngine: true,
-            primaryEngine: {
-                id: "ollama",
-                name: "Ollama",
-                endpoint: "http://127.0.0.1:11434",
-                online: true,
-                installed: true,
-                activeModel: "qwen2.5-coder:14b",
-                models: ["qwen2.5-coder:14b"]
-            },
-            detectedEngines: [
-                {
-                    id: "ollama",
-                    name: "Ollama",
-                    endpoint: "http://127.0.0.1:11434",
-                    online: true,
-                    installed: true,
-                    activeModel: "qwen2.5-coder:14b"
-                }
-            ]
+            hasLocalEngine: false,
+            primaryEngine: null,
+            detectedEngines: []
         },
-        ollamaOnline: true,
-        ollamaInstalled: true,
-        remoteVault: "HasanKaan28/antigravity-brain-sync (Senkronize)",
-        graphifyStatus: "Etkin (Cyberpunk Deep Space Observatory)",
-        cbmStatus: "Etkin (10 Repo, 185.0 MB)"
+        ollamaOnline: false,
+        ollamaInstalled: false,
+        remoteVault: "Yapılandırılmadı",
+        graphifyStatus: "Hazır (Observatory)",
+        cbmStatus: "Kurulu Değil"
     }
 };
 
-// Probe live Antigravity Panel quotas & token data directly from local IDE database
-try {
-    const { execFileSync } = require('child_process');
-    const pyScript = path.join(root, 'get_panel_data.py');
-    if (fs.existsSync(pyScript)) {
-        const pyOut = execFileSync('python', [pyScript], { encoding: 'utf8', timeout: 3000 });
-        const livePanel = JSON.parse(pyOut);
-        if (livePanel && (livePanel.status === 'ok' || (livePanel.groups && livePanel.groups.length > 0))) {
-            mockData.panel = livePanel;
-        }
+(async () => {
+    // Clean non-PII generic sample skills for preview and standalone HTML
+    mockData.skills = {
+        totalCount: 3,
+        categories: {
+            architecture: 1,
+            design: 1,
+            quality: 1,
+            optimization: 0,
+            'local-ai': 0
+        },
+        skills: [
+            {
+                id: 'code-review',
+                displayName: 'Code Review Excellence',
+                category: 'quality',
+                description: 'Systematic code analysis, clean architecture patterns, and collaborative feedback.',
+                promptHint: '@skill:code-review',
+                skillPath: null
+            },
+            {
+                id: 'api-design',
+                displayName: 'API Design Principles',
+                category: 'architecture',
+                description: 'Master REST and GraphQL API design principles for scalable and maintainable systems.',
+                promptHint: '@skill:api-design-principles',
+                skillPath: null
+            },
+            {
+                id: 'frontend-design',
+                displayName: 'Frontend Design Guidelines',
+                category: 'design',
+                description: 'Distinctive frontend implementations, design tokens, and accessibility standards.',
+                promptHint: '@skill:frontend-design',
+                skillPath: null
+            }
+        ]
+    };
+
+    let template = fs.readFileSync(templatePath, 'utf8');
+    const cssContent = fs.readFileSync(cssPath, 'utf8');
+    const jsContent = fs.readFileSync(jsPath, 'utf8');
+
+    // Inline assets for standalone file preview
+    template = template
+        .replace('<link rel="stylesheet" href="{{CSS_URI}}">', `<style>${cssContent}</style>`)
+        .replace('<script nonce="{{NONCE}}" src="{{JS_URI}}"></script>', `<script>${jsContent}</script>`)
+        .replace('content="{{CSP}}"', 'content="default-src \'self\' \'unsafe-inline\' data: blob:;"')
+        .replaceAll('{{NONCE}}', 'preview-nonce')
+        .replace('{{INITIAL_DATA}}', JSON.stringify(mockData));
+
+    fs.writeFileSync(previewPath, template, 'utf8');
+    console.log('Preview generated successfully at:', previewPath);
+
+    if (process.argv.includes('--open')) {
+        launchInBrowser(previewPath);
     }
-} catch {
-    // Keep baseline mockData if python is not reachable
-}
-
-let template = fs.readFileSync(templatePath, 'utf8');
-const cssContent = fs.readFileSync(cssPath, 'utf8');
-const jsContent = fs.readFileSync(jsPath, 'utf8');
-
-// Inline assets for standalone file preview
-template = template
-    .replace('<link rel="stylesheet" href="{{CSS_URI}}">', `<style>${cssContent}</style>`)
-    .replace('<script nonce="{{NONCE}}" src="{{JS_URI}}"></script>', `<script>${jsContent}</script>`)
-    .replace('content="{{CSP}}"', 'content="default-src \'self\' \'unsafe-inline\' data: blob:;"')
-    .replaceAll('{{NONCE}}', 'preview-nonce')
-    .replace('{{INITIAL_DATA}}', JSON.stringify(mockData));
-
-fs.writeFileSync(previewPath, template, 'utf8');
-console.log('Preview generated successfully at:', previewPath);
-
-if (process.argv.includes('--open')) {
-    launchInBrowser(previewPath);
-}
+})();

@@ -5,11 +5,13 @@
  */
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execFileAsync } = require('../util/proc');
 const logger = require('../logger');
 
-const CBM_CACHE_DIR = path.join(process.env.USERPROFILE || 'C:\\Users\\Kaan', '.cache', 'codebase-memory-mcp');
-const CBM_EXE = path.join(process.env.LOCALAPPDATA || 'C:\\Users\\Kaan\\AppData\\Local', 'Programs', 'codebase-memory-mcp', 'codebase-memory-mcp.exe');
+const userHome = os.homedir();
+const CBM_CACHE_DIR = path.join(userHome, '.cache', 'codebase-memory-mcp');
+const CBM_EXE = path.join(process.env.LOCALAPPDATA || path.join(userHome, 'AppData', 'Local'), 'Programs', 'codebase-memory-mcp', 'codebase-memory-mcp.exe');
 
 async function getCbmData() {
     return {
@@ -60,7 +62,7 @@ function matchProjectCbm(rawPath, projectName, dbMap) {
     if (!dbMap || dbMap.size === 0) return { indexed: false, sizeMb: null, cbmKey: null };
 
     const nameKey = (projectName || '').toLowerCase();
-    // Path encoded as CBM does: C-Users-Kaan-folder-name
+    // Path encoded as CBM does: C-Users-username-folder-name
     const pathKey = (rawPath || '')
         .replace(/^[a-zA-Z]:/i, (m) => m[0].toUpperCase())
         .replace(/[:\\/]+/g, '-')
