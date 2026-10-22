@@ -60,12 +60,12 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 - Git branch name, latest commit date, and uncommitted diff indicators.
 - Live **Graphify** visual graph indicators and **Codebase Memory (CBM)** index badges.
 - Pin favorites and archive finished repositories with instant search filtering.
-- **Zero-State Support:** Direct "Klasör Aç" / "Open Folder" action when no workspaces are detected.
+- **Zero-State Support:** Direct "Open folder" action when no workspaces are detected.
 
 ### 🐙 GitHub Integration
 - Direct integration via official `gh` CLI with zero credentials storage.
 - One-click repository cloning directly into your local repositories folder.
-- Dynamic detection of the active GitHub user with a clean **"GitHub Hesabı Bağla"** (`gh auth login`) onboarding prompt when unauthenticated.
+- Dynamic detection of the active GitHub user with a clean **"Connect GitHub"** (`gh auth login`) onboarding prompt when unauthenticated.
 - Add external custom repositories by `owner/repo` to monitor commits and stars.
 
 ### 🧠 Dynamic Agent Skills Detection
