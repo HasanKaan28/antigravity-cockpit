@@ -7,7 +7,7 @@
 
 > **Futuristic Deep Space Mission Control Dashboard and Agent Workspace Cockpit for Antigravity IDE.**
 
-Antigravity Cockpit greets you **automatically on every Antigravity IDE launch**, unifying your workspace projects, GitHub repositories, recent chat sessions, Codebase Memory (CBM) indices, Graphify knowledge graphs, and live AI model quotas into a single cyberpunk control screen.
+Antigravity Cockpit greets you **automatically on every Antigravity IDE launch**, unifying your workspace projects, GitHub repositories, recent chat sessions, Codebase Memory (CBM) indices, Graphify knowledge graphs, and live AI model quotas into a single mission-control screen.
 
 ---
 
@@ -51,8 +51,9 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 ### 🌌 Deep Space Mission Control
 - **Auto-Launch on Startup:** Opens ~1.2 seconds after IDE launch (`openOnStartup: true`).
 - **Webview Serializer:** Seamlessly restores your open dashboard tab and state across IDE restarts.
-- **Cyberpunk Aesthetics:** Futuristic glassmorphism panels, glowing gauges, and optional Web Audio API cyber SFX.
-- **Full Theme Suite:** Deep Space Dark, Cockpit Classic (Graphite & Electric Blue), Tokyo Night, Catppuccin, Solarized, and High Contrast — available in both Dark and Light variants.
+- **Mission Control Layout:** Left section rail with live counts, a shared `Ctrl+K` search bar, tick-meter quota instruments with live reset countdowns, and a settings sheet. Fully keyboard accessible, responsive down to narrow side panels, and respects `prefers-reduced-motion`.
+- **Full Theme Suite:** Antigravity, Deep Space, Midnight Obsidian, Nord, Tokyo Night, Catppuccin, Solarized, Synchronized Studio, Cockpit Classic and High Contrast, each in Dark and Light, plus **Match IDE** which follows the active IDE color theme. Every palette is checked for WCAG contrast by the E2E audit.
+- **Optional extras:** Web Audio interface sounds and a particle background, both toggleable in Settings.
 
 ### 📁 Workspace & Project Explorer
 - Real-time detection across active workspaces, recent projects, standard development folders (`~/Projects`, `~/dev`, `~/code`, `~/github-repos`), and expanded project signatures.
@@ -94,7 +95,8 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 | `npm run install-local` | Installs the latest packaged `.vsix` into Antigravity IDE |
 | `npm run sync-live` | Hot-syncs workspace files directly to the runtime extension folder |
 | `npm run test:unit` | Executes Mocha test suite (37 passing unit tests) |
-| `npm run preview` | Builds browser-accessible `preview.html` with non-PII mock telemetry |
+| `npm run test:e2e` | Headless Edge UI audit: every view, button message, theme contrast and narrow widths |
+| `npm run preview` | Builds browser-accessible `preview.html` with non-PII mock telemetry (`-- --data file.json` for a real snapshot) |
 
 ---
 

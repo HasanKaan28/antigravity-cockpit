@@ -38,6 +38,6 @@
 
 ## Testing & Verification
 - Unit test suite (`npm run test:unit`): 25 passing tests covering security utils, storage canonical IDs, transcript parsing, and CBM exact matching.
-- E2E test suite (`node test/e2e-verify.js`): 13/13 passing steps using real Microsoft Edge and Playwright (including Theme switching & New Theme Suite verification).
+- E2E UI audit (`npm run test:e2e`, `test/e2e-ui.js`): builds `preview.html` from `test/fixtures/ui-data.json`, stubs `acquireVsCodeApi` to assert every button's `postMessage` contract, and drives headless Edge through all views, settings, themes (WCAG contrast check for all 20 palettes), language switching, live updates and narrow widths.
 - Packaging (`npm run package`): Produces `antigravity-activity-dashboard-2.2.0.vsix`.
 - Local installation (`npm run install-local`): Verified installed in Antigravity IDE (`antigravity-local.antigravity-activity-dashboard@2.2.0`).

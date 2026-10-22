@@ -1,0 +1,164 @@
+{
+  "ideLanguage": "en",
+  "configuredLanguage": "tr",
+  "sessions": [
+    {
+      "id": "session-001",
+      "time": "21/10 14:05",
+      "timeAgo": "1 gün önce",
+      "timestamp": 1792500000000,
+      "prompt": "Refactor the payment service and add retry logic to the webhook handler",
+      "activeDoc": "src/payments/webhook.ts",
+      "toolCount": 14,
+      "transcriptPath": "/workspaces/.brain/session-001/transcript.jsonl",
+      "path": "/workspaces/.brain/session-001",
+      "status": "Tamamlandı"
+    },
+    {
+      "id": "session-002",
+      "time": "20/10 09:41",
+      "timeAgo": "2 gün önce",
+      "timestamp": 1792400000000,
+      "prompt": "Write unit tests for the date parser",
+      "activeDoc": "",
+      "toolCount": 3,
+      "transcriptPath": "/workspaces/.brain/session-002/transcript.jsonl",
+      "path": "/workspaces/.brain/session-002",
+      "status": "Tamamlandı"
+    }
+  ],
+  "projects": [
+    {
+      "name": "orbit-api",
+      "path": "/workspaces/orbit-api",
+      "rawPath": "/workspaces/orbit-api",
+      "isGit": true,
+      "branch": "main",
+      "gitLog": [{ "hash": "a1b2c3d", "msg": "feat: add rate limiter middleware", "ago": "3 hours ago" }],
+      "hasUncommitted": true,
+      "sessionNotes": "",
+      "hasGraphify": true,
+      "graphifyPath": "/workspaces/orbit-api/graphify-out/graph.html",
+      "isFavorite": true,
+      "isArchived": false
+    },
+    {
+      "name": "lumen-web",
+      "path": "/workspaces/lumen-web",
+      "rawPath": "/workspaces/lumen-web",
+      "isGit": true,
+      "branch": "develop",
+      "gitLog": [{ "hash": "d4e5f6a", "msg": "fix: hydrate theme before first paint", "ago": "2 days ago" }],
+      "hasUncommitted": false,
+      "sessionNotes": "",
+      "hasGraphify": false,
+      "graphifyPath": null,
+      "isFavorite": false,
+      "isArchived": false
+    },
+    {
+      "name": "scratch-notes",
+      "path": "/workspaces/scratch-notes",
+      "rawPath": "/workspaces/scratch-notes",
+      "isGit": false,
+      "branch": null,
+      "gitLog": [],
+      "hasUncommitted": false,
+      "sessionNotes": "",
+      "hasGraphify": false,
+      "graphifyPath": null,
+      "isFavorite": false,
+      "isArchived": false
+    },
+    {
+      "name": "legacy-portal",
+      "path": "/workspaces/legacy-portal",
+      "rawPath": "/workspaces/legacy-portal",
+      "isGit": true,
+      "branch": "master",
+      "gitLog": [],
+      "hasUncommitted": false,
+      "sessionNotes": "",
+      "hasGraphify": false,
+      "graphifyPath": null,
+      "isFavorite": false,
+      "isArchived": true
+    }
+  ],
+  "githubRepos": [
+    {
+      "name": "orbit-api",
+      "fullName": "sample-org/orbit-api",
+      "description": "Public API gateway with rate limiting",
+      "isPrivate": true,
+      "language": "TypeScript",
+      "stars": 4,
+      "url": "https://github.com/sample-org/orbit-api",
+      "timeAgo": "3 saat önce",
+      "defaultBranch": "main",
+      "isCloned": true,
+      "localPath": "/workspaces/orbit-api",
+      "hasGraphify": true,
+      "graphifyPath": "/workspaces/orbit-api/graphify-out/graph.html",
+      "isFavorite": false,
+      "isArchived": false
+    },
+    {
+      "name": "design-tokens",
+      "fullName": "sample-org/design-tokens",
+      "description": "Shared color and type tokens",
+      "isPrivate": false,
+      "language": "CSS",
+      "stars": 0,
+      "url": "https://github.com/sample-org/design-tokens",
+      "timeAgo": "5 gün önce",
+      "defaultBranch": "main",
+      "isCloned": false,
+      "localPath": null,
+      "hasGraphify": false,
+      "graphifyPath": null,
+      "isFavorite": false,
+      "isArchived": false
+    }
+  ],
+  "githubUser": "sample-org",
+  "githubConnected": true,
+  "favCount": 1,
+  "archCount": 1,
+  "ghCount": 2,
+  "openOnStartup": true,
+  "panel": {
+    "status": "ok",
+    "groups": [
+      { "id": "gemini", "label": "Gemini", "remaining": 72.5, "resetTime": "4h 10m", "resetDate": 4102444800000, "weekly": { "remaining": 88.2, "resetTime": "3d 4h" } },
+      { "id": "non-google", "label": "Claude", "remaining": 35, "resetTime": "2h 5m" }
+    ],
+    "user": { "email": "dev@example.com", "tier": "Google AI Pro" },
+    "tokenUsage": {
+      "promptCredits": { "available": 500, "monthly": 50000, "remainingPercentage": 0.01 },
+      "flowCredits": { "available": 100, "monthly": 150000, "remainingPercentage": 0.0007 },
+      "formatted": { "promptAvailable": "500", "promptMonthly": "50.0K", "flowAvailable": "100", "flowMonthly": "150.0K" }
+    }
+  },
+  "system": {
+    "gpu": "Sample GPU 8 GB",
+    "hasLocalEngine": true,
+    "ollamaOnline": false,
+    "ollamaInstalled": true,
+    "localAi": {
+      "hasLocalEngine": true,
+      "primaryEngine": { "id": "ollama", "name": "Ollama", "endpoint": "http://127.0.0.1:11434", "online": true, "activeModel": "qwen2.5-coder:7b" },
+      "detectedEngines": [{ "id": "ollama", "name": "Ollama" }]
+    },
+    "power": { "onAc": true, "percent": 100 }
+  },
+  "skills": {
+    "totalCount": 3,
+    "categories": { "architecture": 1, "design": 1, "quality": 1 },
+    "skills": [
+      { "id": "api-design", "name": "api-design", "displayName": "api-design-principles", "category": "architecture", "description": "REST and GraphQL design principles.", "promptHint": "@skill:api-design-principles", "skillPath": "/skills/api-design/SKILL.md" },
+      { "id": "frontend-design", "name": "frontend-design", "displayName": "frontend-design", "category": "design", "description": "Distinctive frontend implementations.", "promptHint": "@skill:frontend-design", "skillPath": "/skills/frontend-design/SKILL.md" },
+      { "id": "code-review", "name": "code-review", "displayName": "code-review-excellence", "category": "quality", "description": "Systematic code review.", "promptHint": "@skill:code-review", "skillPath": null }
+    ]
+  }
+}

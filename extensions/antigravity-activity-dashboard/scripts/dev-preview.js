@@ -158,17 +158,24 @@ const mockData = {
         ]
     };
 
+    // Optional: --data <file.json> renders the preview with a real data snapshot instead of the mock.
+    const dataArg = process.argv.indexOf('--data');
+    const previewData = dataArg > -1 && process.argv[dataArg + 1]
+        ? JSON.parse(fs.readFileSync(path.resolve(process.argv[dataArg + 1]), 'utf8'))
+        : mockData;
+
     let template = fs.readFileSync(templatePath, 'utf8');
-    const cssContent = fs.readFileSync(cssPath, 'utf8');
+    // preview.html lives in the project root, so font URLs must point into media/.
+    const cssContent = fs.readFileSync(cssPath, 'utf8').replace(/url\('fonts\//g, "url('media/fonts/");
     const jsContent = fs.readFileSync(jsPath, 'utf8');
 
-    // Inline assets for standalone file preview
+    // Inline assets for standalone file preview (replacer functions keep "$" sequences literal)
     template = template
-        .replace('<link rel="stylesheet" href="{{CSS_URI}}">', `<style>${cssContent}</style>`)
-        .replace('<script nonce="{{NONCE}}" src="{{JS_URI}}"></script>', `<script>${jsContent}</script>`)
+        .replace('<link rel="stylesheet" href="{{CSS_URI}}">', () => `<style>${cssContent}</style>`)
+        .replace('<script nonce="{{NONCE}}" src="{{JS_URI}}"></script>', () => `<script>${jsContent}</script>`)
         .replace('content="{{CSP}}"', 'content="default-src \'self\' \'unsafe-inline\' data: blob:;"')
         .replaceAll('{{NONCE}}', 'preview-nonce')
-        .replace('{{INITIAL_DATA}}', JSON.stringify(mockData));
+        .replace('{{INITIAL_DATA}}', () => JSON.stringify(previewData).replace(/</g, '\\u003c'));
 
     fs.writeFileSync(previewPath, template, 'utf8');
     console.log('Preview generated successfully at:', previewPath);
