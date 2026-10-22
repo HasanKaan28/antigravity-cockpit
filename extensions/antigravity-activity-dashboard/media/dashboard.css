@@ -5,13 +5,24 @@
    Z-index scale: rail 10, topbar 20, popover 40, sheet 60, modal 70, toast 80.
    ========================================================================== */
 
+/* Each font ships as two subsets. A src list is only a fallback chain, so every subset
+   needs its own @font-face with a unicode-range; otherwise latin-ext glyphs (ş ğ İ) never load. */
 @font-face {
   font-family: 'Outfit';
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('fonts/outfit-latin-wght-normal.woff2') format('woff2-variations'),
-       url('fonts/outfit-latin-ext-wght-normal.woff2') format('woff2-variations');
+  src: url('fonts/outfit-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('fonts/outfit-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
@@ -19,8 +30,17 @@
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'),
-       url('fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  src: url('fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 /* --------------------------------------------------------------------------
@@ -793,6 +813,36 @@ kbd { font-family: var(--font-mono); }
   color: var(--text-3);
 }
 .inst-foot b { font-family: var(--font-mono); font-weight: 500; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.credit-line { display: inline-flex; align-items: center; gap: 5px; }
+.credit-line .icon { display: none; }
+.credit-line.low, .credit-line.low b { color: var(--warn); }
+.credit-line.low .icon { display: inline-block; }
+
+/* Resume strip: latest commit and latest session */
+.resume { padding: 14px 16px; margin-bottom: 24px; }
+.resume[hidden] { display: none; }
+.resume .inst-title { font-size: inherit; }
+.resume-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.resume-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 3px;
+  min-width: 0;
+  padding: 4px 18px 4px 0;
+  border-radius: var(--r-ctl);
+}
+.resume-item + .resume-item { padding: 4px 0 4px 18px; border-left: 1px solid var(--line); border-radius: 0; }
+.resume-item > :not(.resume-actions) { grid-column: 1; min-width: 0; }
+.resume-label { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); }
+.resume-label .ago { font-family: var(--font-mono); font-size: 11px; }
+.resume-label .ago::before { content: ''; display: inline-block; width: 3px; height: 3px; margin: 0 6px 2px 0; border-radius: 50%; background: var(--line-strong); vertical-align: middle; }
+.resume-name { font-family: var(--font-display); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.resume-prompt { font-family: var(--font-body); font-size: 13.5px; font-weight: 500; letter-spacing: 0; }
+.resume-item .row-text code { margin-right: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.resume-item .row-text .icon { margin-right: 6px; vertical-align: -2px; color: var(--text-3); }
+.resume-actions { grid-column: 2; grid-row: 1 / span 3; display: flex; align-items: center; gap: 4px; }
 
 .flash { animation: flash 0.7s ease; }
 
@@ -866,7 +916,11 @@ kbd { font-family: var(--font-mono); }
   animation-delay: calc(min(var(--i, 0), 14) * 22ms);
 }
 .row:first-child { border-top: 0; }
-.row:hover { background: var(--surface-2); }
+.row:hover, .row:focus { background: var(--surface-2); }
+/* Arrow-key focus: rows sit in a clipped container, so draw the ring inside. */
+.row:focus-visible, .resume-item:focus-visible { outline-offset: -2px; }
+.row:focus, .resume-item:focus, .card:focus, .map-tile:focus, .skill-card:focus { outline: none; }
+.row:focus-visible, .resume-item:focus-visible, .card:focus-visible, .map-tile:focus-visible, .skill-card:focus-visible { outline: 2px solid var(--accent); }
 
 .row-id { min-width: 0; }
 .row-name {
@@ -943,6 +997,8 @@ kbd { font-family: var(--font-mono); }
 .sess-prompt { font-size: 13px; color: var(--text); font-weight: 500; }
 .sess-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11.5px; color: var(--text-3); }
 .sess-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.sess-meta .heavy { color: var(--text-2); font-weight: 500; }
+.sess-meta .heavy .icon { color: var(--accent); }
 
 /* Archive rows */
 .type-glyph { display: grid; place-items: center; color: var(--text-3); }
@@ -1289,10 +1345,8 @@ kbd { font-family: var(--font-mono); }
 .kv { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
 .kv .k { color: var(--text-3); }
 .kv .v { color: var(--text); font-weight: 500; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.credit { margin-top: 16px; }
-.credit-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--text-2); }
-.credit-head b { font-family: var(--font-mono); font-weight: 500; color: var(--text); }
-.credit .meter-track { height: 10px; }
+.kv .v.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.kv .v.low { color: var(--warn); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
 
 /* --------------------------------------------------------------------------
@@ -1365,6 +1419,9 @@ kbd { font-family: var(--font-mono); }
   .rows.sessions .sess-time small { display: inline; }
   .rows.sessions .row-info { grid-column: 1 / -1; grid-row: 2; }
   .rows.sessions .row-actions { grid-column: 2; grid-row: 1; }
+  .resume-grid { grid-template-columns: minmax(0, 1fr); }
+  .resume-item, .resume-item + .resume-item { padding: 10px 0; border-left: 0; }
+  .resume-item + .resume-item { border-top: 1px solid var(--line); }
 }
 
 @media (max-width: 620px) {

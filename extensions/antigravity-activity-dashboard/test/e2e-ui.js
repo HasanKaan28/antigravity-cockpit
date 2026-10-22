@@ -94,6 +94,39 @@ async function step(name, fn) {
         assert.strictEqual(await attr('#geminiMeter', 'aria-valuenow'), '73');
     });
 
+    await step('low prompt credits are flagged from raw counts', async () => {
+        assert.ok(await page.$eval('#teleCredits', el => el.classList.contains('low')), '500 of 50.0K is under the threshold');
+        assert.match(await attr('#teleCredits', 'title'), /%1\b/);
+        assert.ok(await page.$eval('#modalPromptCredits', el => el.classList.contains('low')));
+        assert.strictEqual(await page.$$eval('#agDetailsModal .meter-track', els => els.length), 0, 'credit bars are gone');
+    });
+
+    await step('Turkish glyphs load from the latin-ext font subsets', async () => {
+        const faces = await page.evaluate(async () => {
+            await document.fonts.load('16px Outfit', 'ş');
+            await document.fonts.load('16px "JetBrains Mono"', 'ğ');
+            return [...document.fonts].filter(f => f.status === 'loaded').map(f => f.family.replace(/"/g, '') + ' ' + f.unicodeRange.split(',')[0].toUpperCase());
+        });
+        assert.ok(faces.includes('Outfit U+100-2BA'), faces.join(' | '));
+        assert.ok(faces.includes('JetBrains Mono U+100-2BA'), faces.join(' | '));
+    });
+
+    await step('resume strip opens the latest commit and the latest session', async () => {
+        assert.ok(await visible('#resumeStrip'));
+        assert.match(await page.textContent('#resumeStrip .resume-item:first-child'), /orbit-api/);
+        assert.doesNotMatch(await page.textContent('#resumeStrip'), /\bago\b/);
+        await page.click('#resumeStrip [data-action="openFolder"]');
+        assert.deepStrictEqual(await lastPost('openFolder'), { command: 'openFolder', path: '/workspaces/orbit-api', newWindow: false });
+        await page.click('#resumeStrip [data-action="openTranscript"]');
+        assert.strictEqual((await lastPost('openTranscript')).path, '/workspaces/.brain/session-001/transcript.jsonl');
+    });
+
+    await step('commit ages follow the UI language', async () => {
+        const ages = await page.$$eval('#projectsGrid .ago', els => els.map(el => el.textContent));
+        assert.ok(ages.length >= 2, ages.join(' | '));
+        ages.filter(a => /\d/.test(a)).forEach(a => assert.match(a, /önce$/, a));
+    });
+
     await step('favorites render as cards, others as aligned rows', async () => {
         assert.strictEqual(await page.$$eval('#projectsGrid .card', els => els.length), 1);
         assert.strictEqual(await page.$$eval('#projectsGrid .row', els => els.length), 2);
@@ -171,6 +204,34 @@ async function step(name, fn) {
         assert.strictEqual((await lastPost('openTranscript')).path, '/workspaces/.brain/session-001/transcript.jsonl');
         await page.click('#sessionsList [data-action="openSessionFolder"]');
         assert.strictEqual((await lastPost('openSessionFolder')).path, '/workspaces/.brain/session-001');
+    });
+
+    await step('sessions are grouped under day labels', async () => {
+        const days = await page.evaluate(() => new Set(window.__INITIAL_DATA__.sessions.map(s => new Date(s.timestamp).toDateString())).size);
+        const labels = await page.$$eval('#sessionsList .group-label', els => els.map(el => el.textContent.trim()));
+        assert.strictEqual(labels.length, days, labels.join(' | '));
+        labels.forEach(l => assert.match(l, /^[\d\p{Lu}]/u, l));
+    });
+
+    await step('keyboard: 1-6 switch sections, arrows walk items, Enter opens', async () => {
+        await page.evaluate(() => document.activeElement && document.activeElement.blur());
+        await page.keyboard.press('1');
+        assert.ok(await visible('#viewProjects'));
+        await page.keyboard.press('ArrowDown');
+        assert.ok(await page.evaluate(() => document.activeElement.matches('#resumeStrip .resume-item')));
+        await page.keyboard.press('Enter');
+        assert.strictEqual((await lastPost('openFolder')).path, '/workspaces/orbit-api');
+        await page.keyboard.press('ArrowDown');
+        await page.keyboard.press('Enter');
+        assert.strictEqual((await lastPost('openTranscript')).path, '/workspaces/.brain/session-001/transcript.jsonl');
+        await page.keyboard.press('3');
+        assert.ok(await visible('#viewSessions'));
+        await page.keyboard.press('Control+k');
+        await page.keyboard.type('2');
+        assert.ok(await visible('#viewSessions'), 'digits typed into search do not switch sections');
+        await page.keyboard.press('Escape');
+        await page.evaluate(() => document.activeElement && document.activeElement.blur());
+        await posted();
     });
 
     await step('Graphify view: observatory button and map tiles, search hidden', async () => {

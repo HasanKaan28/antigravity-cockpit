@@ -30,13 +30,24 @@
    Z-index scale: rail 10, topbar 20, popover 40, sheet 60, modal 70, toast 80.
    ========================================================================== */
 
+/* Each font ships as two subsets. A src list is only a fallback chain, so every subset
+   needs its own @font-face with a unicode-range; otherwise latin-ext glyphs (ş ğ İ) never load. */
 @font-face {
   font-family: 'Outfit';
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('media/fonts/outfit-latin-wght-normal.woff2') format('woff2-variations'),
-       url('media/fonts/outfit-latin-ext-wght-normal.woff2') format('woff2-variations');
+  src: url('media/fonts/outfit-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('media/fonts/outfit-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 @font-face {
@@ -44,8 +55,17 @@
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('media/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'),
-       url('media/fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  src: url('media/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('media/fonts/jetbrains-mono-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
 /* --------------------------------------------------------------------------
@@ -818,6 +838,36 @@ kbd { font-family: var(--font-mono); }
   color: var(--text-3);
 }
 .inst-foot b { font-family: var(--font-mono); font-weight: 500; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.credit-line { display: inline-flex; align-items: center; gap: 5px; }
+.credit-line .icon { display: none; }
+.credit-line.low, .credit-line.low b { color: var(--warn); }
+.credit-line.low .icon { display: inline-block; }
+
+/* Resume strip: latest commit and latest session */
+.resume { padding: 14px 16px; margin-bottom: 24px; }
+.resume[hidden] { display: none; }
+.resume .inst-title { font-size: inherit; }
+.resume-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.resume-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 3px;
+  min-width: 0;
+  padding: 4px 18px 4px 0;
+  border-radius: var(--r-ctl);
+}
+.resume-item + .resume-item { padding: 4px 0 4px 18px; border-left: 1px solid var(--line); border-radius: 0; }
+.resume-item > :not(.resume-actions) { grid-column: 1; min-width: 0; }
+.resume-label { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-3); }
+.resume-label .ago { font-family: var(--font-mono); font-size: 11px; }
+.resume-label .ago::before { content: ''; display: inline-block; width: 3px; height: 3px; margin: 0 6px 2px 0; border-radius: 50%; background: var(--line-strong); vertical-align: middle; }
+.resume-name { font-family: var(--font-display); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.resume-prompt { font-family: var(--font-body); font-size: 13.5px; font-weight: 500; letter-spacing: 0; }
+.resume-item .row-text code { margin-right: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.resume-item .row-text .icon { margin-right: 6px; vertical-align: -2px; color: var(--text-3); }
+.resume-actions { grid-column: 2; grid-row: 1 / span 3; display: flex; align-items: center; gap: 4px; }
 
 .flash { animation: flash 0.7s ease; }
 
@@ -891,7 +941,11 @@ kbd { font-family: var(--font-mono); }
   animation-delay: calc(min(var(--i, 0), 14) * 22ms);
 }
 .row:first-child { border-top: 0; }
-.row:hover { background: var(--surface-2); }
+.row:hover, .row:focus { background: var(--surface-2); }
+/* Arrow-key focus: rows sit in a clipped container, so draw the ring inside. */
+.row:focus-visible, .resume-item:focus-visible { outline-offset: -2px; }
+.row:focus, .resume-item:focus, .card:focus, .map-tile:focus, .skill-card:focus { outline: none; }
+.row:focus-visible, .resume-item:focus-visible, .card:focus-visible, .map-tile:focus-visible, .skill-card:focus-visible { outline: 2px solid var(--accent); }
 
 .row-id { min-width: 0; }
 .row-name {
@@ -968,6 +1022,8 @@ kbd { font-family: var(--font-mono); }
 .sess-prompt { font-size: 13px; color: var(--text); font-weight: 500; }
 .sess-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11.5px; color: var(--text-3); }
 .sess-meta span { display: inline-flex; align-items: center; gap: 5px; }
+.sess-meta .heavy { color: var(--text-2); font-weight: 500; }
+.sess-meta .heavy .icon { color: var(--accent); }
 
 /* Archive rows */
 .type-glyph { display: grid; place-items: center; color: var(--text-3); }
@@ -1314,10 +1370,8 @@ kbd { font-family: var(--font-mono); }
 .kv { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 12.5px; }
 .kv .k { color: var(--text-3); }
 .kv .v { color: var(--text); font-weight: 500; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.credit { margin-top: 16px; }
-.credit-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--text-2); }
-.credit-head b { font-family: var(--font-mono); font-weight: 500; color: var(--text); }
-.credit .meter-track { height: 10px; }
+.kv .v.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.kv .v.low { color: var(--warn); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
 
 /* --------------------------------------------------------------------------
@@ -1390,6 +1444,9 @@ kbd { font-family: var(--font-mono); }
   .rows.sessions .sess-time small { display: inline; }
   .rows.sessions .row-info { grid-column: 1 / -1; grid-row: 2; }
   .rows.sessions .row-actions { grid-column: 2; grid-row: 1; }
+  .resume-grid { grid-template-columns: minmax(0, 1fr); }
+  .resume-item, .resume-item + .resume-item { padding: 10px 0; border-left: 0; }
+  .resume-item + .resume-item { border-top: 1px solid var(--line); }
 }
 
 @media (max-width: 620px) {
@@ -1477,33 +1534,33 @@ kbd { font-family: var(--font-mono); }
         </div>
 
         <nav class="nav" aria-label="Sections">
-            <button class="nav-btn active" id="tabBtnProjects" data-action="switchTab" data-tab="projects" aria-current="page">
+            <button class="nav-btn active" id="tabBtnProjects" data-action="switchTab" data-tab="projects" aria-keyshortcuts="1" aria-current="page">
                 <svg class="icon" aria-hidden="true"><use href="#i-folder"/></svg>
                 <span class="nav-label" data-i18n="nav.projects">Projects</span>
                 <span class="nav-count" id="badgeProjCount">0</span>
             </button>
-            <button class="nav-btn" id="tabBtnGithub" data-action="switchTab" data-tab="github">
+            <button class="nav-btn" id="tabBtnGithub" data-action="switchTab" data-tab="github" aria-keyshortcuts="2">
                 <svg class="icon" aria-hidden="true"><use href="#i-github"/></svg>
                 <span class="nav-label" data-i18n="nav.github">GitHub</span>
                 <span class="nav-count" id="badgeGhCount">0</span>
             </button>
-            <button class="nav-btn" id="tabBtnSessions" data-action="switchTab" data-tab="sessions">
+            <button class="nav-btn" id="tabBtnSessions" data-action="switchTab" data-tab="sessions" aria-keyshortcuts="3">
                 <svg class="icon" aria-hidden="true"><use href="#i-history"/></svg>
                 <span class="nav-label" data-i18n="nav.sessions">Sessions</span>
                 <span class="nav-count" id="badgeSessCount">0</span>
             </button>
-            <button class="nav-btn" id="tabBtnRadar" data-action="switchTab" data-tab="radar">
+            <button class="nav-btn" id="tabBtnRadar" data-action="switchTab" data-tab="radar" aria-keyshortcuts="4">
                 <svg class="icon" aria-hidden="true"><use href="#i-graph"/></svg>
                 <span class="nav-label" data-i18n="nav.radar">Graphify</span>
                 <span class="nav-count" id="badgeGraphCount">0</span>
             </button>
-            <button class="nav-btn" id="tabBtnSkills" data-action="switchTab" data-tab="skills">
+            <button class="nav-btn" id="tabBtnSkills" data-action="switchTab" data-tab="skills" aria-keyshortcuts="5">
                 <svg class="icon" aria-hidden="true"><use href="#i-sparkles"/></svg>
                 <span class="nav-label" data-i18n="nav.skills">Skills</span>
                 <span class="nav-count" id="badgeSkillCount">0</span>
             </button>
             <div class="nav-sep" role="separator"></div>
-            <button class="nav-btn" id="tabBtnArchive" data-action="switchTab" data-tab="archive">
+            <button class="nav-btn" id="tabBtnArchive" data-action="switchTab" data-tab="archive" aria-keyshortcuts="6">
                 <svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg>
                 <span class="nav-label" data-i18n="nav.archive">Archive</span>
                 <span class="nav-count" id="archCountBadge">0</span>
@@ -1516,6 +1573,8 @@ kbd { font-family: var(--font-mono); }
                 <span class="nav-label" data-i18n="hud.settings">Settings</span>
             </button>
             <div class="rail-hint"><span data-i18n="hud.searchHint">Search</span><kbd>Ctrl K</kbd></div>
+            <div class="rail-hint"><span data-i18n="hud.sectionsHint">Sections</span><kbd>1-6</kbd></div>
+            <div class="rail-hint"><span data-i18n="hud.moveHint">Move</span><kbd>↑ ↓</kbd></div>
         </div>
     </aside>
 
@@ -1598,7 +1657,7 @@ kbd { font-family: var(--font-mono); }
                         </div>
                         <div class="inst-foot">
                             <span><span data-i18n="telemetry.weeklyLabel">Weekly</span> <b id="geminiWeeklyVal">-</b> <span id="geminiWeeklyReset"></span></span>
-                            <span><span data-i18n="telemetry.credits">Prompt credits</span> <b><span id="teleTokenPromptVal">-</span> / <span id="teleTokenPromptMonthly">-</span></b></span>
+                            <span class="credit-line" id="teleCredits"><svg class="icon sm" aria-hidden="true"><use href="#i-info"/></svg><span data-i18n="telemetry.credits">Prompt credits</span> <b><span id="teleTokenPromptVal">-</span> / <span id="teleTokenPromptMonthly">-</span></b></span>
                         </div>
                     </div>
 
@@ -1625,6 +1684,7 @@ kbd { font-family: var(--font-mono); }
 
                 <!-- Projects -->
                 <section class="view active" id="viewProjects" aria-labelledby="hProjects">
+                    <section class="panel resume" id="resumeStrip" aria-labelledby="resumeTitle" hidden></section>
                     <div class="view-head">
                         <div>
                             <h1 class="view-title" id="hProjects"><span data-i18n="nav.projects">Projects</span><span class="num" id="projViewCount"></span></h1>
@@ -1827,14 +1887,8 @@ kbd { font-family: var(--font-mono); }
             <div class="kv"><span class="k" data-i18n="modal.tierLabel">Plan</span><span class="v" id="modalUserTier">-</span></div>
             <div class="kv"><span class="k" data-i18n="modal.statusLabel">Panel status</span><span class="v" id="modalPanelStatus">-</span></div>
 
-            <div class="credit">
-                <div class="credit-head"><span data-i18n="modal.promptCredits">Prompt credits</span><b id="modalPromptCredits">-</b></div>
-                <div class="meter-track"><i class="meter-fill" id="modalPromptBar"></i></div>
-            </div>
-            <div class="credit">
-                <div class="credit-head"><span data-i18n="modal.flowCredits">Flow credits</span><b id="modalFlowCredits">-</b></div>
-                <div class="meter-track"><i class="meter-fill" id="modalFlowBar"></i></div>
-            </div>
+            <div class="kv"><span class="k" data-i18n="modal.promptCredits">Prompt credits</span><span class="v mono" id="modalPromptCredits">-</span></div>
+            <div class="kv"><span class="k" data-i18n="modal.flowCredits">Flow credits</span><span class="v mono" id="modalFlowCredits">-</span></div>
 
             <div class="dialog-actions">
                 <button class="btn" data-action="openAgSidebar" data-i18n="modal.openSidebar">Open in sidebar</button>
@@ -1847,7 +1901,7 @@ kbd { font-family: var(--font-mono); }
 <div id="cockpitToast" role="status" aria-live="polite"></div>
 
 <script nonce="preview-nonce">
-    window.__INITIAL_DATA__ = {"ideLanguage":"tr","configuredLanguage":"auto","sessions":[{"id":"session-sample-uuid-001","time":"10:30","timeAgo":"Az Önce","timestamp":1792686567242,"prompt":"Örnek oturum: Proje mimarisi ve bileşen oluşturma","activeDoc":"src/index.js","toolCount":8,"transcriptPath":null,"path":"/workspaces/sample-project","status":"Tamamlandı"}],"projects":[{"name":"sample-project","path":"/workspaces/sample-project","rawPath":"/workspaces/sample-project","isGit":true,"branch":"main","gitLog":[{"hash":"a1b2c3d","msg":"feat: initial project structure","ago":"1 saat önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity Cockpit Çalışma Alanı","hasGraphify":false,"graphifyPath":null,"cbmIndexed":false,"cbmDbSize":null,"isFavorite":false,"isArchived":false}],"githubRepos":[],"githubUser":null,"githubConnected":false,"favCount":0,"archCount":0,"ghCount":0,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":90,"resetTime":"4h 00m","themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":80,"resetTime":"4d 12h"}},{"id":"non-google","label":"Claude","remaining":95,"resetTime":"4h 15m","themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":85,"resetTime":"5d 20h"}}],"user":{"email":"developer@example.com","tier":"Antigravity Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.1}}},"cbm":{"installed":false,"version":null,"path":null,"uiUrl":null,"totalDbSizeMb":"0 MB","indexedProjectsCount":0},"system":{"gpu":"Sistem GPU (Aktif)","localModel":"Yerel Model Bulunamadı","hasLocalEngine":false,"localAi":{"hasLocalEngine":false,"primaryEngine":null,"detectedEngines":[]},"ollamaOnline":false,"ollamaInstalled":false,"remoteVault":"Yapılandırılmadı","graphifyStatus":"Hazır (Observatory)","cbmStatus":"Kurulu Değil"},"skills":{"totalCount":3,"categories":{"architecture":1,"design":1,"quality":1,"optimization":0,"local-ai":0},"skills":[{"id":"code-review","displayName":"Code Review Excellence","category":"quality","description":"Systematic code analysis, clean architecture patterns, and collaborative feedback.","promptHint":"@skill:code-review","skillPath":null},{"id":"api-design","displayName":"API Design Principles","category":"architecture","description":"Master REST and GraphQL API design principles for scalable and maintainable systems.","promptHint":"@skill:api-design-principles","skillPath":null},{"id":"frontend-design","displayName":"Frontend Design Guidelines","category":"design","description":"Distinctive frontend implementations, design tokens, and accessibility standards.","promptHint":"@skill:frontend-design","skillPath":null}]}};
+    window.__INITIAL_DATA__ = {"ideLanguage":"tr","configuredLanguage":"auto","sessions":[{"id":"session-sample-uuid-001","time":"10:30","timeAgo":"Az Önce","timestamp":1792688614350,"prompt":"Örnek oturum: Proje mimarisi ve bileşen oluşturma","activeDoc":"src/index.js","toolCount":8,"transcriptPath":null,"path":"/workspaces/sample-project","status":"Tamamlandı"}],"projects":[{"name":"sample-project","path":"/workspaces/sample-project","rawPath":"/workspaces/sample-project","isGit":true,"branch":"main","gitLog":[{"hash":"a1b2c3d","msg":"feat: initial project structure","ago":"1 saat önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity Cockpit Çalışma Alanı","hasGraphify":false,"graphifyPath":null,"cbmIndexed":false,"cbmDbSize":null,"isFavorite":false,"isArchived":false}],"githubRepos":[],"githubUser":null,"githubConnected":false,"favCount":0,"archCount":0,"ghCount":0,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":90,"resetTime":"4h 00m","themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":80,"resetTime":"4d 12h"}},{"id":"non-google","label":"Claude","remaining":95,"resetTime":"4h 15m","themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":85,"resetTime":"5d 20h"}}],"user":{"email":"developer@example.com","tier":"Antigravity Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.1}}},"cbm":{"installed":false,"version":null,"path":null,"uiUrl":null,"totalDbSizeMb":"0 MB","indexedProjectsCount":0},"system":{"gpu":"Sistem GPU (Aktif)","localModel":"Yerel Model Bulunamadı","hasLocalEngine":false,"localAi":{"hasLocalEngine":false,"primaryEngine":null,"detectedEngines":[]},"ollamaOnline":false,"ollamaInstalled":false,"remoteVault":"Yapılandırılmadı","graphifyStatus":"Hazır (Observatory)","cbmStatus":"Kurulu Değil"},"skills":{"totalCount":3,"categories":{"architecture":1,"design":1,"quality":1,"optimization":0,"local-ai":0},"skills":[{"id":"code-review","displayName":"Code Review Excellence","category":"quality","description":"Systematic code analysis, clean architecture patterns, and collaborative feedback.","promptHint":"@skill:code-review","skillPath":null},{"id":"api-design","displayName":"API Design Principles","category":"architecture","description":"Master REST and GraphQL API design principles for scalable and maintainable systems.","promptHint":"@skill:api-design-principles","skillPath":null},{"id":"frontend-design","displayName":"Frontend Design Guidelines","category":"design","description":"Distinctive frontend implementations, design tokens, and accessibility standards.","promptHint":"@skill:frontend-design","skillPath":null}]}};
 </script>
 <script>(function () {
     'use strict';
@@ -1877,6 +1931,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': 'Settings',
             'hud.settingsTitle': 'Cockpit settings',
             'hud.searchHint': 'Search',
+            'hud.sectionsHint': 'Sections',
+            'hud.moveHint': 'Move',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detecting',
             'telemetry.quota': 'Model quota',
@@ -1887,6 +1943,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': 'resets in {time}',
             'telemetry.weeklyLabel': 'Weekly',
             'telemetry.credits': 'Prompt credits',
+            'telemetry.creditsLow': 'Only {pct}% of monthly credits left',
             'telemetry.detailsTitle': 'Account and credit details',
             'telemetry.refreshTitle': 'Check quotas now',
             'nav.projects': 'Projects',
@@ -1951,6 +2008,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcript',
             'sessions.folder': 'Open session folder',
             'sessions.toolCalls': '{count} tool calls',
+            'resume.title': 'Pick up where you left off',
+            'resume.lastCommit': 'Latest commit',
+            'resume.lastSession': 'Latest session',
             'radar.heroTitle': 'Graphify Observatory',
             'radar.openObservatory': 'Open Observatory',
             'radar.maps': 'Maps',
@@ -2002,6 +2062,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'Archive',
             'settings.w.newChat': 'New chat button',
             'settings.w.spaceCanvas': 'Particle background',
+            'settings.w.resume': 'Pick up where you left off',
             'settings.startupTitle': 'Startup and sound',
             'settings.startupAuto': 'Open on startup',
             'settings.startupAutoDesc': 'Show the cockpit whenever Antigravity IDE launches.',
@@ -2066,6 +2127,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': 'Ayarlar',
             'hud.settingsTitle': 'Cockpit ayarları',
             'hud.searchHint': 'Ara',
+            'hud.sectionsHint': 'Bölümler',
+            'hud.moveHint': 'Gezin',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Algılanıyor',
             'telemetry.quota': 'Model kotası',
@@ -2076,6 +2139,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': '{time} sonra yenilenir',
             'telemetry.weeklyLabel': 'Haftalık',
             'telemetry.credits': 'Prompt kredisi',
+            'telemetry.creditsLow': 'Aylık kredinin yalnızca %{pct} kadarı kaldı',
             'telemetry.detailsTitle': 'Hesap ve kredi ayrıntıları',
             'telemetry.refreshTitle': 'Kotaları şimdi kontrol et',
             'nav.projects': 'Projeler',
@@ -2140,6 +2204,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Döküm',
             'sessions.folder': 'Oturum klasörünü aç',
             'sessions.toolCalls': '{count} araç çağrısı',
+            'resume.title': 'Kaldığın yerden devam et',
+            'resume.lastCommit': 'Son commit',
+            'resume.lastSession': 'Son oturum',
             'radar.heroTitle': 'Graphify Gözlemevi',
             'radar.openObservatory': 'Gözlemevini aç',
             'radar.maps': 'Harita',
@@ -2191,6 +2258,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'Arşiv',
             'settings.w.newChat': 'Yeni sohbet butonu',
             'settings.w.spaceCanvas': 'Parçacık arka planı',
+            'settings.w.resume': 'Kaldığın yerden devam et',
             'settings.startupTitle': 'Açılış ve ses',
             'settings.startupAuto': 'Açılışta göster',
             'settings.startupAutoDesc': 'Antigravity IDE her açıldığında Cockpit’i göster.',
@@ -2255,6 +2323,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': 'Einstellungen',
             'hud.settingsTitle': 'Cockpit-Einstellungen',
             'hud.searchHint': 'Suchen',
+            'hud.sectionsHint': 'Bereiche',
+            'hud.moveHint': 'Bewegen',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Wird erkannt',
             'telemetry.quota': 'Modellkontingent',
@@ -2265,6 +2335,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': 'Reset in {time}',
             'telemetry.weeklyLabel': 'Wöchentlich',
             'telemetry.credits': 'Prompt-Guthaben',
+            'telemetry.creditsLow': 'Nur noch {pct} % des Monatsguthabens übrig',
             'telemetry.detailsTitle': 'Konto- und Guthabendetails',
             'telemetry.refreshTitle': 'Kontingente jetzt prüfen',
             'nav.projects': 'Projekte',
@@ -2329,6 +2400,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transkript',
             'sessions.folder': 'Sitzungsordner öffnen',
             'sessions.toolCalls': '{count} Tool-Aufrufe',
+            'resume.title': 'Weitermachen, wo du aufgehört hast',
+            'resume.lastCommit': 'Letzter Commit',
+            'resume.lastSession': 'Letzte Sitzung',
             'radar.heroTitle': 'Graphify-Observatorium',
             'radar.openObservatory': 'Observatorium öffnen',
             'radar.maps': 'Karten',
@@ -2380,6 +2454,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'Archiv',
             'settings.w.newChat': 'Schaltfläche Neuer Chat',
             'settings.w.spaceCanvas': 'Partikelhintergrund',
+            'settings.w.resume': 'Weitermachen, wo du aufgehört hast',
             'settings.startupTitle': 'Start und Ton',
             'settings.startupAuto': 'Beim Start öffnen',
             'settings.startupAutoDesc': 'Das Cockpit bei jedem Start der Antigravity IDE anzeigen.',
@@ -2444,6 +2519,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': 'Ajustes',
             'hud.settingsTitle': 'Ajustes del Cockpit',
             'hud.searchHint': 'Buscar',
+            'hud.sectionsHint': 'Secciones',
+            'hud.moveHint': 'Moverse',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detectando',
             'telemetry.quota': 'Cuota de modelos',
@@ -2454,6 +2531,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': 'se reinicia en {time}',
             'telemetry.weeklyLabel': 'Semanal',
             'telemetry.credits': 'Créditos de prompt',
+            'telemetry.creditsLow': 'Solo queda el {pct} % de los créditos mensuales',
             'telemetry.detailsTitle': 'Detalles de cuenta y créditos',
             'telemetry.refreshTitle': 'Comprobar cuotas ahora',
             'nav.projects': 'Proyectos',
@@ -2518,6 +2596,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcripción',
             'sessions.folder': 'Abrir carpeta de la sesión',
             'sessions.toolCalls': '{count} llamadas a herramientas',
+            'resume.title': 'Continúa donde lo dejaste',
+            'resume.lastCommit': 'Último commit',
+            'resume.lastSession': 'Última sesión',
             'radar.heroTitle': 'Observatorio Graphify',
             'radar.openObservatory': 'Abrir observatorio',
             'radar.maps': 'Mapas',
@@ -2569,6 +2650,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'Archivo',
             'settings.w.newChat': 'Botón de nuevo chat',
             'settings.w.spaceCanvas': 'Fondo de partículas',
+            'settings.w.resume': 'Continúa donde lo dejaste',
             'settings.startupTitle': 'Inicio y sonido',
             'settings.startupAuto': 'Abrir al iniciar',
             'settings.startupAutoDesc': 'Mostrar el Cockpit cada vez que se inicie Antigravity IDE.',
@@ -2633,6 +2715,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': 'Réglages',
             'hud.settingsTitle': 'Réglages du Cockpit',
             'hud.searchHint': 'Rechercher',
+            'hud.sectionsHint': 'Sections',
+            'hud.moveHint': 'Naviguer',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Détection',
             'telemetry.quota': 'Quota des modèles',
@@ -2643,6 +2727,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': 'réinitialisé dans {time}',
             'telemetry.weeklyLabel': 'Hebdo',
             'telemetry.credits': 'Crédits de prompt',
+            'telemetry.creditsLow': 'Il ne reste que {pct} % des crédits mensuels',
             'telemetry.detailsTitle': 'Détails du compte et des crédits',
             'telemetry.refreshTitle': 'Vérifier les quotas maintenant',
             'nav.projects': 'Projets',
@@ -2707,6 +2792,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcription',
             'sessions.folder': 'Ouvrir le dossier de session',
             'sessions.toolCalls': '{count} appels d’outils',
+            'resume.title': 'Reprendre où vous en étiez',
+            'resume.lastCommit': 'Dernier commit',
+            'resume.lastSession': 'Dernière session',
             'radar.heroTitle': 'Observatoire Graphify',
             'radar.openObservatory': 'Ouvrir l’observatoire',
             'radar.maps': 'Cartes',
@@ -2758,6 +2846,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'Archives',
             'settings.w.newChat': 'Bouton Nouveau chat',
             'settings.w.spaceCanvas': 'Fond à particules',
+            'settings.w.resume': 'Reprendre où vous en étiez',
             'settings.startupTitle': 'Démarrage et son',
             'settings.startupAuto': 'Ouvrir au démarrage',
             'settings.startupAutoDesc': 'Afficher le Cockpit à chaque lancement d’Antigravity IDE.',
@@ -2822,6 +2911,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': '设置',
             'hud.settingsTitle': 'Cockpit 设置',
             'hud.searchHint': '搜索',
+            'hud.sectionsHint': '分区',
+            'hud.moveHint': '移动',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '正在检测',
             'telemetry.quota': '模型配额',
@@ -2832,6 +2923,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': '{time} 后重置',
             'telemetry.weeklyLabel': '每周',
             'telemetry.credits': '提示词额度',
+            'telemetry.creditsLow': '本月额度仅剩 {pct}%',
             'telemetry.detailsTitle': '账户与额度详情',
             'telemetry.refreshTitle': '立即检查配额',
             'nav.projects': '项目',
@@ -2896,6 +2988,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': '记录',
             'sessions.folder': '打开会话文件夹',
             'sessions.toolCalls': '{count} 次工具调用',
+            'resume.title': '从上次中断处继续',
+            'resume.lastCommit': '最近提交',
+            'resume.lastSession': '最近会话',
             'radar.heroTitle': 'Graphify 观测台',
             'radar.openObservatory': '打开观测台',
             'radar.maps': '图谱',
@@ -2947,6 +3042,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': '归档',
             'settings.w.newChat': '新对话按钮',
             'settings.w.spaceCanvas': '粒子背景',
+            'settings.w.resume': '从上次中断处继续',
             'settings.startupTitle': '启动与声音',
             'settings.startupAuto': '启动时打开',
             'settings.startupAutoDesc': '每次启动 Antigravity IDE 时显示 Cockpit。',
@@ -3011,6 +3107,8 @@ kbd { font-family: var(--font-mono); }
             'hud.settings': '設定',
             'hud.settingsTitle': 'Cockpit の設定',
             'hud.searchHint': '検索',
+            'hud.sectionsHint': 'セクション',
+            'hud.moveHint': '移動',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '検出中',
             'telemetry.quota': 'モデルのクォータ',
@@ -3021,6 +3119,7 @@ kbd { font-family: var(--font-mono); }
             'telemetry.resetIn': 'あと {time} でリセット',
             'telemetry.weeklyLabel': '週間',
             'telemetry.credits': 'プロンプトクレジット',
+            'telemetry.creditsLow': '今月のクレジットは残り {pct}%',
             'telemetry.detailsTitle': 'アカウントとクレジットの詳細',
             'telemetry.refreshTitle': '今すぐクォータを確認',
             'nav.projects': 'プロジェクト',
@@ -3085,6 +3184,9 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'トランスクリプト',
             'sessions.folder': 'セッションフォルダーを開く',
             'sessions.toolCalls': 'ツール呼び出し {count} 回',
+            'resume.title': '前回の続きから',
+            'resume.lastCommit': '最新のコミット',
+            'resume.lastSession': '最新のセッション',
             'radar.heroTitle': 'Graphify 観測所',
             'radar.openObservatory': '観測所を開く',
             'radar.maps': 'マップ',
@@ -3136,6 +3238,7 @@ kbd { font-family: var(--font-mono); }
             'settings.w.archiveDrawer': 'アーカイブ',
             'settings.w.newChat': '新しいチャットボタン',
             'settings.w.spaceCanvas': 'パーティクル背景',
+            'settings.w.resume': '前回の続きから',
             'settings.startupTitle': '起動とサウンド',
             'settings.startupAuto': '起動時に開く',
             'settings.startupAutoDesc': 'Antigravity IDE の起動時に毎回 Cockpit を表示します。',
@@ -3269,6 +3372,50 @@ kbd { font-family: var(--font-mono); }
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).catch(() => {});
         }
+    }
+
+    // --- Dates in the active UI language (collectors send raw timestamps) ---
+    const intlCache = {};
+    function intl(kind, options) {
+        const key = activeLocale + kind;
+        if (!intlCache[key]) intlCache[key] = kind.startsWith('rel') ? new Intl.RelativeTimeFormat(activeLocale, options) : new Intl.DateTimeFormat(activeLocale, options);
+        return intlCache[key];
+    }
+
+    function toMs(value) {
+        const ms = typeof value === 'number' ? value : Date.parse(value);
+        return Number.isFinite(ms) && ms > 0 ? ms : null;
+    }
+
+    function relTime(ms) {
+        const sec = Math.max(1, Math.floor((Date.now() - ms) / 1000));
+        const rtf = intl('rel', { numeric: 'always' });
+        if (sec < 60) return rtf.format(-sec, 'second');
+        if (sec < 3600) return rtf.format(-Math.floor(sec / 60), 'minute');
+        if (sec < 86400) return rtf.format(-Math.floor(sec / 3600), 'hour');
+        if (sec < 604800) return rtf.format(-Math.floor(sec / 86400), 'day');
+        if (sec < 2629800) return rtf.format(-Math.floor(sec / 604800), 'week');
+        if (sec < 31557600) return rtf.format(-Math.floor(sec / 2629800), 'month');
+        return rtf.format(-Math.floor(sec / 31557600), 'year');
+    }
+
+    function timeOfDay(ms) {
+        return intl('time', { hour: '2-digit', minute: '2-digit' }).format(ms);
+    }
+
+    // "Today", "Yesterday" or the full weekday and date.
+    function dayLabel(ms) {
+        const start = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        const days = Math.round((start(new Date()) - start(new Date(ms))) / 86400000);
+        const label = days >= 0 && days < 2
+            ? intl('relAuto', { numeric: 'auto' }).format(-days, 'day')
+            : intl('day', { weekday: 'long', day: 'numeric', month: 'long' }).format(ms);
+        return label.charAt(0).toLocaleUpperCase(activeLocale) + label.slice(1);
+    }
+
+    function commitAgo(entry) {
+        const ms = toMs(entry.time);
+        return ms ? relTime(ms) : (entry.ago || '');
     }
 
     // --- Persisted webview state ---
@@ -3463,6 +3610,7 @@ kbd { font-family: var(--font-mono); }
         tabSkills: true,
         newChat: true,
         archiveDrawer: true,
+        resume: true,
         spaceCanvas: false
     };
     const widgetVisibility = Object.assign({}, DEFAULT_WIDGET_VISIBILITY);
@@ -3478,13 +3626,14 @@ kbd { font-family: var(--font-mono); }
         tabSkills: '#tabBtnSkills',
         newChat: '#hudBtnNewChat',
         archiveDrawer: '#tabBtnArchive',
+        resume: '#resumeStrip',
         spaceCanvas: '#spaceCanvas'
     };
 
     const WIDGET_GROUPS = [
         { key: 'settings.subgroupTele', items: ['quota', 'gpu', 'github'] },
         { key: 'settings.subgroupTabs', items: ['tabProjects', 'tabGithub', 'tabSessions', 'tabRadar', 'tabSkills', 'archiveDrawer'] },
-        { key: 'settings.subgroupPanels', items: ['newChat', 'spaceCanvas'] }
+        { key: 'settings.subgroupPanels', items: ['resume', 'newChat', 'spaceCanvas'] }
     ];
 
     const TAB_WIDGET = {
@@ -3810,7 +3959,7 @@ kbd { font-family: var(--font-mono); }
 
     function projectSummary(p) {
         const last = (p.gitLog && p.gitLog.length > 0) ? p.gitLog[0] : null;
-        if (last) return `${escapeHtml(last.msg)}<span class="ago">${escapeHtml(last.ago)}</span>`;
+        if (last) return `${escapeHtml(last.msg)}<span class="ago">${escapeHtml(commitAgo(last))}</span>`;
         if (p.sessionNotes) return escapeHtml(p.sessionNotes);
         return `<span class="ago" style="margin:0">${escapeHtml(t('projects.noCommits'))}</span>`;
     }
@@ -3823,6 +3972,7 @@ kbd { font-family: var(--font-mono); }
 
     // --- Projects ---
     function renderProjects() {
+        renderResume();
         const grid = $('projectsGrid');
         if (!grid) return;
         const all = (appData.projects || []).filter(p => !p.isArchived);
@@ -3886,6 +4036,48 @@ kbd { font-family: var(--font-mono); }
             '</div>';
     }
 
+    // --- Resume strip: latest commit and latest session, one click each ---
+    function latestCommittedProject() {
+        const withCommits = (appData.projects || []).filter(p => !p.isArchived && p.gitLog && p.gitLog.length);
+        if (!withCommits.length) return null;
+        return withCommits.reduce((best, p) => ((toMs(p.gitLog[0].time) || 0) > (toMs(best.gitLog[0].time) || 0) ? p : best));
+    }
+
+    function renderResume() {
+        const strip = $('resumeStrip');
+        if (!strip) return;
+        const p = latestCommittedProject();
+        const s = (appData.sessions || [])[0];
+        strip.hidden = !p && !s;
+        if (strip.hidden) return;
+
+        let items = '';
+        if (p) {
+            const c = p.gitLog[0];
+            items += '<div class="resume-item">' +
+                `<div class="resume-label">${icon('commit', 'sm')}${escapeHtml(t('resume.lastCommit'))}<span class="ago">${escapeHtml(commitAgo(c))}</span></div>` +
+                `<div class="resume-name" title="${escapeHtml(p.path)}">${escapeHtml(p.name)}</div>` +
+                `<div class="row-text"><code>${escapeHtml(c.hash)}</code>${escapeHtml(c.msg)}</div>` +
+                `<div class="resume-actions">${projectActions(p, false)}</div>` +
+                '</div>';
+        }
+        if (s) {
+            const ms = toMs(s.timestamp);
+            items += '<div class="resume-item">' +
+                `<div class="resume-label">${icon('chat', 'sm')}${escapeHtml(t('resume.lastSession'))}<span class="ago">${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</span></div>` +
+                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt)}">${escapeHtml(s.prompt)}</div>` +
+                `<div class="row-text">${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</div>` +
+                '<div class="resume-actions">' +
+                    `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
+                    iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
+                '</div>' +
+                '</div>';
+        }
+        strip.innerHTML =
+            `<div class="inst-head">${icon('history')}<h2 class="inst-title" id="resumeTitle">${escapeHtml(t('resume.title'))}</h2></div>` +
+            `<div class="resume-grid">${items}</div>`;
+    }
+
     // --- GitHub ---
     function renderGithub() {
         const grid = $('githubGrid');
@@ -3911,6 +4103,8 @@ kbd { font-family: var(--font-mono); }
 
         grid.innerHTML = '<div class="rows">' + list.map((r, i) => {
             const favId = r.url || r.name;
+            const pushedMs = toMs(r.pushedAt);
+            const pushed = pushedMs ? relTime(pushedMs) : r.timeAgo;
             const tags =
                 (r.language ? `<span class="tag">${escapeHtml(r.language)}</span>` : '') +
                 (r.stars > 0 ? `<span class="tag">${icon('star')}${r.stars}</span>` : '') +
@@ -3925,7 +4119,7 @@ kbd { font-family: var(--font-mono); }
                 `<div class="row-id"><div class="row-name"><span title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></div><div class="row-path" title="${escapeHtml(r.fullName)}"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-info">' +
                     `<div class="tags">${tags}</div>` +
-                    `<div class="row-text" title="${escapeHtml(r.description)}">${escapeHtml(r.description || '')}${r.timeAgo ? `<span class="ago">${escapeHtml(t('github.updated', { ago: r.timeAgo }))}</span>` : ''}</div>` +
+                    `<div class="row-text" title="${escapeHtml(r.description)}">${escapeHtml(r.description || '')}${pushed ? `<span class="ago">${escapeHtml(t('github.updated', { ago: pushed }))}</span>` : ''}</div>` +
                 '</div>' +
                 '<div class="row-actions">' + primary +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
@@ -3952,22 +4146,42 @@ kbd { font-family: var(--font-mono); }
             return;
         }
 
-        listEl.innerHTML = '<div class="rows sessions">' + list.map((s, i) =>
-            `<div class="row session" style="--i:${i}">` +
-                `<div class="sess-time">${escapeHtml(s.time)}<small>${escapeHtml(s.timeAgo)}</small></div>` +
-                '<div class="row-info">' +
-                    `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
-                    '<div class="sess-meta">' +
-                        `<span>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
-                        (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
-                    '</div>' +
+        // Group by calendar day; sessions without a timestamp share one untitled group.
+        const groups = [];
+        list.forEach(s => {
+            const ms = toMs(s.timestamp);
+            const key = ms ? new Date(ms).toDateString() : '';
+            const last = groups[groups.length - 1];
+            if (last && last.key === key) last.items.push(s);
+            else groups.push({ key, ms, items: [s] });
+        });
+        let i = 0;
+        listEl.innerHTML = groups.map(g =>
+            (g.key ? `<div class="group-label">${escapeHtml(dayLabel(g.ms))}<span class="num">${g.items.length}</span></div>` : '') +
+            '<div class="rows sessions">' + g.items.map(s => sessionRow(s, i++)).join('') + '</div>'
+        ).join('');
+    }
+
+    // Sessions with this many tool calls count as heavy and get a highlighted meta line.
+    const HEAVY_SESSION_TOOLS = 100;
+
+    function sessionRow(s, i) {
+        const ms = toMs(s.timestamp);
+        const heavy = (s.toolCount || 0) >= HEAVY_SESSION_TOOLS;
+        return `<div class="row session" style="--i:${i}">` +
+            `<div class="sess-time">${escapeHtml(ms ? timeOfDay(ms) : s.time)}<small>${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</small></div>` +
+            '<div class="row-info">' +
+                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
+                '<div class="sess-meta">' +
+                    `<span${heavy ? ' class="heavy"' : ''}>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
+                    (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
                 '</div>' +
-                '<div class="row-actions">' +
-                    `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
-                    iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
-                '</div>' +
-            '</div>'
-        ).join('') + '</div>';
+            '</div>' +
+            '<div class="row-actions">' +
+                `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
+                iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
+            '</div>' +
+        '</div>';
     }
 
     // --- Graphify ---
@@ -4193,6 +4407,19 @@ kbd { font-family: var(--font-mono); }
         return (v === null || v === undefined || Number.isNaN(Number(v))) ? null : Number(v);
     }
 
+    // Credits below this share of the monthly allowance are flagged in the quota panel.
+    const LOW_CREDIT_PCT = 10;
+
+    function creditPercent(credit) {
+        const available = numberOrNull(credit.available);
+        const monthly = numberOrNull(credit.monthly);
+        return available !== null && monthly ? (available / monthly) * 100 : null;
+    }
+
+    function formatShare(pct) {
+        return new Intl.NumberFormat(activeLocale, { maximumFractionDigits: pct < 1 ? 2 : 0 }).format(pct);
+    }
+
     function renderPanel(panelData) {
         if (!panelData) return;
         panelOnline = panelData.status === 'ok';
@@ -4218,8 +4445,21 @@ kbd { font-family: var(--font-mono); }
         setText('teleTokenPromptMonthly', pMonthly);
         setText('modalPromptCredits', `${pAvail} / ${pMonthly}`);
         setText('modalFlowCredits', `${fAvail} / ${fMonthly}`);
-        setMeter('modalPromptBar', null, prompt.remainingPercentage !== undefined ? prompt.remainingPercentage * 100 : null);
-        setMeter('modalFlowBar', null, flow.remainingPercentage !== undefined ? flow.remainingPercentage * 100 : null);
+
+        // Derive the share from raw counts: remainingPercentage is already a percent in live data.
+        const promptPct = creditPercent(prompt);
+        const promptLow = promptPct !== null && promptPct < LOW_CREDIT_PCT;
+        const creditLine = $('teleCredits');
+        if (creditLine) {
+            creditLine.classList.toggle('low', promptLow);
+            if (promptLow) creditLine.title = t('telemetry.creditsLow', { pct: formatShare(promptPct) });
+            else creditLine.removeAttribute('title');
+        }
+        const modalPrompt = $('modalPromptCredits');
+        if (modalPrompt) modalPrompt.classList.toggle('low', promptLow);
+        const flowPct = creditPercent(flow);
+        const modalFlow = $('modalFlowCredits');
+        if (modalFlow) modalFlow.classList.toggle('low', flowPct !== null && flowPct < LOW_CREDIT_PCT);
 
         const groups = panelData.groups || [];
         const gemini = groups.find(g => g.id === 'gemini') || {};
@@ -4638,6 +4878,35 @@ kbd { font-family: var(--font-mono); }
         return target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
     }
 
+    // --- Keyboard: 1-6 switch sections, arrows walk the items of the active view, Enter opens one ---
+    const NAV_ITEM = '.resume-item, .row, .card, .map-tile, .skill-card';
+
+    function overlayOpen() {
+        const dd = $('themeDropdownContainer');
+        return Boolean(document.querySelector('.overlay.open') || (dd && dd.classList.contains('open')));
+    }
+
+    function moveFocus(step) {
+        const view = document.querySelector('.view.active');
+        if (!view) return;
+        const items = [...view.querySelectorAll(NAV_ITEM)].filter(el => el.offsetParent !== null);
+        if (!items.length) return;
+        const current = items.indexOf(document.activeElement && document.activeElement.closest(NAV_ITEM));
+        const next = current === -1 ? (step > 0 ? 0 : items.length - 1) : Math.min(items.length - 1, Math.max(0, current + step));
+        items[next].tabIndex = -1;
+        items[next].focus({ preventScroll: true });
+        items[next].scrollIntoView({ block: 'nearest' });
+    }
+
+    // Enter on a focused item runs its first labelled button (open, transcript, map...).
+    function openFocusedItem() {
+        const item = document.activeElement;
+        if (!item || !item.matches || !item.matches(NAV_ITEM)) return false;
+        const primary = item.querySelector('.btn[data-action]');
+        if (primary) primary.click();
+        return Boolean(primary);
+    }
+
     window.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
         if ((e.ctrlKey || e.metaKey) && key === 'k') {
@@ -4656,6 +4925,24 @@ kbd { font-family: var(--font-mono); }
                 searchInput.value = '';
                 renderView(currentNavTab);
             }
+        } else if (e.ctrlKey || e.metaKey || e.altKey || overlayOpen()) {
+            return;
+        } else if (e.key === 'ArrowDown' && e.target === searchInput) {
+            e.preventDefault();
+            moveFocus(1);
+        } else if (isTyping(e.target)) {
+            return;
+        } else if (/^[1-6]$/.test(e.key)) {
+            const tab = VIEW_ORDER[Number(e.key) - 1];
+            if (widgetVisibility[TAB_WIDGET[tab]] !== false) {
+                e.preventDefault();
+                switchNavTab(tab);
+            }
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            moveFocus(e.key === 'ArrowDown' ? 1 : -1);
+        } else if (e.key === 'Enter' && openFocusedItem()) {
+            e.preventDefault();
         }
     });
 

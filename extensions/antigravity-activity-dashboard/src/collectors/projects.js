@@ -27,11 +27,13 @@ async function inspectGitRepo(projectPath) {
         }
 
         try {
-            const { stdout: lOut } = await execFileAsync('git', ['log', '-n', '2', '--pretty=format:%h|%s|%ar'], { cwd: projectPath }, 1500);
+            // Subject goes last so a "|" inside it cannot shift the fields. "time" (ms) lets the
+            // webview format the age in the UI language; "ago" stays as git's English fallback.
+            const { stdout: lOut } = await execFileAsync('git', ['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], { cwd: projectPath }, 1500);
             if (lOut) {
                 gitLog = lOut.split('\n').filter(Boolean).map(line => {
-                    const parts = line.split('|');
-                    return { hash: parts[0] || '', msg: parts[1] || '', ago: parts[2] || '' };
+                    const [hash = '', ct = '', ago = '', ...msg] = line.split('|');
+                    return { hash, msg: msg.join('|'), ago, time: Number(ct) * 1000 || null };
                 });
             }
         } catch {

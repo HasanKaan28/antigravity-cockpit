@@ -26,6 +26,8 @@
             'hud.settings': 'Settings',
             'hud.settingsTitle': 'Cockpit settings',
             'hud.searchHint': 'Search',
+            'hud.sectionsHint': 'Sections',
+            'hud.moveHint': 'Move',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detecting',
             'telemetry.quota': 'Model quota',
@@ -36,6 +38,7 @@
             'telemetry.resetIn': 'resets in {time}',
             'telemetry.weeklyLabel': 'Weekly',
             'telemetry.credits': 'Prompt credits',
+            'telemetry.creditsLow': 'Only {pct}% of monthly credits left',
             'telemetry.detailsTitle': 'Account and credit details',
             'telemetry.refreshTitle': 'Check quotas now',
             'nav.projects': 'Projects',
@@ -100,6 +103,9 @@
             'sessions.transcript': 'Transcript',
             'sessions.folder': 'Open session folder',
             'sessions.toolCalls': '{count} tool calls',
+            'resume.title': 'Pick up where you left off',
+            'resume.lastCommit': 'Latest commit',
+            'resume.lastSession': 'Latest session',
             'radar.heroTitle': 'Graphify Observatory',
             'radar.openObservatory': 'Open Observatory',
             'radar.maps': 'Maps',
@@ -151,6 +157,7 @@
             'settings.w.archiveDrawer': 'Archive',
             'settings.w.newChat': 'New chat button',
             'settings.w.spaceCanvas': 'Particle background',
+            'settings.w.resume': 'Pick up where you left off',
             'settings.startupTitle': 'Startup and sound',
             'settings.startupAuto': 'Open on startup',
             'settings.startupAutoDesc': 'Show the cockpit whenever Antigravity IDE launches.',
@@ -215,6 +222,8 @@
             'hud.settings': 'Ayarlar',
             'hud.settingsTitle': 'Cockpit ayarları',
             'hud.searchHint': 'Ara',
+            'hud.sectionsHint': 'Bölümler',
+            'hud.moveHint': 'Gezin',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Algılanıyor',
             'telemetry.quota': 'Model kotası',
@@ -225,6 +234,7 @@
             'telemetry.resetIn': '{time} sonra yenilenir',
             'telemetry.weeklyLabel': 'Haftalık',
             'telemetry.credits': 'Prompt kredisi',
+            'telemetry.creditsLow': 'Aylık kredinin yalnızca %{pct} kadarı kaldı',
             'telemetry.detailsTitle': 'Hesap ve kredi ayrıntıları',
             'telemetry.refreshTitle': 'Kotaları şimdi kontrol et',
             'nav.projects': 'Projeler',
@@ -289,6 +299,9 @@
             'sessions.transcript': 'Döküm',
             'sessions.folder': 'Oturum klasörünü aç',
             'sessions.toolCalls': '{count} araç çağrısı',
+            'resume.title': 'Kaldığın yerden devam et',
+            'resume.lastCommit': 'Son commit',
+            'resume.lastSession': 'Son oturum',
             'radar.heroTitle': 'Graphify Gözlemevi',
             'radar.openObservatory': 'Gözlemevini aç',
             'radar.maps': 'Harita',
@@ -340,6 +353,7 @@
             'settings.w.archiveDrawer': 'Arşiv',
             'settings.w.newChat': 'Yeni sohbet butonu',
             'settings.w.spaceCanvas': 'Parçacık arka planı',
+            'settings.w.resume': 'Kaldığın yerden devam et',
             'settings.startupTitle': 'Açılış ve ses',
             'settings.startupAuto': 'Açılışta göster',
             'settings.startupAutoDesc': 'Antigravity IDE her açıldığında Cockpit’i göster.',
@@ -404,6 +418,8 @@
             'hud.settings': 'Einstellungen',
             'hud.settingsTitle': 'Cockpit-Einstellungen',
             'hud.searchHint': 'Suchen',
+            'hud.sectionsHint': 'Bereiche',
+            'hud.moveHint': 'Bewegen',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Wird erkannt',
             'telemetry.quota': 'Modellkontingent',
@@ -414,6 +430,7 @@
             'telemetry.resetIn': 'Reset in {time}',
             'telemetry.weeklyLabel': 'Wöchentlich',
             'telemetry.credits': 'Prompt-Guthaben',
+            'telemetry.creditsLow': 'Nur noch {pct} % des Monatsguthabens übrig',
             'telemetry.detailsTitle': 'Konto- und Guthabendetails',
             'telemetry.refreshTitle': 'Kontingente jetzt prüfen',
             'nav.projects': 'Projekte',
@@ -478,6 +495,9 @@
             'sessions.transcript': 'Transkript',
             'sessions.folder': 'Sitzungsordner öffnen',
             'sessions.toolCalls': '{count} Tool-Aufrufe',
+            'resume.title': 'Weitermachen, wo du aufgehört hast',
+            'resume.lastCommit': 'Letzter Commit',
+            'resume.lastSession': 'Letzte Sitzung',
             'radar.heroTitle': 'Graphify-Observatorium',
             'radar.openObservatory': 'Observatorium öffnen',
             'radar.maps': 'Karten',
@@ -529,6 +549,7 @@
             'settings.w.archiveDrawer': 'Archiv',
             'settings.w.newChat': 'Schaltfläche Neuer Chat',
             'settings.w.spaceCanvas': 'Partikelhintergrund',
+            'settings.w.resume': 'Weitermachen, wo du aufgehört hast',
             'settings.startupTitle': 'Start und Ton',
             'settings.startupAuto': 'Beim Start öffnen',
             'settings.startupAutoDesc': 'Das Cockpit bei jedem Start der Antigravity IDE anzeigen.',
@@ -593,6 +614,8 @@
             'hud.settings': 'Ajustes',
             'hud.settingsTitle': 'Ajustes del Cockpit',
             'hud.searchHint': 'Buscar',
+            'hud.sectionsHint': 'Secciones',
+            'hud.moveHint': 'Moverse',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detectando',
             'telemetry.quota': 'Cuota de modelos',
@@ -603,6 +626,7 @@
             'telemetry.resetIn': 'se reinicia en {time}',
             'telemetry.weeklyLabel': 'Semanal',
             'telemetry.credits': 'Créditos de prompt',
+            'telemetry.creditsLow': 'Solo queda el {pct} % de los créditos mensuales',
             'telemetry.detailsTitle': 'Detalles de cuenta y créditos',
             'telemetry.refreshTitle': 'Comprobar cuotas ahora',
             'nav.projects': 'Proyectos',
@@ -667,6 +691,9 @@
             'sessions.transcript': 'Transcripción',
             'sessions.folder': 'Abrir carpeta de la sesión',
             'sessions.toolCalls': '{count} llamadas a herramientas',
+            'resume.title': 'Continúa donde lo dejaste',
+            'resume.lastCommit': 'Último commit',
+            'resume.lastSession': 'Última sesión',
             'radar.heroTitle': 'Observatorio Graphify',
             'radar.openObservatory': 'Abrir observatorio',
             'radar.maps': 'Mapas',
@@ -718,6 +745,7 @@
             'settings.w.archiveDrawer': 'Archivo',
             'settings.w.newChat': 'Botón de nuevo chat',
             'settings.w.spaceCanvas': 'Fondo de partículas',
+            'settings.w.resume': 'Continúa donde lo dejaste',
             'settings.startupTitle': 'Inicio y sonido',
             'settings.startupAuto': 'Abrir al iniciar',
             'settings.startupAutoDesc': 'Mostrar el Cockpit cada vez que se inicie Antigravity IDE.',
@@ -782,6 +810,8 @@
             'hud.settings': 'Réglages',
             'hud.settingsTitle': 'Réglages du Cockpit',
             'hud.searchHint': 'Rechercher',
+            'hud.sectionsHint': 'Sections',
+            'hud.moveHint': 'Naviguer',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Détection',
             'telemetry.quota': 'Quota des modèles',
@@ -792,6 +822,7 @@
             'telemetry.resetIn': 'réinitialisé dans {time}',
             'telemetry.weeklyLabel': 'Hebdo',
             'telemetry.credits': 'Crédits de prompt',
+            'telemetry.creditsLow': 'Il ne reste que {pct} % des crédits mensuels',
             'telemetry.detailsTitle': 'Détails du compte et des crédits',
             'telemetry.refreshTitle': 'Vérifier les quotas maintenant',
             'nav.projects': 'Projets',
@@ -856,6 +887,9 @@
             'sessions.transcript': 'Transcription',
             'sessions.folder': 'Ouvrir le dossier de session',
             'sessions.toolCalls': '{count} appels d’outils',
+            'resume.title': 'Reprendre où vous en étiez',
+            'resume.lastCommit': 'Dernier commit',
+            'resume.lastSession': 'Dernière session',
             'radar.heroTitle': 'Observatoire Graphify',
             'radar.openObservatory': 'Ouvrir l’observatoire',
             'radar.maps': 'Cartes',
@@ -907,6 +941,7 @@
             'settings.w.archiveDrawer': 'Archives',
             'settings.w.newChat': 'Bouton Nouveau chat',
             'settings.w.spaceCanvas': 'Fond à particules',
+            'settings.w.resume': 'Reprendre où vous en étiez',
             'settings.startupTitle': 'Démarrage et son',
             'settings.startupAuto': 'Ouvrir au démarrage',
             'settings.startupAutoDesc': 'Afficher le Cockpit à chaque lancement d’Antigravity IDE.',
@@ -971,6 +1006,8 @@
             'hud.settings': '设置',
             'hud.settingsTitle': 'Cockpit 设置',
             'hud.searchHint': '搜索',
+            'hud.sectionsHint': '分区',
+            'hud.moveHint': '移动',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '正在检测',
             'telemetry.quota': '模型配额',
@@ -981,6 +1018,7 @@
             'telemetry.resetIn': '{time} 后重置',
             'telemetry.weeklyLabel': '每周',
             'telemetry.credits': '提示词额度',
+            'telemetry.creditsLow': '本月额度仅剩 {pct}%',
             'telemetry.detailsTitle': '账户与额度详情',
             'telemetry.refreshTitle': '立即检查配额',
             'nav.projects': '项目',
@@ -1045,6 +1083,9 @@
             'sessions.transcript': '记录',
             'sessions.folder': '打开会话文件夹',
             'sessions.toolCalls': '{count} 次工具调用',
+            'resume.title': '从上次中断处继续',
+            'resume.lastCommit': '最近提交',
+            'resume.lastSession': '最近会话',
             'radar.heroTitle': 'Graphify 观测台',
             'radar.openObservatory': '打开观测台',
             'radar.maps': '图谱',
@@ -1096,6 +1137,7 @@
             'settings.w.archiveDrawer': '归档',
             'settings.w.newChat': '新对话按钮',
             'settings.w.spaceCanvas': '粒子背景',
+            'settings.w.resume': '从上次中断处继续',
             'settings.startupTitle': '启动与声音',
             'settings.startupAuto': '启动时打开',
             'settings.startupAutoDesc': '每次启动 Antigravity IDE 时显示 Cockpit。',
@@ -1160,6 +1202,8 @@
             'hud.settings': '設定',
             'hud.settingsTitle': 'Cockpit の設定',
             'hud.searchHint': '検索',
+            'hud.sectionsHint': 'セクション',
+            'hud.moveHint': '移動',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '検出中',
             'telemetry.quota': 'モデルのクォータ',
@@ -1170,6 +1214,7 @@
             'telemetry.resetIn': 'あと {time} でリセット',
             'telemetry.weeklyLabel': '週間',
             'telemetry.credits': 'プロンプトクレジット',
+            'telemetry.creditsLow': '今月のクレジットは残り {pct}%',
             'telemetry.detailsTitle': 'アカウントとクレジットの詳細',
             'telemetry.refreshTitle': '今すぐクォータを確認',
             'nav.projects': 'プロジェクト',
@@ -1234,6 +1279,9 @@
             'sessions.transcript': 'トランスクリプト',
             'sessions.folder': 'セッションフォルダーを開く',
             'sessions.toolCalls': 'ツール呼び出し {count} 回',
+            'resume.title': '前回の続きから',
+            'resume.lastCommit': '最新のコミット',
+            'resume.lastSession': '最新のセッション',
             'radar.heroTitle': 'Graphify 観測所',
             'radar.openObservatory': '観測所を開く',
             'radar.maps': 'マップ',
@@ -1285,6 +1333,7 @@
             'settings.w.archiveDrawer': 'アーカイブ',
             'settings.w.newChat': '新しいチャットボタン',
             'settings.w.spaceCanvas': 'パーティクル背景',
+            'settings.w.resume': '前回の続きから',
             'settings.startupTitle': '起動とサウンド',
             'settings.startupAuto': '起動時に開く',
             'settings.startupAutoDesc': 'Antigravity IDE の起動時に毎回 Cockpit を表示します。',
@@ -1418,6 +1467,50 @@
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).catch(() => {});
         }
+    }
+
+    // --- Dates in the active UI language (collectors send raw timestamps) ---
+    const intlCache = {};
+    function intl(kind, options) {
+        const key = activeLocale + kind;
+        if (!intlCache[key]) intlCache[key] = kind.startsWith('rel') ? new Intl.RelativeTimeFormat(activeLocale, options) : new Intl.DateTimeFormat(activeLocale, options);
+        return intlCache[key];
+    }
+
+    function toMs(value) {
+        const ms = typeof value === 'number' ? value : Date.parse(value);
+        return Number.isFinite(ms) && ms > 0 ? ms : null;
+    }
+
+    function relTime(ms) {
+        const sec = Math.max(1, Math.floor((Date.now() - ms) / 1000));
+        const rtf = intl('rel', { numeric: 'always' });
+        if (sec < 60) return rtf.format(-sec, 'second');
+        if (sec < 3600) return rtf.format(-Math.floor(sec / 60), 'minute');
+        if (sec < 86400) return rtf.format(-Math.floor(sec / 3600), 'hour');
+        if (sec < 604800) return rtf.format(-Math.floor(sec / 86400), 'day');
+        if (sec < 2629800) return rtf.format(-Math.floor(sec / 604800), 'week');
+        if (sec < 31557600) return rtf.format(-Math.floor(sec / 2629800), 'month');
+        return rtf.format(-Math.floor(sec / 31557600), 'year');
+    }
+
+    function timeOfDay(ms) {
+        return intl('time', { hour: '2-digit', minute: '2-digit' }).format(ms);
+    }
+
+    // "Today", "Yesterday" or the full weekday and date.
+    function dayLabel(ms) {
+        const start = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+        const days = Math.round((start(new Date()) - start(new Date(ms))) / 86400000);
+        const label = days >= 0 && days < 2
+            ? intl('relAuto', { numeric: 'auto' }).format(-days, 'day')
+            : intl('day', { weekday: 'long', day: 'numeric', month: 'long' }).format(ms);
+        return label.charAt(0).toLocaleUpperCase(activeLocale) + label.slice(1);
+    }
+
+    function commitAgo(entry) {
+        const ms = toMs(entry.time);
+        return ms ? relTime(ms) : (entry.ago || '');
     }
 
     // --- Persisted webview state ---
@@ -1612,6 +1705,7 @@
         tabSkills: true,
         newChat: true,
         archiveDrawer: true,
+        resume: true,
         spaceCanvas: false
     };
     const widgetVisibility = Object.assign({}, DEFAULT_WIDGET_VISIBILITY);
@@ -1627,13 +1721,14 @@
         tabSkills: '#tabBtnSkills',
         newChat: '#hudBtnNewChat',
         archiveDrawer: '#tabBtnArchive',
+        resume: '#resumeStrip',
         spaceCanvas: '#spaceCanvas'
     };
 
     const WIDGET_GROUPS = [
         { key: 'settings.subgroupTele', items: ['quota', 'gpu', 'github'] },
         { key: 'settings.subgroupTabs', items: ['tabProjects', 'tabGithub', 'tabSessions', 'tabRadar', 'tabSkills', 'archiveDrawer'] },
-        { key: 'settings.subgroupPanels', items: ['newChat', 'spaceCanvas'] }
+        { key: 'settings.subgroupPanels', items: ['resume', 'newChat', 'spaceCanvas'] }
     ];
 
     const TAB_WIDGET = {
@@ -1959,7 +2054,7 @@
 
     function projectSummary(p) {
         const last = (p.gitLog && p.gitLog.length > 0) ? p.gitLog[0] : null;
-        if (last) return `${escapeHtml(last.msg)}<span class="ago">${escapeHtml(last.ago)}</span>`;
+        if (last) return `${escapeHtml(last.msg)}<span class="ago">${escapeHtml(commitAgo(last))}</span>`;
         if (p.sessionNotes) return escapeHtml(p.sessionNotes);
         return `<span class="ago" style="margin:0">${escapeHtml(t('projects.noCommits'))}</span>`;
     }
@@ -1972,6 +2067,7 @@
 
     // --- Projects ---
     function renderProjects() {
+        renderResume();
         const grid = $('projectsGrid');
         if (!grid) return;
         const all = (appData.projects || []).filter(p => !p.isArchived);
@@ -2035,6 +2131,48 @@
             '</div>';
     }
 
+    // --- Resume strip: latest commit and latest session, one click each ---
+    function latestCommittedProject() {
+        const withCommits = (appData.projects || []).filter(p => !p.isArchived && p.gitLog && p.gitLog.length);
+        if (!withCommits.length) return null;
+        return withCommits.reduce((best, p) => ((toMs(p.gitLog[0].time) || 0) > (toMs(best.gitLog[0].time) || 0) ? p : best));
+    }
+
+    function renderResume() {
+        const strip = $('resumeStrip');
+        if (!strip) return;
+        const p = latestCommittedProject();
+        const s = (appData.sessions || [])[0];
+        strip.hidden = !p && !s;
+        if (strip.hidden) return;
+
+        let items = '';
+        if (p) {
+            const c = p.gitLog[0];
+            items += '<div class="resume-item">' +
+                `<div class="resume-label">${icon('commit', 'sm')}${escapeHtml(t('resume.lastCommit'))}<span class="ago">${escapeHtml(commitAgo(c))}</span></div>` +
+                `<div class="resume-name" title="${escapeHtml(p.path)}">${escapeHtml(p.name)}</div>` +
+                `<div class="row-text"><code>${escapeHtml(c.hash)}</code>${escapeHtml(c.msg)}</div>` +
+                `<div class="resume-actions">${projectActions(p, false)}</div>` +
+                '</div>';
+        }
+        if (s) {
+            const ms = toMs(s.timestamp);
+            items += '<div class="resume-item">' +
+                `<div class="resume-label">${icon('chat', 'sm')}${escapeHtml(t('resume.lastSession'))}<span class="ago">${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</span></div>` +
+                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt)}">${escapeHtml(s.prompt)}</div>` +
+                `<div class="row-text">${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</div>` +
+                '<div class="resume-actions">' +
+                    `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
+                    iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
+                '</div>' +
+                '</div>';
+        }
+        strip.innerHTML =
+            `<div class="inst-head">${icon('history')}<h2 class="inst-title" id="resumeTitle">${escapeHtml(t('resume.title'))}</h2></div>` +
+            `<div class="resume-grid">${items}</div>`;
+    }
+
     // --- GitHub ---
     function renderGithub() {
         const grid = $('githubGrid');
@@ -2060,6 +2198,8 @@
 
         grid.innerHTML = '<div class="rows">' + list.map((r, i) => {
             const favId = r.url || r.name;
+            const pushedMs = toMs(r.pushedAt);
+            const pushed = pushedMs ? relTime(pushedMs) : r.timeAgo;
             const tags =
                 (r.language ? `<span class="tag">${escapeHtml(r.language)}</span>` : '') +
                 (r.stars > 0 ? `<span class="tag">${icon('star')}${r.stars}</span>` : '') +
@@ -2074,7 +2214,7 @@
                 `<div class="row-id"><div class="row-name"><span title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></div><div class="row-path" title="${escapeHtml(r.fullName)}"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-info">' +
                     `<div class="tags">${tags}</div>` +
-                    `<div class="row-text" title="${escapeHtml(r.description)}">${escapeHtml(r.description || '')}${r.timeAgo ? `<span class="ago">${escapeHtml(t('github.updated', { ago: r.timeAgo }))}</span>` : ''}</div>` +
+                    `<div class="row-text" title="${escapeHtml(r.description)}">${escapeHtml(r.description || '')}${pushed ? `<span class="ago">${escapeHtml(t('github.updated', { ago: pushed }))}</span>` : ''}</div>` +
                 '</div>' +
                 '<div class="row-actions">' + primary +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
@@ -2101,22 +2241,42 @@
             return;
         }
 
-        listEl.innerHTML = '<div class="rows sessions">' + list.map((s, i) =>
-            `<div class="row session" style="--i:${i}">` +
-                `<div class="sess-time">${escapeHtml(s.time)}<small>${escapeHtml(s.timeAgo)}</small></div>` +
-                '<div class="row-info">' +
-                    `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
-                    '<div class="sess-meta">' +
-                        `<span>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
-                        (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
-                    '</div>' +
+        // Group by calendar day; sessions without a timestamp share one untitled group.
+        const groups = [];
+        list.forEach(s => {
+            const ms = toMs(s.timestamp);
+            const key = ms ? new Date(ms).toDateString() : '';
+            const last = groups[groups.length - 1];
+            if (last && last.key === key) last.items.push(s);
+            else groups.push({ key, ms, items: [s] });
+        });
+        let i = 0;
+        listEl.innerHTML = groups.map(g =>
+            (g.key ? `<div class="group-label">${escapeHtml(dayLabel(g.ms))}<span class="num">${g.items.length}</span></div>` : '') +
+            '<div class="rows sessions">' + g.items.map(s => sessionRow(s, i++)).join('') + '</div>'
+        ).join('');
+    }
+
+    // Sessions with this many tool calls count as heavy and get a highlighted meta line.
+    const HEAVY_SESSION_TOOLS = 100;
+
+    function sessionRow(s, i) {
+        const ms = toMs(s.timestamp);
+        const heavy = (s.toolCount || 0) >= HEAVY_SESSION_TOOLS;
+        return `<div class="row session" style="--i:${i}">` +
+            `<div class="sess-time">${escapeHtml(ms ? timeOfDay(ms) : s.time)}<small>${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</small></div>` +
+            '<div class="row-info">' +
+                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
+                '<div class="sess-meta">' +
+                    `<span${heavy ? ' class="heavy"' : ''}>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
+                    (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
                 '</div>' +
-                '<div class="row-actions">' +
-                    `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
-                    iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
-                '</div>' +
-            '</div>'
-        ).join('') + '</div>';
+            '</div>' +
+            '<div class="row-actions">' +
+                `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
+                iconAction('openSessionFolder', 'folder', t('sessions.folder'), `data-path="${escapeHtml(s.path)}"`) +
+            '</div>' +
+        '</div>';
     }
 
     // --- Graphify ---
@@ -2342,6 +2502,19 @@
         return (v === null || v === undefined || Number.isNaN(Number(v))) ? null : Number(v);
     }
 
+    // Credits below this share of the monthly allowance are flagged in the quota panel.
+    const LOW_CREDIT_PCT = 10;
+
+    function creditPercent(credit) {
+        const available = numberOrNull(credit.available);
+        const monthly = numberOrNull(credit.monthly);
+        return available !== null && monthly ? (available / monthly) * 100 : null;
+    }
+
+    function formatShare(pct) {
+        return new Intl.NumberFormat(activeLocale, { maximumFractionDigits: pct < 1 ? 2 : 0 }).format(pct);
+    }
+
     function renderPanel(panelData) {
         if (!panelData) return;
         panelOnline = panelData.status === 'ok';
@@ -2367,8 +2540,21 @@
         setText('teleTokenPromptMonthly', pMonthly);
         setText('modalPromptCredits', `${pAvail} / ${pMonthly}`);
         setText('modalFlowCredits', `${fAvail} / ${fMonthly}`);
-        setMeter('modalPromptBar', null, prompt.remainingPercentage !== undefined ? prompt.remainingPercentage * 100 : null);
-        setMeter('modalFlowBar', null, flow.remainingPercentage !== undefined ? flow.remainingPercentage * 100 : null);
+
+        // Derive the share from raw counts: remainingPercentage is already a percent in live data.
+        const promptPct = creditPercent(prompt);
+        const promptLow = promptPct !== null && promptPct < LOW_CREDIT_PCT;
+        const creditLine = $('teleCredits');
+        if (creditLine) {
+            creditLine.classList.toggle('low', promptLow);
+            if (promptLow) creditLine.title = t('telemetry.creditsLow', { pct: formatShare(promptPct) });
+            else creditLine.removeAttribute('title');
+        }
+        const modalPrompt = $('modalPromptCredits');
+        if (modalPrompt) modalPrompt.classList.toggle('low', promptLow);
+        const flowPct = creditPercent(flow);
+        const modalFlow = $('modalFlowCredits');
+        if (modalFlow) modalFlow.classList.toggle('low', flowPct !== null && flowPct < LOW_CREDIT_PCT);
 
         const groups = panelData.groups || [];
         const gemini = groups.find(g => g.id === 'gemini') || {};
@@ -2787,6 +2973,35 @@
         return target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
     }
 
+    // --- Keyboard: 1-6 switch sections, arrows walk the items of the active view, Enter opens one ---
+    const NAV_ITEM = '.resume-item, .row, .card, .map-tile, .skill-card';
+
+    function overlayOpen() {
+        const dd = $('themeDropdownContainer');
+        return Boolean(document.querySelector('.overlay.open') || (dd && dd.classList.contains('open')));
+    }
+
+    function moveFocus(step) {
+        const view = document.querySelector('.view.active');
+        if (!view) return;
+        const items = [...view.querySelectorAll(NAV_ITEM)].filter(el => el.offsetParent !== null);
+        if (!items.length) return;
+        const current = items.indexOf(document.activeElement && document.activeElement.closest(NAV_ITEM));
+        const next = current === -1 ? (step > 0 ? 0 : items.length - 1) : Math.min(items.length - 1, Math.max(0, current + step));
+        items[next].tabIndex = -1;
+        items[next].focus({ preventScroll: true });
+        items[next].scrollIntoView({ block: 'nearest' });
+    }
+
+    // Enter on a focused item runs its first labelled button (open, transcript, map...).
+    function openFocusedItem() {
+        const item = document.activeElement;
+        if (!item || !item.matches || !item.matches(NAV_ITEM)) return false;
+        const primary = item.querySelector('.btn[data-action]');
+        if (primary) primary.click();
+        return Boolean(primary);
+    }
+
     window.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
         if ((e.ctrlKey || e.metaKey) && key === 'k') {
@@ -2805,6 +3020,24 @@
                 searchInput.value = '';
                 renderView(currentNavTab);
             }
+        } else if (e.ctrlKey || e.metaKey || e.altKey || overlayOpen()) {
+            return;
+        } else if (e.key === 'ArrowDown' && e.target === searchInput) {
+            e.preventDefault();
+            moveFocus(1);
+        } else if (isTyping(e.target)) {
+            return;
+        } else if (/^[1-6]$/.test(e.key)) {
+            const tab = VIEW_ORDER[Number(e.key) - 1];
+            if (widgetVisibility[TAB_WIDGET[tab]] !== false) {
+                e.preventDefault();
+                switchNavTab(tab);
+            }
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            moveFocus(e.key === 'ArrowDown' ? 1 : -1);
+        } else if (e.key === 'Enter' && openFocusedItem()) {
+            e.preventDefault();
         }
     });
 
