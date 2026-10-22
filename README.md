@@ -5,24 +5,24 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Antigravity](https://img.shields.io/badge/Google-Antigravity%202.0-orange.svg)](#)
-[![Dashboard](https://img.shields.io/badge/Startup%20Cockpit-Included-cyan.svg)](#1--antigravity-activity-dashboard--cockpit-startup-paneli)
-[![Skills](https://img.shields.io/badge/Curated%20Skills-50%2B-brightgreen.svg)](#4--50-küratörlü-uzmanlık-yeteneği-curated-skills)
-[![Memory](https://img.shields.io/badge/Token%20Optimizer-Zero--Waste-purple.svg)](#features)
+[![Dashboard](https://img.shields.io/badge/Startup%20Cockpit-Included-cyan.svg)](#1-%EF%B8%8F-antigravity-activity-dashboard--cockpit-startup-panel)
+[![Skills](https://img.shields.io/badge/Curated%20Skills-50%2B-brightgreen.svg)](#5-%EF%B8%8F-50-curated-skills)
+[![Memory](https://img.shields.io/badge/Token%20Optimizer-Zero--Waste-purple.svg)](#2--zero-waste--persistent-project-memory)
 
 ---
 
-## ⚡ Hızlı Başlangıç / Quick Start
+## ⚡ Quick Start
 
-### Yöntem 1: Antigravity Sohbetinden (Önerilen)
-Depoyu yerel bilgisayarınıza klonlayın veya çalışma alanı olarak açın, ardından Antigravity sohbetine şunu yazın:
+### Method 1: From Antigravity Chat (Recommended)
+Clone the repository to your local machine or open it as a workspace, then type this into the Antigravity chat:
 
-> **"Bu depoyu benimse"**
+> **"Adopt this repository"** (the Turkish trigger **"Bu depoyu benimse"** works too)
 
-Antigravity, kuralları, 50+ yeteneği, eklentileri ve **açılışta otomatik başlayan Cockpit Dashboard'u** doğrudan sisteminize kuracaktır.
+Antigravity will install the rules, 50+ skills, plugins, and the **Cockpit Dashboard that starts automatically on launch** directly on your system.
 
 ---
 
-### Yöntem 2: Terminalden Tek Tıkla Kurulum
+### Method 2: One-Click Setup from the Terminal
 
 #### 🪟 Windows (PowerShell):
 ```powershell
@@ -38,91 +38,91 @@ cd antigravity-cockpit
 bash ./scripts/adopt.sh
 ```
 
-*(Opsiyonel)* Önerilen IDE eklentilerini kurmak için:
+*(Optional)* To install the recommended IDE extensions:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\install_extensions.ps1
 ```
 
 ---
 
-## 🌟 Neler İçerir? / Core Features
+## 🌟 Core Features
 
-### 1. 🎛️ Antigravity Activity Dashboard & Cockpit (Startup Paneli)
-Antigravity IDE her açıldığında sizi karşılayan fütüristik siber kontrol paneli:
-- **Canlı Model Kotası & Kredi HUD'ı:** Gemini 2.5 ve Claude 3.5 kalan kotalarını, saatlik/haftalık sıfırlanma sürelerini ve token kredilerini gerçek zamanlı izler.
-- **Son Oturumlar (Sessions Timeline):** Antigravity Brain üzerinde gerçekleşen tüm sohbetleri, çalıştırılan araç sayılarını ve etkileşim geçmişini transcript görüntüleyicisiyle sunar.
-- **Çalışma Alanı & Proje Radarı:** Yerel projelerinizi, Git commit durumlarını, Codebase Memory MCP indekslerini ve Graphify haritalarını tek bakışta listeler.
-- **Siber Ses Efektleri (Cyberpunk SFX):** Web Audio API tabanlı fütüristik ses bildirimleri ve geçiş efektleri.
+### 1. 🎛️ Antigravity Activity Dashboard & Cockpit (Startup Panel)
+A futuristic cyber control panel that greets you every time Antigravity IDE opens:
+- **Live Model Quota & Credits HUD:** Tracks the remaining Gemini 2.5 and Claude 3.5 quotas, hourly/weekly reset times, and token credits in real time.
+- **Recent Sessions (Sessions Timeline):** Shows every chat that ran on Antigravity Brain, the number of tools called, and the interaction history in a transcript viewer.
+- **Workspace & Project Radar:** Lists your local projects, Git commit status, Codebase Memory MCP indexes, and Graphify maps at a glance.
+- **Cyber Sound Effects (Cyberpunk SFX):** Futuristic sound notifications and transition effects built on the Web Audio API.
 
 ---
 
-### 2. 🧠 Sıfır İsraf & Sürekli Proje Hafızası (Persistent Memory)
-- Devasa kod tabanlarını her turda baştan sona okuyarak harcanan token maliyetlerini sıfıra indirir.
-- Her projede otomatik `.agents/rules/project-context.md` ve kompakt mimari snapshot'ları tutar ve günceller.
+### 2. 🧠 Zero Waste & Persistent Project Memory
+- Cuts the token cost of re-reading huge codebases end to end on every turn down to zero.
+- Automatically keeps and updates `.agents/rules/project-context.md` and compact architecture snapshots in every project.
 
 ---
 
 ### 3. 👑 Cyberpunk Graphify Observatory
-- Kod tabanınızın fonksiyon ve modül ilişkilerini arka planda tarayarak **Deep Space / Cyberpunk Observatory UI** arayüzünde canlı bir bilgi grafiği (`graph.html`) üretir.
-- Canlı HUD paneli, "God Nodes" parlatma, fizik dondurma, Ctrl+K arama motoru ve Web Audio ses efektleri içerir.
+- Scans the function and module relationships of your codebase in the background and produces a live knowledge graph (`graph.html`) in the **Deep Space / Cyberpunk Observatory UI**.
+- Includes a live HUD panel, "God Nodes" highlighting, physics freeze, a Ctrl+K search engine, and Web Audio sound effects.
 
 ---
 
-### 4. 🎨 Anti-Slop & Premium Web Tasarım Standartı
-- Yapay zeka klişesi olan ruhsuz, gri kart şablonlarını yasaklar.
-- Google Fonts (Inter, Plus Jakarta Sans, Outfit), modern cam morfolojisi (glassmorphism), özel renk paletleri ve mikro-animasyon standartlarını zorunlu kılar.
+### 4. 🎨 Anti-Slop & Premium Web Design Standard
+- Bans the soulless gray card templates that are an AI cliché.
+- Enforces Google Fonts (Inter, Plus Jakarta Sans, Outfit), modern glassmorphism, custom color palettes, and micro-animation standards.
 
 ---
 
-### 5. 🛠️ 50+ Küratörlü Uzmanlık Yeteneği (Curated Skills)
-- **Yazılım Mimarisi & Temiz Kod:** `clean-code`, `architecture-review`, `api-design-principles`, `debugging-toolkit`, `agent-qa-debug-fix`.
-- **Modern Arayüz (Frontend):** `taste-skill`, `awesome-design`, `frontend-design`, `image-to-code`, `web-design-guidelines`.
-- **E2E & Test:** `playwright-cli`, `playwright-component-testing`, `playwright-trace`.
-- **Veri & Bulut Mühendisliği:** `bigquery-*`, `gcp-*`, `dbt-bigquery`, `dataform-bigquery`, `notebook-guidance`, `schema-mapping`.
-- **Haritalama & Bellek:** `graphify`, `project-persistent-memory`, `codebase-memory`.
+### 5. 🛠️ 50+ Curated Skills
+- **Software Architecture & Clean Code:** `clean-code`, `architecture-review`, `api-design-principles`, `debugging-toolkit`, `agent-qa-debug-fix`.
+- **Modern Frontend:** `taste-skill`, `awesome-design`, `frontend-design`, `image-to-code`, `web-design-guidelines`.
+- **E2E & Testing:** `playwright-cli`, `playwright-component-testing`, `playwright-trace`.
+- **Data & Cloud Engineering:** `bigquery-*`, `gcp-*`, `dbt-bigquery`, `dataform-bigquery`, `notebook-guidance`, `schema-mapping`.
+- **Mapping & Memory:** `graphify`, `project-persistent-memory`, `codebase-memory`.
 
 ---
 
 ### 6. 📋 Antigravity Clipboard Bridge (`abc`)
-- Ajanlar arası ve ana işletim sistemi panosu arasında kusursuz senkronizasyon sağlayan çoklu ajan köprüsü.
+- A multi-agent bridge that keeps clipboards in seamless sync between agents and the host operating system.
 
 ---
 
-## 📂 Dizin Yapısı / Directory Structure
+## 📂 Directory Structure
 
 ```text
 antigravity-cockpit/
-├── GEMINI.md                               # Evrensel küresel kurallar
-├── README.md                               # Kurulum ve kullanım rehberi
-├── LICENSE                                 # MIT Lisansı
-├── .gitignore                              # Sıkı güvenlik ve gizlilik filtresi
+├── GEMINI.md                               # Universal global rules
+├── README.md                               # Setup and usage guide
+├── LICENSE                                 # MIT License
+├── .gitignore                              # Strict security and privacy filter
 ├── config/
-│   ├── mcp_config.example.json             # Örnek Model Context Protocol konfigürasyonu
-│   ├── plugins/                            # Antigravity eklentileri (Clipboard Bridge)
-│   └── skills/                             # 50+ Uzmanlık yeteneği
+│   ├── mcp_config.example.json             # Example Model Context Protocol configuration
+│   ├── plugins/                            # Antigravity plugins (Clipboard Bridge)
+│   └── skills/                             # 50+ curated skills
 ├── extensions/
-│   ├── antigravity-activity-dashboard/     # Fütüristik açılış kontrol paneli eklentisi (Kaynak kod)
-│   └── antigravity-activity-dashboard-2.2.0.vsix # Tek tıkla kurulabilir paket
+│   ├── antigravity-activity-dashboard/     # Futuristic startup control panel extension (source code)
+│   └── antigravity-activity-dashboard-2.2.0.vsix # One-click installable package
 └── scripts/
-    ├── adopt.ps1                           # Windows tek tıkla kurulum (Dashboard dahil)
-    ├── adopt.sh                            # Linux/macOS tek tıkla kurulum (Dashboard dahil)
-    └── install_extensions.ps1              # IDE uzantıları ve VSIX yükleyicisi
+    ├── adopt.ps1                           # Windows one-click setup (Dashboard included)
+    ├── adopt.sh                            # Linux/macOS one-click setup (Dashboard included)
+    └── install_extensions.ps1              # IDE extensions and VSIX installer
 ```
 
 ---
 
-## 🤝 Katkıda Bulunma / Contributing
+## 🤝 Contributing
 
-Yeni yetenekler (skills), gelişmiş kurallar veya optimizasyonlar eklemek için Pull Request açmaktan çekinmeyin!
+Feel free to open a Pull Request to add new skills, improved rules, or optimizations!
 
-1. Bu depoyu Fork'layın.
-2. Yeni özellik dalınızı oluşturun (`git checkout -b feature/amazing-skill`).
-3. Değişikliklerinizi commit edin (`git commit -m 'feat: add amazing skill'`).
-4. Dalınıza push yapın (`git push origin feature/amazing-skill`).
-5. Bir Pull Request açın.
+1. Fork this repository.
+2. Create your feature branch (`git checkout -b feature/amazing-skill`).
+3. Commit your changes (`git commit -m 'feat: add amazing skill'`).
+4. Push to your branch (`git push origin feature/amazing-skill`).
+5. Open a Pull Request.
 
 ---
 
-## 📄 Lisans / License
+## 📄 License
 
-Bu proje **MIT Lisansı** ile lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
