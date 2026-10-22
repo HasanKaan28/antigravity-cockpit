@@ -1,0 +1,80 @@
+{
+  "ideLanguage": "en",
+  "configuredLanguage": "en",
+  "sessions": [
+    { "id": "s1", "time": "22/10 16:42", "timeAgo": "12 min ago", "timestamp": 1792687300000, "prompt": "Add retry with exponential backoff to the payment webhook handler and cover it with tests", "activeDoc": "src/payments/webhook.ts", "toolCount": 23, "transcriptPath": "/workspaces/.brain/s1/transcript.jsonl", "path": "/workspaces/.brain/s1", "status": "Done" },
+    { "id": "s2", "time": "22/10 11:05", "timeAgo": "6 hours ago", "timestamp": 1792667100000, "prompt": "Why does the dark theme flash white on first paint in the web app?", "activeDoc": "app/layout.tsx", "toolCount": 9, "transcriptPath": "/workspaces/.brain/s2/transcript.jsonl", "path": "/workspaces/.brain/s2", "status": "Done" },
+    { "id": "s3", "time": "21/10 19:30", "timeAgo": "1 day ago", "timestamp": 1792611000000, "prompt": "Generate a Graphify map for atlas-cli and point out the god nodes", "activeDoc": "", "toolCount": 14, "transcriptPath": "/workspaces/.brain/s3/transcript.jsonl", "path": "/workspaces/.brain/s3", "status": "Done" },
+    { "id": "s4", "time": "21/10 10:12", "timeAgo": "1 day ago", "timestamp": 1792577500000, "prompt": "Review the open PR on ember-design-system for accessibility regressions", "activeDoc": "src/components/Button.tsx", "toolCount": 17, "transcriptPath": "/workspaces/.brain/s4/transcript.jsonl", "path": "/workspaces/.brain/s4", "status": "Done" },
+    { "id": "s5", "time": "20/10 15:48", "timeAgo": "2 days ago", "timestamp": 1792511200000, "prompt": "Migrate the metrics exporter from setInterval polling to a streaming endpoint", "activeDoc": "pulse/exporter.go", "toolCount": 31, "transcriptPath": "/workspaces/.brain/s5/transcript.jsonl", "path": "/workspaces/.brain/s5", "status": "Done" },
+    { "id": "s6", "time": "19/10 09:20", "timeAgo": "3 days ago", "timestamp": 1792401600000, "prompt": "Write the getting-started guide for quill-docs in plain English", "activeDoc": "docs/getting-started.md", "toolCount": 6, "transcriptPath": "/workspaces/.brain/s6/transcript.jsonl", "path": "/workspaces/.brain/s6", "status": "Done" }
+  ],
+  "projects": [
+    { "name": "orbit-api", "path": "/workspaces/orbit-api", "rawPath": "/workspaces/orbit-api", "isGit": true, "branch": "main", "gitLog": [{ "hash": "a1b2c3d", "msg": "feat: add rate limiter middleware with per-key buckets", "ago": "2 hours ago" }], "hasUncommitted": true, "sessionNotes": "", "hasGraphify": true, "graphifyPath": "/workspaces/orbit-api/graphify-out/graph.html", "isFavorite": true, "isArchived": false },
+    { "name": "lumen-web", "path": "/workspaces/lumen-web", "rawPath": "/workspaces/lumen-web", "isGit": true, "branch": "develop", "gitLog": [{ "hash": "d4e5f6a", "msg": "fix: hydrate theme before first paint", "ago": "6 hours ago" }], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": true, "graphifyPath": "/workspaces/lumen-web/graphify-out/graph.html", "isFavorite": true, "isArchived": false },
+    { "name": "atlas-cli", "path": "/workspaces/atlas-cli", "rawPath": "/workspaces/atlas-cli", "isGit": true, "branch": "main", "gitLog": [{ "hash": "9f8e7d6", "msg": "refactor: split command registry into modules", "ago": "1 day ago" }], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": true, "graphifyPath": "/workspaces/atlas-cli/graphify-out/graph.html", "isFavorite": true, "isArchived": false },
+    { "name": "ember-design-system", "path": "/workspaces/ember-design-system", "rawPath": "/workspaces/ember-design-system", "isGit": true, "branch": "feat/tokens-v2", "gitLog": [{ "hash": "5c4b3a2", "msg": "feat(tokens): add elevation and motion scales", "ago": "1 day ago" }], "hasUncommitted": true, "sessionNotes": "", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "pulse-metrics", "path": "/workspaces/pulse-metrics", "rawPath": "/workspaces/pulse-metrics", "isGit": true, "branch": "main", "gitLog": [{ "hash": "1a2b3c4", "msg": "perf: stream exporter output instead of polling", "ago": "2 days ago" }], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": true, "graphifyPath": "/workspaces/pulse-metrics/graphify-out/graph.html", "isFavorite": false, "isArchived": false },
+    { "name": "quill-docs", "path": "/workspaces/quill-docs", "rawPath": "/workspaces/quill-docs", "isGit": true, "branch": "main", "gitLog": [{ "hash": "7d6c5b4", "msg": "docs: getting-started guide and CLI reference", "ago": "3 days ago" }], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "nova-mobile", "path": "/workspaces/nova-mobile", "rawPath": "/workspaces/nova-mobile", "isGit": true, "branch": "release/1.4", "gitLog": [{ "hash": "3e2d1c0", "msg": "chore: bump version to 1.4.2", "ago": "5 days ago" }], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "scratchpad", "path": "/workspaces/scratchpad", "rawPath": "/workspaces/scratchpad", "isGit": false, "branch": null, "gitLog": [], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "legacy-portal", "path": "/workspaces/legacy-portal", "rawPath": "/workspaces/legacy-portal", "isGit": true, "branch": "master", "gitLog": [], "hasUncommitted": false, "sessionNotes": "", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": true }
+  ],
+  "githubRepos": [
+    { "name": "orbit-api", "fullName": "orbit-labs/orbit-api", "description": "Public API gateway with rate limiting and request tracing", "isPrivate": true, "language": "TypeScript", "stars": 12, "url": "https://github.com/orbit-labs/orbit-api", "timeAgo": "2 hours ago", "defaultBranch": "main", "isCloned": true, "localPath": "/workspaces/orbit-api", "hasGraphify": true, "graphifyPath": "/workspaces/orbit-api/graphify-out/graph.html", "isFavorite": true, "isArchived": false },
+    { "name": "lumen-web", "fullName": "orbit-labs/lumen-web", "description": "Customer dashboard built with Next.js", "isPrivate": false, "language": "TypeScript", "stars": 48, "url": "https://github.com/orbit-labs/lumen-web", "timeAgo": "6 hours ago", "defaultBranch": "develop", "isCloned": true, "localPath": "/workspaces/lumen-web", "hasGraphify": true, "graphifyPath": "/workspaces/lumen-web/graphify-out/graph.html", "isFavorite": false, "isArchived": false },
+    { "name": "ember-design-system", "fullName": "orbit-labs/ember-design-system", "description": "Design tokens and React components", "isPrivate": false, "language": "CSS", "stars": 131, "url": "https://github.com/orbit-labs/ember-design-system", "timeAgo": "1 day ago", "defaultBranch": "main", "isCloned": true, "localPath": "/workspaces/ember-design-system", "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "pulse-metrics", "fullName": "orbit-labs/pulse-metrics", "description": "Lightweight metrics exporter written in Go", "isPrivate": false, "language": "Go", "stars": 27, "url": "https://github.com/orbit-labs/pulse-metrics", "timeAgo": "2 days ago", "defaultBranch": "main", "isCloned": true, "localPath": "/workspaces/pulse-metrics", "hasGraphify": true, "graphifyPath": "/workspaces/pulse-metrics/graphify-out/graph.html", "isFavorite": false, "isArchived": false },
+    { "name": "harbor-infra", "fullName": "orbit-labs/harbor-infra", "description": "Terraform modules for staging and production", "isPrivate": true, "language": "HCL", "stars": 0, "url": "https://github.com/orbit-labs/harbor-infra", "timeAgo": "4 days ago", "defaultBranch": "main", "isCloned": false, "localPath": null, "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false },
+    { "name": "signal-bot", "fullName": "orbit-labs/signal-bot", "description": "Slack bot that posts deploy and incident updates", "isPrivate": false, "language": "Python", "stars": 9, "url": "https://github.com/orbit-labs/signal-bot", "timeAgo": "1 week ago", "defaultBranch": "main", "isCloned": false, "localPath": null, "hasGraphify": false, "graphifyPath": null, "isFavorite": false, "isArchived": false }
+  ],
+  "githubUser": "orbit-labs",
+  "githubConnected": true,
+  "favCount": 4,
+  "archCount": 1,
+  "ghCount": 6,
+  "openOnStartup": true,
+  "panel": {
+    "status": "ok",
+    "groups": [
+      { "id": "gemini", "label": "Gemini", "remaining": 72.5, "resetTime": "3h 12m", "weekly": { "remaining": 88.2, "resetTime": "3d 4h" } },
+      { "id": "non-google", "label": "Claude", "remaining": 41.0, "resetTime": "1h 48m" }
+    ],
+    "user": { "email": "dev@orbit-labs.example", "tier": "Google AI Pro" },
+    "tokenUsage": {
+      "promptCredits": { "available": 31200, "monthly": 50000, "remainingPercentage": 62.4 },
+      "flowCredits": { "available": 98000, "monthly": 150000, "remainingPercentage": 65.3 },
+      "formatted": { "promptAvailable": "31.2K", "promptMonthly": "50.0K", "flowAvailable": "98.0K", "flowMonthly": "150.0K" }
+    }
+  },
+  "system": {
+    "gpu": "NVIDIA GeForce RTX 4070 (12 GB)",
+    "hasLocalEngine": true,
+    "ollamaOnline": true,
+    "ollamaInstalled": true,
+    "localAi": {
+      "hasLocalEngine": true,
+      "primaryEngine": { "id": "ollama", "name": "Ollama", "endpoint": "http://127.0.0.1:11434", "online": true, "activeModel": "qwen2.5-coder:7b" },
+      "detectedEngines": [{ "id": "ollama", "name": "Ollama" }]
+    },
+    "power": { "onAc": true, "percent": 100 }
+  },
+  "skills": {
+    "totalCount": 12,
+    "categories": { "architecture": 3, "design": 3, "quality": 3, "optimization": 2, "general": 1 },
+    "skills": [
+      { "id": "architecture-review", "name": "architecture-review", "displayName": "architecture-review", "category": "architecture", "description": "Reviews module boundaries, dependency direction and coupling, then proposes a target structure.", "promptHint": "@skill:architecture-review", "skillPath": "/skills/architecture-review/SKILL.md" },
+      { "id": "api-design-principles", "name": "api-design-principles", "displayName": "api-design-principles", "category": "architecture", "description": "REST and GraphQL design rules for consistent, versionable and well-documented APIs.", "promptHint": "@skill:api-design-principles", "skillPath": "/skills/api-design-principles/SKILL.md" },
+      { "id": "graphify", "name": "graphify", "displayName": "graphify", "category": "architecture", "description": "Turns a codebase into a knowledge graph with god nodes, clusters and call paths.", "promptHint": "/graphify", "skillPath": "/skills/graphify/SKILL.md" },
+      { "id": "frontend-design", "name": "frontend-design", "displayName": "frontend-design", "category": "design", "description": "Distinctive, accessible frontends with an explicit design direction and verified states.", "promptHint": "@skill:frontend-design", "skillPath": "/skills/frontend-design/SKILL.md" },
+      { "id": "taste-skill", "name": "taste-skill", "displayName": "taste-skill", "category": "design", "description": "Anti-template design rules: typography, spacing, one accent color and real imagery.", "promptHint": "@skill:taste-skill", "skillPath": "/skills/taste-skill/SKILL.md" },
+      { "id": "web-design-guidelines", "name": "web-design-guidelines", "displayName": "web-design-guidelines", "category": "design", "description": "Audits UI code for accessibility, focus states, motion and layout stability.", "promptHint": "@skill:web-design-guidelines", "skillPath": "/skills/web-design-guidelines/SKILL.md" },
+      { "id": "clean-code", "name": "clean-code", "displayName": "clean-code", "category": "quality", "description": "Small functions, clear names and single responsibility, applied during refactors.", "promptHint": "@skill:clean-code", "skillPath": "/skills/clean-code/SKILL.md" },
+      { "id": "code-review-excellence", "name": "code-review-excellence", "displayName": "code-review-excellence", "category": "quality", "description": "Constructive reviews that rank real risks first and skip style nits.", "promptHint": "@skill:code-review-excellence", "skillPath": "/skills/code-review-excellence/SKILL.md" },
+      { "id": "debugging-toolkit", "name": "debugging-toolkit", "displayName": "debugging-toolkit", "category": "quality", "description": "Reproduce, isolate, fix and verify, with a regression test for every bug.", "promptHint": "@skill:debugging-toolkit", "skillPath": "/skills/debugging-toolkit/SKILL.md" },
+      { "id": "codebase-memory", "name": "codebase-memory", "displayName": "codebase-memory", "category": "optimization", "description": "Keeps a compact project snapshot so the agent stops re-reading the whole repo.", "promptHint": "@skill:codebase-memory", "skillPath": "/skills/codebase-memory/SKILL.md" },
+      { "id": "accidental-data-loss-prevention", "name": "accidental-data-loss-prevention", "displayName": "accidental-data-loss-prevention", "category": "optimization", "description": "Guards destructive commands with backups, dry runs and explicit confirmation.", "promptHint": "@skill:accidental-data-loss-prevention", "skillPath": "/skills/accidental-data-loss-prevention/SKILL.md" },
+      { "id": "playwright-cli", "name": "playwright-cli", "displayName": "playwright-cli", "category": "general", "description": "Browser automation and end-to-end checks with Playwright.", "promptHint": "@skill:playwright-cli", "skillPath": "/skills/playwright-cli/SKILL.md" }
+    ]
+  }
+}

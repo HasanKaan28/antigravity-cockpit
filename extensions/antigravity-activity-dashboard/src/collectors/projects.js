@@ -5,6 +5,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execFileAsync, createPool } = require('../util/proc');
 const { isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
@@ -26,11 +27,13 @@ async function inspectGitRepo(projectPath) {
         }
 
         try {
-            const { stdout: lOut } = await execFileAsync('git', ['log', '-n', '2', '--pretty=format:%h|%s|%ar'], { cwd: projectPath }, 1500);
+            // Subject goes last so a "|" inside it cannot shift the fields. "time" (ms) lets the
+            // webview format the age in the UI language; "ago" stays as git's English fallback.
+            const { stdout: lOut } = await execFileAsync('git', ['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], { cwd: projectPath }, 1500);
             if (lOut) {
                 gitLog = lOut.split('\n').filter(Boolean).map(line => {
-                    const parts = line.split('|');
-                    return { hash: parts[0] || '', msg: parts[1] || '', ago: parts[2] || '' };
+                    const [hash = '', ct = '', ago = '', ...msg] = line.split('|');
+                    return { hash, msg: msg.join('|'), ago, time: Number(ct) * 1000 || null };
                 });
             }
         } catch {
@@ -48,26 +51,85 @@ async function inspectGitRepo(projectPath) {
     });
 }
 
+function getRecentIdeWorkspaces() {
+    const results = [];
+    const userDir = os.homedir();
+    const storagePaths = [
+        // Windows
+        process.env.APPDATA ? path.join(process.env.APPDATA, 'Antigravity IDE', 'User', 'globalStorage', 'storage.json') : null,
+        process.env.APPDATA ? path.join(process.env.APPDATA, 'Code', 'User', 'globalStorage', 'storage.json') : null,
+        // macOS
+        path.join(userDir, 'Library', 'Application Support', 'Antigravity IDE', 'User', 'globalStorage', 'storage.json'),
+        path.join(userDir, 'Library', 'Application Support', 'Code', 'User', 'globalStorage', 'storage.json'),
+        // Linux
+        path.join(userDir, '.config', 'Antigravity IDE', 'User', 'globalStorage', 'storage.json'),
+        path.join(userDir, '.config', 'Code', 'User', 'globalStorage', 'storage.json')
+    ].filter(Boolean);
+
+    for (const sPath of storagePaths) {
+        if (!fs.existsSync(sPath)) continue;
+        try {
+            const raw = fs.readFileSync(sPath, 'utf8');
+            const data = JSON.parse(raw);
+
+            // Extract from profileAssociations.workspaces
+            if (data.profileAssociations && typeof data.profileAssociations.workspaces === 'object') {
+                for (const uriStr of Object.keys(data.profileAssociations.workspaces)) {
+                    if (uriStr.startsWith('file://')) {
+                        try {
+                            const decoded = decodeURIComponent(uriStr.replace(/^file:\/\/\/?/i, ''));
+                            const normalized = path.normalize(decoded);
+                            if (fs.existsSync(normalized)) results.push(normalized);
+                        } catch {}
+                    }
+                }
+            }
+
+            // Extract from backupWorkspaces.folders
+            if (data.backupWorkspaces && Array.isArray(data.backupWorkspaces.folders)) {
+                for (const f of data.backupWorkspaces.folders) {
+                    if (f && f.folderUri && f.folderUri.startsWith('file://')) {
+                        try {
+                            const decoded = decodeURIComponent(f.folderUri.replace(/^file:\/\/\/?/i, ''));
+                            const normalized = path.normalize(decoded);
+                            if (fs.existsSync(normalized)) results.push(normalized);
+                        } catch {}
+                    }
+                }
+            }
+
+            // Extract from windowsState.lastActiveWindow
+            if (data.windowsState && data.windowsState.lastActiveWindow && data.windowsState.lastActiveWindow.folder) {
+                const f = data.windowsState.lastActiveWindow.folder;
+                if (f.startsWith('file://')) {
+                    try {
+                        const decoded = decodeURIComponent(f.replace(/^file:\/\/\/?/i, ''));
+                        const normalized = path.normalize(decoded);
+                        if (fs.existsSync(normalized)) results.push(normalized);
+                    } catch {}
+                } else if (fs.existsSync(f)) {
+                    results.push(path.normalize(f));
+                }
+            }
+        } catch {
+            // ignore JSON read error
+        }
+    }
+    return results;
+}
+
 async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots = []) {
-    const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
+    const userDir = os.homedir();
     const candidateDirs = new Set();
 
-    // 1. Workspace folders
+    // 1. Current workspace folders
     for (const wf of workspaceFolders) {
         if (wf && fs.existsSync(wf)) candidateDirs.add(path.normalize(wf));
     }
 
-    // 2. Default github-repos directory
-    const ghReposDir = path.join(userDir, 'github-repos');
-    if (fs.existsSync(ghReposDir)) {
-        try {
-            const sub = await fs.promises.readdir(ghReposDir, { withFileTypes: true });
-            for (const d of sub) {
-                if (d.isDirectory()) candidateDirs.add(path.normalize(path.join(ghReposDir, d.name)));
-            }
-        } catch (err) {
-            logger.warn('Failed reading github-repos:', err);
-        }
+    // 2. Recently opened IDE workspaces from global storage
+    for (const rw of getRecentIdeWorkspaces()) {
+        if (rw && fs.existsSync(rw)) candidateDirs.add(rw);
     }
 
     // 3. User configured scan roots
@@ -77,7 +139,9 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
             try {
                 const sub = await fs.promises.readdir(root, { withFileTypes: true });
                 for (const d of sub) {
-                    if (d.isDirectory()) candidateDirs.add(path.normalize(path.join(root, d.name)));
+                    if (d.isDirectory() && !d.name.startsWith('.')) {
+                        candidateDirs.add(path.normalize(path.join(root, d.name)));
+                    }
                 }
             } catch {
                 // ignore
@@ -85,16 +149,35 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
         }
     }
 
-    // 4. Scratch folder projects
-    const scratchDir = path.join(userDir, '.gemini', 'antigravity-ide', 'scratch');
-    if (fs.existsSync(scratchDir)) {
-        try {
-            const sub = await fs.promises.readdir(scratchDir, { withFileTypes: true });
-            for (const d of sub) {
-                if (d.isDirectory()) candidateDirs.add(path.normalize(path.join(scratchDir, d.name)));
+    // 4. Common standard developer directories (depth 1)
+    const standardDevDirs = [
+        path.join(userDir, 'Projects'),
+        path.join(userDir, 'projects'),
+        path.join(userDir, 'Workspace'),
+        path.join(userDir, 'workspaces'),
+        path.join(userDir, 'code'),
+        path.join(userDir, 'dev'),
+        path.join(userDir, 'development'),
+        path.join(userDir, 'source', 'repos'),
+        path.join(userDir, 'repos'),
+        path.join(userDir, 'Documents', 'GitHub'),
+        path.join(userDir, 'Documents', 'Projects'),
+        path.join(userDir, 'github-repos'),
+        path.join(userDir, '.gemini', 'antigravity-ide', 'scratch')
+    ];
+
+    for (const sDir of standardDevDirs) {
+        if (fs.existsSync(sDir)) {
+            try {
+                const sub = await fs.promises.readdir(sDir, { withFileTypes: true });
+                for (const d of sub) {
+                    if (d.isDirectory() && !d.name.startsWith('.')) {
+                        candidateDirs.add(path.normalize(path.join(sDir, d.name)));
+                    }
+                }
+            } catch {
+                // ignore
             }
-        } catch {
-            // ignore
         }
     }
 
@@ -111,8 +194,13 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
         const isProject = isGit ||
             fs.existsSync(path.join(cDir, 'package.json')) ||
             fs.existsSync(path.join(cDir, 'requirements.txt')) ||
+            fs.existsSync(path.join(cDir, 'pyproject.toml')) ||
             fs.existsSync(path.join(cDir, 'Cargo.toml')) ||
             fs.existsSync(path.join(cDir, 'go.mod')) ||
+            fs.existsSync(path.join(cDir, 'pom.xml')) ||
+            fs.existsSync(path.join(cDir, 'build.gradle')) ||
+            fs.existsSync(path.join(cDir, 'composer.json')) ||
+            fs.existsSync(path.join(cDir, 'CMakeLists.txt')) ||
             fs.existsSync(path.join(cDir, 'graphify-out'));
 
         if (!isProject) continue;

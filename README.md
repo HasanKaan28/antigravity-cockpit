@@ -9,6 +9,8 @@
 [![Skills](https://img.shields.io/badge/Curated%20Skills-50%2B-brightgreen.svg)](#5-%EF%B8%8F-50-curated-skills)
 [![Memory](https://img.shields.io/badge/Token%20Optimizer-Zero--Waste-purple.svg)](#2--zero-waste--persistent-project-memory)
 
+![Antigravity Cockpit demo: searching projects, pinning a favorite, switching sections and themes, and opening settings](docs/images/cockpit-demo.gif)
+
 ---
 
 ## ⚡ Quick Start
@@ -48,11 +50,23 @@ powershell -ExecutionPolicy Bypass -File .\scripts\install_extensions.ps1
 ## 🌟 Core Features
 
 ### 1. 🎛️ Antigravity Activity Dashboard & Cockpit (Startup Panel)
-A futuristic cyber control panel that greets you every time Antigravity IDE opens:
-- **Live Model Quota & Credits HUD:** Tracks the remaining Gemini 2.5 and Claude 3.5 quotas, hourly/weekly reset times, and token credits in real time.
-- **Recent Sessions (Sessions Timeline):** Shows every chat that ran on Antigravity Brain, the number of tools called, and the interaction history in a transcript viewer.
-- **Workspace & Project Radar:** Lists your local projects, Git commit status, Codebase Memory MCP indexes, and Graphify maps at a glance.
-- **Cyber Sound Effects (Cyberpunk SFX):** Futuristic sound notifications and transition effects built on the Web Audio API.
+A mission-control panel that greets you every time Antigravity IDE opens:
+- **Live model quota:** Tick-meter gauges for Gemini and Claude with live reset countdowns, weekly quota and prompt credits.
+- **Pick up where you left off:** Your latest commit and latest agent session, one click away from reopening.
+- **Projects, GitHub, Sessions, Graphify and Skills:** Local workspaces with Git status, your repositories with clone status, day-grouped agent sessions with a transcript viewer, Graphify maps, and your agent skills with one-click triggers.
+- **Made to fit your IDE:** 10 palettes in dark and light plus **Match IDE**, 7 interface languages, keyboard navigation, a layout that works in a narrow side panel, and optional interface sounds.
+
+| Projects | GitHub |
+|---|---|
+| ![Projects view with quota gauges, resume strip and favorite projects](docs/images/cockpit-projects.png) | ![GitHub view with repositories, clone status and quick actions](docs/images/cockpit-github.png) |
+| **Sessions** | **Skills** |
+| ![Sessions grouped by day with transcript buttons](docs/images/cockpit-sessions.png) | ![Agent skills with category chips, copyable triggers and start chat](docs/images/cockpit-skills.png) |
+| **Settings** | **Light theme** |
+| ![Settings sheet with theme, language and layout options](docs/images/cockpit-settings.png) | ![The default palette in light mode](docs/images/cockpit-light.png) |
+| **Tokyo Night** | **Narrow side panel** |
+| ![Tokyo Night palette](docs/images/cockpit-tokyo-night.png) | <img src="docs/images/cockpit-narrow.png" alt="Cockpit in a narrow side panel" width="220"> |
+
+The screenshots and the demo use fictional sample data. Regenerate them with `npm run docs:capture` in `extensions/antigravity-activity-dashboard`.
 
 ---
 

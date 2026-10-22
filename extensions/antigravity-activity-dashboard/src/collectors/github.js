@@ -6,6 +6,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execFileAsync } = require('../util/proc');
 const { getCustomRepos, getGithubCache, saveGithubCache, isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
@@ -13,42 +14,53 @@ const logger = require('../logger');
 
 function getTimeAgo(date) {
     const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (diff < 60) return 'Az Önce';
-    if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
-    return `${Math.floor(diff / 86400)} gün önce`;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return `${Math.floor(diff / 86400)}d ago`;
 }
 
 async function getDetectedGithubUser() {
     try {
         const { stdout } = await execFileAsync('gh', ['api', 'user', '--jq', '.login'], {}, 2500);
-        if (stdout && /^[a-zA-Z0-9-]+$/.test(stdout)) {
+        if (stdout && /^[a-zA-Z0-9-]+$/.test(stdout.trim())) {
             return stdout.trim();
         }
     } catch {
-        // fallback
+        // fallback to git config
     }
-    return 'HasanKaan28';
+    try {
+        const { stdout } = await execFileAsync('git', ['config', '--get', 'github.user'], {}, 1500);
+        if (stdout && stdout.trim()) return stdout.trim();
+    } catch (e) {
+        logger.debug('github.user git config check ignored:', e.message);
+    }
+    return null;
 }
 
 async function getGithubReposData(cbmDbMap, configUser = null) {
-    const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
+    const userDir = os.homedir();
     const targetUser = configUser || (await getDetectedGithubUser());
     let rawRepos = [];
 
-    try {
-        const { stdout } = await execFileAsync('gh', [
-            'repo', 'list', targetUser,
-            '--limit', '50',
-            '--json', 'name,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
-        ], {}, 5000);
+    if (targetUser) {
+        try {
+            const { stdout } = await execFileAsync('gh', [
+                'repo', 'list', targetUser,
+                '--limit', '50',
+                '--json', 'name,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
+            ], {}, 5000);
 
-        if (stdout) {
-            rawRepos = JSON.parse(stdout);
-            saveGithubCache(rawRepos);
+            if (stdout) {
+                rawRepos = JSON.parse(stdout);
+                saveGithubCache(rawRepos);
+            }
+        } catch (err) {
+            logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
+            rawRepos = getGithubCache() || [];
         }
-    } catch (err) {
-        logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
+    } else {
+        // No GitHub user logged in or configured
         rawRepos = getGithubCache() || [];
     }
 
@@ -64,7 +76,7 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
 
     for (const r of rawRepos) {
         const repoName = r.name;
-        const fullName = r.fullName || (r.url ? r.url.replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '') : `${targetUser}/${repoName}`);
+        const fullName = r.fullName || (r.url ? r.url.replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '') : (targetUser ? `${targetUser}/${repoName}` : repoName));
         const possibleLocalPaths = [
             path.join(userDir, 'github-repos', repoName),
             path.join(userDir, repoName),
@@ -111,7 +123,7 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
         const isFav = isFavorite(canonicalId) || (localPath && isFavorite(localPath));
         const isArch = isArchived(canonicalId) || (localPath && isArchived(localPath));
 
-        let timeAgoStr = 'Yakın zamanda';
+        let timeAgoStr = 'recently';
         if (r.pushedAt) {
             try {
                 timeAgoStr = getTimeAgo(new Date(r.pushedAt));
@@ -123,7 +135,7 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
         processed.push({
             name: repoName,
             fullName,
-            description: r.description || 'GitHub deposu',
+            description: r.description || 'GitHub repository',
             isPrivate: Boolean(r.isPrivate),
             language: r.primaryLanguage?.name || r.language || 'Code',
             stars: r.stargazerCount || 0,
@@ -143,6 +155,7 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
         });
     }
 
+    processed.targetUser = targetUser;
     return processed;
 }
 

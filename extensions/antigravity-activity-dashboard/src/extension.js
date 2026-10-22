@@ -29,12 +29,40 @@ function activate(context) {
         });
     });
 
-    const newChatCmd = vscode.commands.registerCommand('antigravity.cockpitNewChat', () => {
-        vscode.commands.executeCommand('antigravity.startNewConversation').then(null, () => {
-            vscode.commands.executeCommand('antigravity.toggleChatFocus').then(null, () => {
-                vscode.commands.executeCommand('workbench.action.chat.open');
-            });
-        });
+    const newChatCmd = vscode.commands.registerCommand('antigravity.cockpitNewChat', async (prompt) => {
+        if (prompt && typeof prompt === 'string') {
+            try {
+                await vscode.env.clipboard.writeText(prompt);
+            } catch {
+                /* ignore */
+            }
+        }
+
+        const openCommands = [
+            'antigravity.openChatView',
+            'antigravity.startNewConversation',
+            'antigravity.toggleChatFocus',
+            'workbench.action.chat.open',
+            'workbench.action.chat.newChat',
+            'workbench.action.quickchat.toggle'
+        ];
+
+        for (const cmd of openCommands) {
+            try {
+                await vscode.commands.executeCommand(cmd);
+                break;
+            } catch {
+                /* ignore */
+            }
+        }
+
+        if (prompt && typeof prompt === 'string') {
+            try {
+                await vscode.commands.executeCommand('antigravity.sendPromptToAgentPanel', prompt);
+            } catch {
+                /* ignore */
+            }
+        }
     });
 
     context.subscriptions.push(openCmd, refreshCmd, newChatCmd);

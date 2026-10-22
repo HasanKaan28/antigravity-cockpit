@@ -5,6 +5,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const crypto = require('crypto');
 const logger = require('./logger');
 const { validateExternalUrl, parseRepoInput, isExistingPath } = require('./util/security');
@@ -23,6 +24,7 @@ const { getCbmData } = require('./collectors/cbm');
 const { startOllama, stopOllama, toggleOllama, toggleLocalAi } = require('./util/ollama');
 const { getPanelData } = require('./collectors/panel');
 const { getSystemTelemetry } = require('./collectors/system');
+const { getSkillsData } = require('./collectors/skills');
 const { openCleanTranscript } = require('./transcriptViewer');
 
 let currentPanel = null;
@@ -36,6 +38,8 @@ async function collectAllDashboardData(vscodeInstance) {
     const customUser = config.get('githubUser', '');
     const scanRoots = config.get('scanRoots', []);
     const openOnStartup = config.get('openOnStartup', true);
+    const configuredLanguage = config.get('language', 'auto');
+    const ideLanguage = (vscodeInstance.env && vscodeInstance.env.language) || 'en';
 
     const wfPaths = (vscodeInstance.workspace.workspaceFolders || []).map(f => f.uri.fsPath);
 
@@ -53,14 +57,19 @@ async function collectAllDashboardData(vscodeInstance) {
 
     const graphifyCount = projRes.filter(p => p.hasGraphify).length + ghRes.filter(r => r.hasGraphify).length;
     const systemRes = await getSystemTelemetry(cbmRes, graphifyCount);
+    const skillsRes = await getSkillsData(wfPaths.length > 0 ? wfPaths[0] : null);
 
     const favSet = getFavorites();
     const archSet = getArchived();
 
     return {
+        ideLanguage,
+        configuredLanguage,
         sessions: sessRes,
         projects: projRes,
         githubRepos: ghRes,
+        githubUser: customUser || ghRes.targetUser || null,
+        githubConnected: Boolean(customUser || ghRes.targetUser),
         favCount: favSet.size,
         archCount: archSet.size,
         ghCount: ghRes.length,
@@ -75,7 +84,8 @@ async function collectAllDashboardData(vscodeInstance) {
             indexedProjectsCount: cbmRes.indexedProjectsCount,
             indexedProjects: cbmRes.indexedProjects || []
         },
-        system: systemRes
+        system: systemRes,
+        skills: skillsRes
     };
 }
 
@@ -118,7 +128,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         case 'refresh':
             collectAllDashboardData(vscodeInstance).then(data => {
                 panel._lastData = data;
-                panel.webview.html = getWebviewHtml(panel.webview, _extensionUri, data);
+                panel.webview.postMessage({ command: 'updateData', data });
                 vscodeInstance.window.showInformationMessage('Dashboard verileri güncellendi.');
             }).catch(err => {
                 logger.error('Refresh failed:', err);
@@ -127,21 +137,52 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
 
         case 'toggleFavorite': {
             toggleFavorite(message.id);
-            // Optimistic update - only sync counts
-            const favCount = getFavorites().size;
+            const favSet = getFavorites();
+            if (panel._lastData) {
+                if (Array.isArray(panel._lastData.projects)) {
+                    panel._lastData.projects.forEach(p => {
+                        if (p.path === message.id || p.rawPath === message.id) {
+                            p.isFavorite = favSet.has(p.path) || favSet.has(p.rawPath);
+                        }
+                    });
+                }
+                if (Array.isArray(panel._lastData.githubRepos)) {
+                    panel._lastData.githubRepos.forEach(r => {
+                        if (r.name === message.id || r.url === message.id) {
+                            r.isFavorite = favSet.has(r.name) || favSet.has(r.url);
+                        }
+                    });
+                }
+            }
             panel.webview.postMessage({
                 command: 'updateData',
-                data: { ...panel._lastData, favCount }
+                data: { ...panel._lastData, favCount: favSet.size }
             });
             break;
         }
 
         case 'toggleArchive': {
             toggleArchive(message.id);
-            const archCount = getArchived().size;
+            const archSet = getArchived();
+            if (panel._lastData) {
+                if (Array.isArray(panel._lastData.projects)) {
+                    panel._lastData.projects.forEach(p => {
+                        if (p.path === message.id || p.rawPath === message.id) {
+                            p.isArchived = archSet.has(p.path) || archSet.has(p.rawPath);
+                        }
+                    });
+                }
+                if (Array.isArray(panel._lastData.githubRepos)) {
+                    panel._lastData.githubRepos.forEach(r => {
+                        if (r.name === message.id || r.url === message.id) {
+                            r.isArchived = archSet.has(r.name) || archSet.has(r.url);
+                        }
+                    });
+                }
+            }
             panel.webview.postMessage({
                 command: 'updateData',
-                data: { ...panel._lastData, archCount }
+                data: { ...panel._lastData, archCount: archSet.size }
             });
             break;
         }
@@ -190,12 +231,39 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         }
 
         case 'openChat':
-            vscodeInstance.commands.executeCommand('antigravity.startNewConversation').then(null, () => {
-                vscodeInstance.commands.executeCommand('antigravity.toggleChatFocus').then(null, () => {
-                    vscodeInstance.commands.executeCommand('workbench.action.chat.open');
-                });
-            });
+            (async () => {
+                const openCommands = [
+                    'antigravity.openChatView',
+                    'antigravity.startNewConversation',
+                    'antigravity.toggleChatFocus',
+                    'workbench.action.chat.open',
+                    'workbench.action.chat.newChat',
+                    'workbench.action.quickchat.toggle'
+                ];
+                for (const cmd of openCommands) {
+                    try {
+                        await vscodeInstance.commands.executeCommand(cmd);
+                        break;
+                    } catch {
+                        /* ignore */
+                    }
+                }
+            })();
             break;
+
+        case 'openFolderDialog':
+            vscodeInstance.commands.executeCommand('vscode.openFolder');
+            break;
+
+        case 'openSkillsFolder': {
+            const userHome = os.homedir();
+            const skillsDir = path.join(userHome, '.gemini', 'config', 'skills');
+            if (!fs.existsSync(skillsDir)) {
+                try { fs.mkdirSync(skillsDir, { recursive: true }); } catch {}
+            }
+            vscodeInstance.commands.executeCommand('revealFileInOS', vscodeInstance.Uri.file(skillsDir));
+            break;
+        }
 
         case 'openExternalUrl': {
             const valid = validateExternalUrl(message.url);
@@ -296,7 +364,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 break;
             }
 
-            const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
+            const userDir = os.homedir();
             const targetDir = path.join(userDir, 'github-repos', parsed.repo);
 
             if (isExistingPath(targetDir)) {
@@ -328,7 +396,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                     name: parsed.repo,
                     fullName: parsed.fullName,
                     url: parsed.url,
-                    description: 'Kullanıcı tarafından eklenen depo',
+                    description: 'Custom repository',
                     isPrivate: false,
                     language: 'GitHub Repo',
                     pushedAt: new Date().toISOString()
@@ -343,6 +411,75 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             break;
         }
 
+        case 'openSkillFile': {
+            const rawPath = (message.path || '').trim();
+            const normalized = path.normalize(rawPath);
+            if (rawPath && fs.existsSync(normalized)) {
+                vscodeInstance.workspace.openTextDocument(vscodeInstance.Uri.file(normalized)).then(doc => {
+                    vscodeInstance.window.showTextDocument(doc);
+                }, err => {
+                    vscodeInstance.window.showErrorMessage('Skill dosyası açılamadı: ' + err.message);
+                });
+            } else {
+                vscodeInstance.window.showWarningMessage('Skill dosyası bulunamadı: ' + (rawPath || 'Bilinmeyen yol'));
+            }
+            break;
+        }
+
+        case 'copySkillPrompt': {
+            if (message.prompt) {
+                vscodeInstance.env.clipboard.writeText(message.prompt).then(() => {
+                    vscodeInstance.window.showInformationMessage(`Skill prompt kopyalandı: "${message.prompt}"`);
+                });
+            }
+            break;
+        }
+
+        case 'chatWithSkill': {
+            const prompt = (message.prompt || '').trim();
+            (async () => {
+                if (prompt) {
+                    try {
+                        await vscodeInstance.env.clipboard.writeText(prompt);
+                    } catch {
+                        /* ignore */
+                    }
+                }
+
+                const openCommands = [
+                    'antigravity.openChatView',
+                    'antigravity.startNewConversation',
+                    'antigravity.toggleChatFocus',
+                    'workbench.action.chat.open',
+                    'workbench.action.chat.newChat',
+                    'workbench.action.quickchat.toggle'
+                ];
+
+                for (const cmd of openCommands) {
+                    try {
+                        await vscodeInstance.commands.executeCommand(cmd);
+                        break;
+                    } catch {
+                        /* ignore */
+                    }
+                }
+
+                if (prompt) {
+                    try {
+                        await vscodeInstance.commands.executeCommand('antigravity.sendPromptToAgentPanel', prompt);
+                    } catch {
+                        /* ignore */
+                    }
+                }
+
+                const shortPrompt = prompt.length > 40 ? prompt.slice(0, 40) + '...' : prompt;
+                vscodeInstance.window.showInformationMessage(
+                    `💬 Yeni sohbet başlatıldı. Prompt panoya kopyalandı:\n"${shortPrompt}"`
+                );
+            })();
+            break;
+        }
+
         case 'toggleStartup': {
             const cfg = vscodeInstance.workspace.getConfiguration('antigravity.dashboard');
             cfg.update('openOnStartup', Boolean(message.value), vscodeInstance.ConfigurationTarget.Global);
@@ -351,6 +488,13 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                     ? 'Antigravity açıldığında Cockpit otomatik açılacak.'
                     : 'Otomatik açılış kapatıldı.'
             );
+            break;
+        }
+
+        case 'setLanguage': {
+            const lang = message.language || 'auto';
+            const config = vscodeInstance.workspace.getConfiguration('antigravity.dashboard');
+            config.update('language', lang, vscodeInstance.ConfigurationTarget.Global);
             break;
         }
 

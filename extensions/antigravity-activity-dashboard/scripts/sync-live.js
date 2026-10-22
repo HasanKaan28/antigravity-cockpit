@@ -8,10 +8,11 @@
  */
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 const root = path.resolve(__dirname, '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-const userDir = process.env.USERPROFILE || 'C:\\Users\\Dev';
+const userDir = os.homedir();
 const extensionsDir = path.join(userDir, '.antigravity-ide', 'extensions');
 
 if (!fs.existsSync(extensionsDir)) {

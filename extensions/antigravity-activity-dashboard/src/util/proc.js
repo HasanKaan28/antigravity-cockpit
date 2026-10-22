@@ -6,6 +6,7 @@
 const { execFile, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const logger = require('../logger');
 
 function execFileAsync(file, args = [], options = {}, timeoutMs = 5000) {
@@ -44,7 +45,7 @@ function findEdgeExecutable() {
         'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
         path.join(process.env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
         path.join(process.env.ProgramFiles || 'C:\\Program Files', 'Microsoft', 'Edge', 'Application', 'msedge.exe'),
-        path.join(process.env.LOCALAPPDATA || 'C:\\Users\\Dev\\AppData\\Local', 'Microsoft', 'Edge', 'Application', 'msedge.exe')
+        path.join(process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'), 'Microsoft', 'Edge', 'Application', 'msedge.exe')
     ];
     for (const p of candidates) {
         try {
