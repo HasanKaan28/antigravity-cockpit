@@ -197,6 +197,19 @@ async function step(name, fn) {
         assert.strictEqual(await page.inputValue('#customGhInput'), '');
     });
 
+    await step('GitHub repos are favorited and archived by URL, the id the extension stores', async () => {
+        const url = 'https://github.com/sample-org/design-tokens';
+        await page.click(`#githubGrid [data-action="toggleFav"][data-id="${url}"]`);
+        assert.deepStrictEqual(await lastPost('toggleFavorite'), { command: 'toggleFavorite', id: url });
+        await page.click(`#githubGrid [data-action="toggleFav"][data-id="${url}"]`);
+        await page.click(`#githubGrid [data-action="toggleArch"][data-id="${url}"]`);
+        assert.deepStrictEqual(await lastPost('toggleArchive'), { command: 'toggleArchive', id: url });
+        await page.click('#tabBtnArchive');
+        await page.click(`#archiveGrid [data-action="toggleArch"][data-id="${url}"]`);
+        assert.deepStrictEqual(await lastPost('toggleArchive'), { command: 'toggleArchive', id: url });
+        await page.click('#tabBtnGithub');
+    });
+
     await step('sessions view: transcript and folder', async () => {
         await page.click('#tabBtnSessions');
         assert.strictEqual(await page.$$eval('#sessionsList .row', els => els.length), 2);

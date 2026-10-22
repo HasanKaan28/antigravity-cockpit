@@ -60,6 +60,10 @@ function toCanonicalId(item) {
             const parsed = parseRepoInput(str.slice(7));
             return parsed ? `github:${parsed.fullName.toLowerCase()}` : normalizeKey(str);
         }
+        if (/^https?:\/\/github\.com\//i.test(str)) {
+            const parsed = parseRepoInput(str);
+            if (parsed && parsed.owner) return `github:${parsed.fullName.toLowerCase()}`;
+        }
         return normalizeKey(str);
     }
     if (item.url && item.fullName) {
@@ -157,6 +161,52 @@ function toggleArchive(idOrItem) {
     return willBeArch;
 }
 
+/**
+ * Every stored key that marks a dashboard item, matching the collectors:
+ * projects by path, GitHub repos by 'github:owner/repo' and by their local clone path.
+ */
+function itemKeys(item) {
+    if (!item) return [];
+    if (item.fullName) return [`github:${item.fullName.toLowerCase()}`, item.localPath].filter(Boolean);
+    return [item.rawPath || item.path].filter(Boolean);
+}
+
+function toggleItemFlag(item, isSet, getSet, saveSet) {
+    const keys = itemKeys(item);
+    if (keys.length === 0) return false;
+    const turnOn = !keys.some(k => isSet(k));
+    const set = getSet();
+    if (turnOn) {
+        set.add(toCanonicalId(keys[0]));
+    } else {
+        keys.forEach(k => {
+            set.delete(toCanonicalId(k));
+            set.delete(normalizeKey(k));
+        });
+    }
+    saveSet(set);
+    return turnOn;
+}
+
+function toggleItemFavorite(item) {
+    return toggleItemFlag(item, isFavorite, getFavorites, saveFavorites);
+}
+
+function toggleItemArchived(item) {
+    return toggleItemFlag(item, isArchived, getArchived, saveArchived);
+}
+
+/** Recomputes isFavorite / isArchived on collected dashboard data from the stored sets. */
+function applyUserFlags(data) {
+    if (!data) return data;
+    [...(data.projects || []), ...(data.githubRepos || [])].forEach(item => {
+        const keys = itemKeys(item);
+        item.isFavorite = keys.some(k => isFavorite(k));
+        item.isArchived = keys.some(k => isArchived(k));
+    });
+    return data;
+}
+
 function getCustomRepos() {
     return readJsonFile(CUSTOM_REPOS_FILE, []);
 }
@@ -191,6 +241,10 @@ module.exports = {
     getArchived,
     isArchived,
     toggleArchive,
+    itemKeys,
+    toggleItemFavorite,
+    toggleItemArchived,
+    applyUserFlags,
     getCustomRepos,
     addCustomRepo,
     getGithubCache,
