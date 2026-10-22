@@ -9,6 +9,10 @@
 
 Antigravity Cockpit greets you **automatically on every Antigravity IDE launch**, unifying your workspace projects, GitHub repositories, recent chat sessions, Codebase Memory (CBM) indices, Graphify knowledge graphs, and live AI model quotas into a single mission-control screen.
 
+![Antigravity Cockpit demo: searching projects, pinning a favorite, switching sections and themes, and opening settings](../../docs/images/cockpit-demo.gif)
+
+More screenshots (every section, light mode, other palettes and the narrow side panel) are in the [repository README](../../README.md#1-%EF%B8%8F-antigravity-activity-dashboard--cockpit-startup-panel).
+
 ---
 
 ## 🚀 Zero-Touch Automated Setup
@@ -96,6 +100,7 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 | `npm run sync-live` | Hot-syncs workspace files directly to the runtime extension folder |
 | `npm run test:unit` | Executes Mocha test suite (37 passing unit tests) |
 | `npm run test:e2e` | Headless Edge UI audit: every view, button message, theme contrast and narrow widths |
+| `npm run docs:capture` | Regenerates the README screenshots and demo GIF in `docs/images` from fictional sample data (needs ffmpeg) |
 | `npm run preview` | Builds browser-accessible `preview.html` with non-PII mock telemetry (`-- --data file.json` for a real snapshot) |
 
 ---

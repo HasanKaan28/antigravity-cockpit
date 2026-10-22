@@ -115,6 +115,7 @@
     "test:unit": "mocha \"test/unit/**/*.test.js\"",
     "test:integration": "node test/integration/runTest.js",
     "test:e2e": "node test/e2e-ui.js",
+    "docs:capture": "node scripts/capture-docs.js",
     "preview": "node scripts/dev-preview.js",
     "package": "vsce package --no-dependencies",
     "install-local": "node scripts/install-local.js",
