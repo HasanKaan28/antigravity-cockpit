@@ -12,14 +12,6 @@ const logger = require('../logger');
 
 const sessionCache = new Map();
 
-function getTimeAgo(date) {
-    const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (diff < 60) return 'Az Önce';
-    if (diff < 3600) return `${Math.floor(diff / 60)} dk önce`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} saat önce`;
-    return `${Math.floor(diff / 86400)} gün önce`;
-}
-
 async function parseTranscript(transcriptPath) {
     return new Promise((resolve) => {
         let userPrompt = '';
@@ -114,10 +106,7 @@ async function getBrainSessions(limit = 25) {
             // Cached item check
             const cached = sessionCache.get(entry.id);
             if (cached && cached.mtimeMs === mtimeMs) {
-                sessions.push({
-                    ...cached.data,
-                    timeAgo: getTimeAgo(entry.mtime)
-                });
+                sessions.push(cached.data);
                 continue;
             }
 
@@ -127,18 +116,15 @@ async function getBrainSessions(limit = 25) {
                 parsed = await parseTranscript(transcriptPath);
             }
 
-            const timeStr = entry.mtime.toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            // The dashboard formats the time from "timestamp" in the UI language.
             const sessionData = {
                 id: entry.id,
-                time: timeStr,
-                timeAgo: getTimeAgo(entry.mtime),
                 timestamp: entry.mtime.getTime(),
                 prompt: parsed.prompt,
                 activeDoc: parsed.activeDoc,
                 toolCount: parsed.toolCount,
                 transcriptPath: transcriptPath.split('\\').join('/'),
-                path: entry.path,
-                status: 'Tamamlandı'
+                path: entry.path
             };
 
             sessionCache.set(entry.id, { mtimeMs, data: sessionData });
