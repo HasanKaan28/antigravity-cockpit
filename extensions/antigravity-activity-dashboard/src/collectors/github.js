@@ -2,14 +2,13 @@
 /**
  * Collector: GitHub Repositories.
  * Uses gh CLI asynchronously with strict argument arrays (no shell).
- * Supports caching, custom repo merging, and CBM exact index detection.
+ * Supports caching and custom repo merging.
  */
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execFileAsync, execGit } = require('../util/proc');
 const { getCustomRepos, getGithubCache, saveGithubCache, isFavorite, isArchived } = require('../storage');
-const { matchProjectCbm } = require('./cbm');
 const logger = require('../logger');
 
 function getTimeAgo(date) {
@@ -38,7 +37,7 @@ async function getDetectedGithubUser() {
     return null;
 }
 
-async function getGithubReposData(cbmDbMap, configUser = null) {
+async function getGithubReposData(configUser = null) {
     const userDir = os.homedir();
     let targetUser = configUser || null;
     let fetched = null;
@@ -100,9 +99,6 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
             }
         }
 
-        // CBM matching
-        const cbmStatus = matchProjectCbm(localPath || repoName, repoName, cbmDbMap);
-
         // Graphify check
         let hasGraphify = false;
         let graphifyPath = null;
@@ -148,9 +144,6 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
             defaultBranch: r.defaultBranchRef?.name || 'main',
             isCloned,
             localPath,
-            cbmIndexed: cbmStatus.indexed,
-            cbmDbSize: cbmStatus.sizeMb,
-            cbmProjectKey: cbmStatus.cbmKey,
             hasGraphify,
             graphifyPath,
             isFavorite: isFav,

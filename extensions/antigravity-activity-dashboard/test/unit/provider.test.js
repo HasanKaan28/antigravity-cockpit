@@ -122,7 +122,6 @@ function installStubs() {
         toggleOllama: engineResult('toggleOllama'),
         toggleLocalAi: engineResult('toggleLocalAi')
     });
-    setStub('collectors/cbm.js', { getCbmData: async () => ({ dbMap: {}, installed: false, version: null, path: '', uiUrl: '', totalDbSizeMb: '0 MB', indexedProjectsCount: 0, indexedProjects: [] }) });
     setStub('collectors/panel.js', { getPanelData: async () => clone(fixture.panel) });
     setStub('collectors/sessions.js', { getBrainSessions: async () => clone(fixture.sessions) });
     setStub('collectors/projects.js', { getProjectsData: async () => clone(fixture.projects) });
@@ -485,13 +484,6 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             await send({ command: 'setLanguage', language: 'xx' });
             await send({ command: 'setLanguage', language: { en: true } });
             assert.ok(!('language' in vscode.state.config));
-        });
-
-        it('retired CBM commands explain that CBM is disabled', async () => {
-            await openPanel();
-            await send({ command: 'openCbmUi' });
-            await send({ command: 'indexInCbm' });
-            assert.strictEqual(vscode.state.info.length, 2);
         });
     });
 

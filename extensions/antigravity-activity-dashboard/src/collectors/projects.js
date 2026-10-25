@@ -8,8 +8,6 @@ const path = require('path');
 const os = require('os');
 const { execGit, createPool } = require('../util/proc');
 const { isFavorite, isArchived } = require('../storage');
-const { matchProjectCbm } = require('./cbm');
-const logger = require('../logger');
 
 const gitPool = createPool(4);
 
@@ -105,7 +103,7 @@ function getRecentIdeWorkspaces() {
     return results;
 }
 
-async function describeProject(cDir, normDir, isGit, cbmDbMap) {
+async function describeProject(cDir, normDir, isGit) {
     const name = path.basename(cDir);
     const gitInfo = isGit
         ? await inspectGitRepo(cDir)
@@ -132,8 +130,6 @@ async function describeProject(cDir, normDir, isGit, cbmDbMap) {
         }
     }
 
-    const cbmStatus = matchProjectCbm(cDir, name, cbmDbMap);
-
     return {
         name,
         path: normDir,
@@ -145,15 +141,12 @@ async function describeProject(cDir, normDir, isGit, cbmDbMap) {
         sessionNotes,
         hasGraphify,
         graphifyPath: hasGraphify ? graphifyPath.split('\\').join('/') : null,
-        cbmIndexed: cbmStatus.indexed,
-        cbmDbSize: cbmStatus.sizeMb,
-        cbmProjectKey: cbmStatus.cbmKey,
         isFavorite: isFavorite(normDir),
         isArchived: isArchived(normDir)
     };
 }
 
-async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots = []) {
+async function getProjectsData(workspaceFolders = [], customScanRoots = []) {
     const userDir = os.homedir();
     const candidateDirs = new Set();
 
@@ -241,7 +234,7 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
         if (!isProject) continue;
 
         // Started without awaiting, so repos are inspected in parallel; gitPool caps how many run git at once.
-        pending.push(describeProject(cDir, normDir, isGit, cbmDbMap));
+        pending.push(describeProject(cDir, normDir, isGit));
     }
 
     const projects = await Promise.all(pending);

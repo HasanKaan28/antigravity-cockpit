@@ -1,6 +1,6 @@
 'use strict';
 /**
- * [⚡ OLLAMA ACTIVE] - Safe process execution utilities.
+ * Safe process execution utilities.
  * Shell: false by default. String interpolation strictly forbidden.
  */
 const { execFile, spawn } = require('child_process');

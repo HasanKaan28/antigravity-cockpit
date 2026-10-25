@@ -1,7 +1,6 @@
 'use strict';
 const path = require('path');
 const Mocha = require('mocha');
-const { globSync } = require('glob') || {};
 
 function run() {
     const mocha = new Mocha({

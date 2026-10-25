@@ -1,7 +1,7 @@
 'use strict';
 /**
  * Collector: Real system telemetry.
- * Probes GPU via nvidia-smi, Ollama via local API, git vault sync, and CBM status.
+ * Probes GPU via nvidia-smi, local AI engines via their APIs, git vault sync and power state.
  * Never displays hardcoded fake strings.
  */
 const path = require('path');
@@ -129,17 +129,13 @@ async function probePower() {
     };
 }
 
-async function getSystemTelemetry(cbmData, graphifyCount = 0) {
+async function getSystemTelemetry(graphifyCount = 0) {
     const [gpu, localAi, vault, power] = await Promise.all([
         probeGpu(),
         probeAllLocalAiEngines(),
         probeVault(),
         probePower()
     ]);
-
-    const cbmStatus = cbmData && cbmData.installed
-        ? `Etkin (${cbmData.indexedProjectsCount} Repo, ${cbmData.totalDbSizeMb})`
-        : 'Kurulu Değil';
 
     const graphifyStatus = graphifyCount > 0
         ? `Etkin (${graphifyCount} Harita Mevcut)`
@@ -172,8 +168,7 @@ async function getSystemTelemetry(cbmData, graphifyCount = 0) {
         ollamaInstalled: isOllamaInstalled,
         power,
         remoteVault: vault,
-        graphifyStatus,
-        cbmStatus
+        graphifyStatus
     };
 }
 

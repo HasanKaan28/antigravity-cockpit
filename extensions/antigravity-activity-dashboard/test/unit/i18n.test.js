@@ -4,7 +4,6 @@ const path = require('path');
 
 describe('Cockpit Internationalization (i18n) Engine Tests', () => {
     let dashboardJs;
-    let LOCALES;
     let SUPPORTED_LOCALES;
 
     before(() => {
@@ -82,7 +81,7 @@ describe('Cockpit Internationalization (i18n) Engine Tests', () => {
         ];
 
         // Ensure LOCALES contains required keys for each language
-        SUPPORTED_LOCALES.forEach(locale => {
+        SUPPORTED_LOCALES.forEach(() => {
             requiredKeys.forEach(k => {
                 const keyPattern = new RegExp(`'${k}'\\s*:\\s*'([^']+)'`);
                 assert(

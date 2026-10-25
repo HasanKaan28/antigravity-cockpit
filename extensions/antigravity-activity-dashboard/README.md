@@ -7,7 +7,7 @@
 
 > **Futuristic Deep Space Mission Control Dashboard and Agent Workspace Cockpit for Antigravity IDE.**
 
-Antigravity Cockpit greets you **automatically on every Antigravity IDE launch**, unifying your workspace projects, GitHub repositories, recent chat sessions, Codebase Memory (CBM) indices, Graphify knowledge graphs, and live AI model quotas into a single mission-control screen.
+Antigravity Cockpit greets you **automatically on every Antigravity IDE launch**, unifying your workspace projects, GitHub repositories, recent chat sessions, Graphify knowledge graphs, and live AI model quotas into a single mission-control screen.
 
 ![Antigravity Cockpit demo: searching projects, pinning a favorite, switching sections and themes, and opening settings](../../docs/images/cockpit-demo.gif)
 
@@ -62,7 +62,7 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 ### 📁 Workspace & Project Explorer
 - Real-time detection across active workspaces, recent projects, standard development folders (`~/Projects`, `~/dev`, `~/code`, `~/github-repos`), and expanded project signatures.
 - Git branch name, latest commit date, and uncommitted diff indicators.
-- Live **Graphify** visual graph indicators and **Codebase Memory (CBM)** index badges.
+- Live **Graphify** visual graph indicators.
 - Pin favorites and archive finished repositories with instant search filtering.
 - **Zero-State Support:** Direct "Open folder" action when no workspaces are detected.
 

@@ -74,7 +74,7 @@ describe('Projects collector', function () {
         fs.writeFileSync(path.join(make('notes'), 'readme.txt'), 'not a project');
 
         const { getProjectsData } = loadIsolatedProjects(home);
-        const all = await getProjectsData(new Map(), [], [root]);
+        const all = await getProjectsData([], [root]);
         const prefix = root.split('\\').join('/').toLowerCase() + '/';
         byName = new Map(all.filter(p => p.path.toLowerCase().startsWith(prefix)).map(p => [p.name, p]));
     });

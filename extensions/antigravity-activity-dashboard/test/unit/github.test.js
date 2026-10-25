@@ -64,7 +64,7 @@ describe('GitHub collector', () => {
 
     it('lists the signed-in user\'s repos with one gh call and takes the owner from the list', async () => {
         responses['repo list'] = JSON.stringify(sampleRepos);
-        const repos = await github.getGithubReposData(new Map(), null);
+        const repos = await github.getGithubReposData(null);
         assert.strictEqual(calls.length, 1, 'no separate gh api user call');
         assert.deepStrictEqual(calls[0].slice(0, 4), ['gh', 'repo', 'list', '--limit']);
         assert.strictEqual(repos.targetUser, 'sample-org');
@@ -75,7 +75,7 @@ describe('GitHub collector', () => {
 
     it('lists a configured user\'s repos by name', async () => {
         responses['repo list'] = JSON.stringify(sampleRepos);
-        const repos = await github.getGithubReposData(new Map(), 'other-org');
+        const repos = await github.getGithubReposData('other-org');
         assert.strictEqual(calls.length, 1);
         assert.strictEqual(calls[0][3], 'other-org');
         assert.strictEqual(repos.targetUser, 'other-org');
@@ -84,7 +84,7 @@ describe('GitHub collector', () => {
     it('asks gh for the user only when the list is empty', async () => {
         responses['repo list'] = '[]';
         responses['api user'] = 'sample-org';
-        const repos = await github.getGithubReposData(new Map(), null);
+        const repos = await github.getGithubReposData(null);
         assert.deepStrictEqual(calls.map(c => c.slice(1, 3)), [['repo', 'list'], ['api', 'user']]);
         assert.strictEqual(repos.targetUser, 'sample-org');
         assert.strictEqual(repos.length, 0);
@@ -94,7 +94,7 @@ describe('GitHub collector', () => {
         require(storagePath).saveGithubCache(sampleRepos);
         responses['repo list'] = new Error('gh: not logged in');
         responses['api user'] = new Error('gh: not logged in');
-        const repos = await github.getGithubReposData(new Map(), null);
+        const repos = await github.getGithubReposData(null);
         assert.strictEqual(repos.length, 2);
         assert.strictEqual(repos[0].fullName, 'sample-org/orbit-api');
         assert.strictEqual(repos.targetUser, null, 'offline: no user is claimed');

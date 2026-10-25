@@ -23,7 +23,6 @@ const {
 const { getProjectsData } = require('./collectors/projects');
 const { getGithubReposData } = require('./collectors/github');
 const { getBrainSessions } = require('./collectors/sessions');
-const { getCbmData } = require('./collectors/cbm');
 const { startOllama, stopOllama, toggleOllama, toggleLocalAi } = require('./util/ollama');
 const { getPanelData } = require('./collectors/panel');
 const { getSystemTelemetry } = require('./collectors/system');
@@ -73,20 +72,16 @@ async function collectAllDashboardData(vscodeInstance) {
     const wfPaths = (vscodeInstance.workspace.workspaceFolders || []).map(f => f.uri.fsPath);
 
     // Run parallel async collectors
-    const [cbmRes, panelRes, sessRes] = await Promise.all([
-        getCbmData(),
+    const [panelRes, sessRes, projRes, ghRes, skillsRes] = await Promise.all([
         getPanelData(),
-        getBrainSessions(25)
-    ]);
-
-    const [projRes, ghRes] = await Promise.all([
-        getProjectsData(cbmRes.dbMap, wfPaths, scanRoots),
-        getGithubReposData(cbmRes.dbMap, customUser || null)
+        getBrainSessions(25),
+        getProjectsData(wfPaths, scanRoots),
+        getGithubReposData(customUser || null),
+        getSkillsData(wfPaths.length > 0 ? wfPaths[0] : null)
     ]);
 
     const graphifyCount = projRes.filter(p => p.hasGraphify).length + ghRes.filter(r => r.hasGraphify).length;
-    const systemRes = await getSystemTelemetry(cbmRes, graphifyCount);
-    const skillsRes = await getSkillsData(wfPaths.length > 0 ? wfPaths[0] : null);
+    const systemRes = await getSystemTelemetry(graphifyCount);
 
     const favSet = getFavorites();
     const archSet = getArchived();
@@ -104,15 +99,6 @@ async function collectAllDashboardData(vscodeInstance) {
         ghCount: ghRes.length,
         openOnStartup,
         panel: panelRes,
-        cbm: {
-            installed: cbmRes.installed,
-            version: cbmRes.version,
-            path: cbmRes.path,
-            uiUrl: cbmRes.uiUrl,
-            totalDbSizeMb: cbmRes.totalDbSizeMb,
-            indexedProjectsCount: cbmRes.indexedProjectsCount,
-            indexedProjects: cbmRes.indexedProjects || []
-        },
         system: systemRes,
         skills: skillsRes
     };
@@ -340,16 +326,6 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             }).catch(err => {
                 vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaStopError', { error: err.message || String(err) }));
             });
-            break;
-        }
-
-        case 'openCbmUi': {
-            vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'cbmRetired'));
-            break;
-        }
-
-        case 'indexInCbm': {
-            vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'cbmRetired'));
             break;
         }
 

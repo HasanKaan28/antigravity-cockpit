@@ -21,8 +21,7 @@
     "antigravity",
     "dashboard",
     "cockpit",
-    "projects",
-    "codebase-memory"
+    "projects"
   ],
   "activationEvents": [
     "onStartupFinished",

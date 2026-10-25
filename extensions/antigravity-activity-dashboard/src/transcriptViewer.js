@@ -1,6 +1,6 @@
 'use strict';
 /**
- * [⚡ OLLAMA ACTIVE] - Clean Transcript Viewer for Antigravity IDE.
+ * Clean Transcript Viewer for Antigravity IDE.
  * Extracts clean user & assistant dialogue from raw transcript.jsonl
  * and renders a human-friendly conversation page inside a VS Code Webview Panel.
  */

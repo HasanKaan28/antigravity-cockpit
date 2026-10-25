@@ -50,8 +50,6 @@ const mockData = {
             sessionNotes: "Antigravity Cockpit Çalışma Alanı",
             hasGraphify: false,
             graphifyPath: null,
-            cbmIndexed: false,
-            cbmDbSize: null,
             isFavorite: false,
             isArchived: false
         }
@@ -94,14 +92,6 @@ const mockData = {
             flowCredits: { available: 100, monthly: 150000, remainingPercentage: 0.1 }
         }
     },
-    cbm: {
-        installed: false,
-        version: null,
-        path: null,
-        uiUrl: null,
-        totalDbSizeMb: "0 MB",
-        indexedProjectsCount: 0
-    },
     system: {
         gpu: "Sistem GPU (Aktif)",
         localModel: "Yerel Model Bulunamadı",
@@ -114,8 +104,7 @@ const mockData = {
         ollamaOnline: false,
         ollamaInstalled: false,
         remoteVault: "Yapılandırılmadı",
-        graphifyStatus: "Hazır (Observatory)",
-        cbmStatus: "Kurulu Değil"
+        graphifyStatus: "Hazır (Observatory)"
     }
 };
 
