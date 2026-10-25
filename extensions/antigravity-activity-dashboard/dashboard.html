@@ -1901,7 +1901,7 @@ kbd { font-family: var(--font-mono); }
 <div id="cockpitToast" role="status" aria-live="polite"></div>
 
 <script nonce="preview-nonce">
-    window.__INITIAL_DATA__ = {"ideLanguage":"tr","configuredLanguage":"auto","sessions":[{"id":"session-sample-uuid-001","time":"10:30","timeAgo":"Az Önce","timestamp":1792688614350,"prompt":"Örnek oturum: Proje mimarisi ve bileşen oluşturma","activeDoc":"src/index.js","toolCount":8,"transcriptPath":null,"path":"/workspaces/sample-project","status":"Tamamlandı"}],"projects":[{"name":"sample-project","path":"/workspaces/sample-project","rawPath":"/workspaces/sample-project","isGit":true,"branch":"main","gitLog":[{"hash":"a1b2c3d","msg":"feat: initial project structure","ago":"1 saat önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity Cockpit Çalışma Alanı","hasGraphify":false,"graphifyPath":null,"cbmIndexed":false,"cbmDbSize":null,"isFavorite":false,"isArchived":false}],"githubRepos":[],"githubUser":null,"githubConnected":false,"favCount":0,"archCount":0,"ghCount":0,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":90,"resetTime":"4h 00m","themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":80,"resetTime":"4d 12h"}},{"id":"non-google","label":"Claude","remaining":95,"resetTime":"4h 15m","themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":85,"resetTime":"5d 20h"}}],"user":{"email":"developer@example.com","tier":"Antigravity Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.1}}},"cbm":{"installed":false,"version":null,"path":null,"uiUrl":null,"totalDbSizeMb":"0 MB","indexedProjectsCount":0},"system":{"gpu":"Sistem GPU (Aktif)","localModel":"Yerel Model Bulunamadı","hasLocalEngine":false,"localAi":{"hasLocalEngine":false,"primaryEngine":null,"detectedEngines":[]},"ollamaOnline":false,"ollamaInstalled":false,"remoteVault":"Yapılandırılmadı","graphifyStatus":"Hazır (Observatory)","cbmStatus":"Kurulu Değil"},"skills":{"totalCount":3,"categories":{"architecture":1,"design":1,"quality":1,"optimization":0,"local-ai":0},"skills":[{"id":"code-review","displayName":"Code Review Excellence","category":"quality","description":"Systematic code analysis, clean architecture patterns, and collaborative feedback.","promptHint":"@skill:code-review","skillPath":null},{"id":"api-design","displayName":"API Design Principles","category":"architecture","description":"Master REST and GraphQL API design principles for scalable and maintainable systems.","promptHint":"@skill:api-design-principles","skillPath":null},{"id":"frontend-design","displayName":"Frontend Design Guidelines","category":"design","description":"Distinctive frontend implementations, design tokens, and accessibility standards.","promptHint":"@skill:frontend-design","skillPath":null}]}};
+    window.__INITIAL_DATA__ = {"ideLanguage":"tr","configuredLanguage":"auto","sessions":[{"id":"session-sample-uuid-001","time":"10:30","timeAgo":"Az Önce","timestamp":1792952628278,"prompt":"Örnek oturum: Proje mimarisi ve bileşen oluşturma","activeDoc":"src/index.js","toolCount":8,"transcriptPath":null,"path":"/workspaces/sample-project","status":"Tamamlandı"}],"projects":[{"name":"sample-project","path":"/workspaces/sample-project","rawPath":"/workspaces/sample-project","isGit":true,"branch":"main","gitLog":[{"hash":"a1b2c3d","msg":"feat: initial project structure","ago":"1 saat önce"}],"hasUncommitted":false,"sessionNotes":"Antigravity Cockpit Çalışma Alanı","hasGraphify":false,"graphifyPath":null,"isFavorite":false,"isArchived":false}],"githubRepos":[],"githubUser":null,"githubConnected":false,"favCount":0,"archCount":0,"ghCount":0,"openOnStartup":true,"panel":{"status":"ok","groups":[{"id":"gemini","label":"Gemini","remaining":90,"resetTime":"4h 00m","themeColor":"#40C4FF","hasData":true,"weekly":{"remaining":80,"resetTime":"4d 12h"}},{"id":"non-google","label":"Claude","remaining":95,"resetTime":"4h 15m","themeColor":"#FFAB40","hasData":true,"weekly":{"remaining":85,"resetTime":"5d 20h"}}],"user":{"email":"developer@example.com","tier":"Antigravity Pro"},"tokenUsage":{"promptCredits":{"available":500,"monthly":50000,"remainingPercentage":1},"flowCredits":{"available":100,"monthly":150000,"remainingPercentage":0.1}}},"system":{"gpu":"Sample GPU · 12 %","localModel":"Yerel Model Bulunamadı","hasLocalEngine":false,"localAi":{"hasLocalEngine":false,"primaryEngine":null,"detectedEngines":[]},"ollamaOnline":false,"ollamaInstalled":false},"skills":{"totalCount":3,"categories":{"architecture":1,"design":1,"quality":1,"optimization":0,"local-ai":0},"skills":[{"id":"code-review","displayName":"Code Review Excellence","category":"quality","description":"Systematic code analysis, clean architecture patterns, and collaborative feedback.","promptHint":"@skill:code-review","skillPath":null},{"id":"api-design","displayName":"API Design Principles","category":"architecture","description":"Master REST and GraphQL API design principles for scalable and maintainable systems.","promptHint":"@skill:api-design-principles","skillPath":null},{"id":"frontend-design","displayName":"Frontend Design Guidelines","category":"design","description":"Distinctive frontend implementations, design tokens, and accessibility standards.","promptHint":"@skill:frontend-design","skillPath":null}]}};
 </script>
 <script>(function () {
     'use strict';
@@ -1935,6 +1935,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': 'Move',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detecting',
+            'telemetry.gpuUnknown': 'Graphics adapter',
             'telemetry.quota': 'Model quota',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Not connected',
@@ -2008,6 +2009,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcript',
             'sessions.folder': 'Open session folder',
             'sessions.toolCalls': '{count} tool calls',
+            'sessions.untitled': 'Untitled session',
             'resume.title': 'Pick up where you left off',
             'resume.lastCommit': 'Latest commit',
             'resume.lastSession': 'Latest session',
@@ -2131,6 +2133,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': 'Gezin',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Algılanıyor',
+            'telemetry.gpuUnknown': 'Grafik kartı',
             'telemetry.quota': 'Model kotası',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Bağlı değil',
@@ -2204,6 +2207,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Döküm',
             'sessions.folder': 'Oturum klasörünü aç',
             'sessions.toolCalls': '{count} araç çağrısı',
+            'sessions.untitled': 'Başlıksız oturum',
             'resume.title': 'Kaldığın yerden devam et',
             'resume.lastCommit': 'Son commit',
             'resume.lastSession': 'Son oturum',
@@ -2327,6 +2331,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': 'Bewegen',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Wird erkannt',
+            'telemetry.gpuUnknown': 'Grafikkarte',
             'telemetry.quota': 'Modellkontingent',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Nicht verbunden',
@@ -2400,6 +2405,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transkript',
             'sessions.folder': 'Sitzungsordner öffnen',
             'sessions.toolCalls': '{count} Tool-Aufrufe',
+            'sessions.untitled': 'Unbenannte Sitzung',
             'resume.title': 'Weitermachen, wo du aufgehört hast',
             'resume.lastCommit': 'Letzter Commit',
             'resume.lastSession': 'Letzte Sitzung',
@@ -2523,6 +2529,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': 'Moverse',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detectando',
+            'telemetry.gpuUnknown': 'Tarjeta gráfica',
             'telemetry.quota': 'Cuota de modelos',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Sin conectar',
@@ -2596,6 +2603,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcripción',
             'sessions.folder': 'Abrir carpeta de la sesión',
             'sessions.toolCalls': '{count} llamadas a herramientas',
+            'sessions.untitled': 'Sesión sin título',
             'resume.title': 'Continúa donde lo dejaste',
             'resume.lastCommit': 'Último commit',
             'resume.lastSession': 'Última sesión',
@@ -2719,6 +2727,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': 'Naviguer',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Détection',
+            'telemetry.gpuUnknown': 'Carte graphique',
             'telemetry.quota': 'Quota des modèles',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Non connecté',
@@ -2792,6 +2801,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'Transcription',
             'sessions.folder': 'Ouvrir le dossier de session',
             'sessions.toolCalls': '{count} appels d’outils',
+            'sessions.untitled': 'Session sans titre',
             'resume.title': 'Reprendre où vous en étiez',
             'resume.lastCommit': 'Dernier commit',
             'resume.lastSession': 'Dernière session',
@@ -2915,6 +2925,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': '移动',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '正在检测',
+            'telemetry.gpuUnknown': '显卡',
             'telemetry.quota': '模型配额',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': '未连接',
@@ -2988,6 +2999,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': '记录',
             'sessions.folder': '打开会话文件夹',
             'sessions.toolCalls': '{count} 次工具调用',
+            'sessions.untitled': '未命名会话',
             'resume.title': '从上次中断处继续',
             'resume.lastCommit': '最近提交',
             'resume.lastSession': '最近会话',
@@ -3111,6 +3123,7 @@ kbd { font-family: var(--font-mono); }
             'hud.moveHint': '移動',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '検出中',
+            'telemetry.gpuUnknown': 'グラフィックカード',
             'telemetry.quota': 'モデルのクォータ',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': '未接続',
@@ -3184,6 +3197,7 @@ kbd { font-family: var(--font-mono); }
             'sessions.transcript': 'トランスクリプト',
             'sessions.folder': 'セッションフォルダーを開く',
             'sessions.toolCalls': 'ツール呼び出し {count} 回',
+            'sessions.untitled': '無題のセッション',
             'resume.title': '前回の続きから',
             'resume.lastCommit': '最新のコミット',
             'resume.lastSession': '最新のセッション',
@@ -4065,7 +4079,7 @@ kbd { font-family: var(--font-mono); }
             const ms = toMs(s.timestamp);
             items += '<div class="resume-item">' +
                 `<div class="resume-label">${icon('chat', 'sm')}${escapeHtml(t('resume.lastSession'))}<span class="ago">${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</span></div>` +
-                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt)}">${escapeHtml(s.prompt)}</div>` +
+                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt || t('sessions.untitled'))}">${escapeHtml(s.prompt || t('sessions.untitled'))}</div>` +
                 `<div class="row-text">${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</div>` +
                 '<div class="resume-actions">' +
                     `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
@@ -4102,7 +4116,7 @@ kbd { font-family: var(--font-mono); }
         }
 
         grid.innerHTML = '<div class="rows">' + list.map((r, i) => {
-            const favId = r.url || r.name;
+            const repoId = r.url || r.name;
             const pushedMs = toMs(r.pushedAt);
             const pushed = pushedMs ? relTime(pushedMs) : r.timeAgo;
             const tags =
@@ -4113,9 +4127,9 @@ kbd { font-family: var(--font-mono); }
                 (r.hasGraphify ? `<span class="tag accent">${icon('graph')}Graphify</span>` : '');
             const primary = r.isCloned
                 ? `<button class="btn btn-sm btn-soft" data-action="openFolder" data-path="${escapeHtml(r.localPath)}" title="${escapeHtml(t('projects.ideTitle'))}">${icon('folder-open')}${escapeHtml(t('projects.ide'))}</button>`
-                : `<button class="btn btn-sm" data-action="cloneRepo" data-name="${escapeHtml(r.name)}">${icon('download')}${escapeHtml(t('projects.clone'))}</button>`;
+                : `<button class="btn btn-sm" data-action="cloneRepo" data-name="${escapeHtml(r.fullName || r.name)}">${icon('download')}${escapeHtml(t('projects.clone'))}</button>`;
             return `<div class="row" style="--i:${i}">` +
-                favButton(favId, Boolean(r.isFavorite)) +
+                favButton(repoId, Boolean(r.isFavorite)) +
                 `<div class="row-id"><div class="row-name"><span title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span></div><div class="row-path" title="${escapeHtml(r.fullName)}"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-info">' +
                     `<div class="tags">${tags}</div>` +
@@ -4124,7 +4138,7 @@ kbd { font-family: var(--font-mono); }
                 '<div class="row-actions">' + primary +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
                     (r.isCloned && r.hasGraphify && r.graphifyPath ? iconAction('openGraphify', 'graph', t('projects.graph'), `data-path="${escapeHtml(r.graphifyPath)}"`) : '<span class="icon-slot"></span>') +
-                    archiveButton(r.name) +
+                    archiveButton(repoId) +
                 '</div>' +
                 '</div>';
         }).join('') + '</div>';
@@ -4171,7 +4185,7 @@ kbd { font-family: var(--font-mono); }
         return `<div class="row session" style="--i:${i}">` +
             `<div class="sess-time">${escapeHtml(ms ? timeOfDay(ms) : s.time)}<small>${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</small></div>` +
             '<div class="row-info">' +
-                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
+                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt || t('sessions.untitled'))}</div>` +
                 '<div class="sess-meta">' +
                     `<span${heavy ? ' class="heavy"' : ''}>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
                     (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
@@ -4338,7 +4352,7 @@ kbd { font-family: var(--font-mono); }
                 `<span class="type-glyph" title="GitHub">${icon('github')}</span>` +
                 `<div class="row-id"><div class="row-name"><span>${escapeHtml(r.name)}</span><span class="tag">GitHub</span></div><div class="row-path"><bdi>${escapeHtml(r.fullName)}</bdi></div></div>` +
                 '<div class="row-actions">' +
-                    `<button class="btn btn-sm btn-soft" data-action="toggleArch" data-id="${escapeHtml(r.name)}">${icon('restore')}${escapeHtml(t('projects.unarchive'))}</button>` +
+                    `<button class="btn btn-sm btn-soft" data-action="toggleArch" data-id="${escapeHtml(r.url || r.name)}">${icon('restore')}${escapeHtml(t('projects.unarchive'))}</button>` +
                     iconAction('openUrl', 'external', t('github.openWeb'), `data-url="${escapeHtml(r.url)}"`) +
                 '</div></div>';
         }).join('') + '</div>';
@@ -4487,7 +4501,7 @@ kbd { font-family: var(--font-mono); }
     // --- System + GitHub instruments, local engine ---
     function renderSystem() {
         const sys = appData.system || {};
-        setText('teleGpu', sys.gpu || t('telemetry.gpuDetecting'));
+        setText('teleGpu', sys.gpu || t('telemetry.gpuUnknown'));
         const power = sys.power;
         setText('telePower', power ? (power.onAc ? t('power.acOnline') : `${t('power.batteryEco')} · ${power.percent}%`) : '');
 
@@ -4771,11 +4785,11 @@ kbd { font-family: var(--font-mono); }
                 break;
             case 'openTranscript':
                 AudioEngine.click();
-                post('openTranscript', { path: d.path });
+                post('openTranscript', { path: d.path, theme: currentTheme, lang: activeLocale });
                 break;
             case 'openFile':
                 AudioEngine.click();
-                post('openFile', { path: d.path });
+                post('openFile', { path: d.path, theme: currentTheme, lang: activeLocale });
                 break;
             case 'openSessionFolder':
                 AudioEngine.click();
