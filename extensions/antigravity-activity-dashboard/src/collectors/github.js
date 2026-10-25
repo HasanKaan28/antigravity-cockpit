@@ -40,28 +40,31 @@ async function getDetectedGithubUser() {
 
 async function getGithubReposData(cbmDbMap, configUser = null) {
     const userDir = os.homedir();
-    const targetUser = configUser || (await getDetectedGithubUser());
-    let rawRepos = [];
+    let targetUser = configUser || null;
+    let fetched = null;
 
-    if (targetUser) {
-        try {
-            const { stdout } = await execFileAsync('gh', [
-                'repo', 'list', targetUser,
-                '--limit', '50',
-                '--json', 'name,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
-            ], {}, 5000);
+    // Without a configured user, `gh repo list` lists the signed-in user's own repos and names the
+    // owner in each entry, so the separate `gh api user` round trip is only needed when the list
+    // comes back empty or gh is unavailable.
+    try {
+        const { stdout } = await execFileAsync('gh', [
+            'repo', 'list', ...(targetUser ? [targetUser] : []),
+            '--limit', '50',
+            '--json', 'name,nameWithOwner,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
+        ], {}, 5000);
 
-            if (stdout) {
-                rawRepos = JSON.parse(stdout);
-                saveGithubCache(rawRepos);
-            }
-        } catch (err) {
-            logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
-            rawRepos = getGithubCache() || [];
+        if (stdout) {
+            fetched = JSON.parse(stdout);
+            saveGithubCache(fetched);
         }
-    } else {
-        // No GitHub user logged in or configured
-        rawRepos = getGithubCache() || [];
+    } catch (err) {
+        logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
+    }
+    const rawRepos = fetched || getGithubCache() || [];
+
+    if (!targetUser) {
+        const owned = (fetched || []).find(r => typeof r.nameWithOwner === 'string' && r.nameWithOwner.includes('/'));
+        targetUser = owned ? owned.nameWithOwner.split('/')[0] : await getDetectedGithubUser();
     }
 
     // Merge custom added repos
@@ -76,7 +79,7 @@ async function getGithubReposData(cbmDbMap, configUser = null) {
 
     for (const r of rawRepos) {
         const repoName = r.name;
-        const fullName = r.fullName || (r.url ? r.url.replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '') : (targetUser ? `${targetUser}/${repoName}` : repoName));
+        const fullName = r.fullName || r.nameWithOwner || (r.url ? r.url.replace(/^https?:\/\/github\.com\//i, '').replace(/\.git$/i, '') : (targetUser ? `${targetUser}/${repoName}` : repoName));
         const possibleLocalPaths = [
             path.join(userDir, 'github-repos', repoName),
             path.join(userDir, repoName),
