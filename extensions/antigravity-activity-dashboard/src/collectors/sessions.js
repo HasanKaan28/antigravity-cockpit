@@ -57,7 +57,7 @@ async function parseTranscript(transcriptPath) {
 
         rl.on('close', () => {
             resolve({
-                prompt: userPrompt || 'Bilinmeyen Görev',
+                prompt: userPrompt,
                 activeDoc,
                 toolCount
             });
@@ -65,7 +65,7 @@ async function parseTranscript(transcriptPath) {
 
         rl.on('error', () => {
             resolve({
-                prompt: 'Bilinmeyen Görev',
+                prompt: '',
                 activeDoc: '',
                 toolCount: 0
             });
@@ -121,7 +121,8 @@ async function getBrainSessions(limit = 25) {
                 continue;
             }
 
-            let parsed = { prompt: 'Bilinmeyen Görev', activeDoc: '', toolCount: 0 };
+            // An empty prompt lets the dashboard show "untitled" in its own language.
+            let parsed = { prompt: '', activeDoc: '', toolCount: 0 };
             if (hasTranscript) {
                 parsed = await parseTranscript(transcriptPath);
             }

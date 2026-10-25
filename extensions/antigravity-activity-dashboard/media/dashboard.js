@@ -103,6 +103,7 @@
             'sessions.transcript': 'Transcript',
             'sessions.folder': 'Open session folder',
             'sessions.toolCalls': '{count} tool calls',
+            'sessions.untitled': 'Untitled session',
             'resume.title': 'Pick up where you left off',
             'resume.lastCommit': 'Latest commit',
             'resume.lastSession': 'Latest session',
@@ -299,6 +300,7 @@
             'sessions.transcript': 'Döküm',
             'sessions.folder': 'Oturum klasörünü aç',
             'sessions.toolCalls': '{count} araç çağrısı',
+            'sessions.untitled': 'Başlıksız oturum',
             'resume.title': 'Kaldığın yerden devam et',
             'resume.lastCommit': 'Son commit',
             'resume.lastSession': 'Son oturum',
@@ -495,6 +497,7 @@
             'sessions.transcript': 'Transkript',
             'sessions.folder': 'Sitzungsordner öffnen',
             'sessions.toolCalls': '{count} Tool-Aufrufe',
+            'sessions.untitled': 'Unbenannte Sitzung',
             'resume.title': 'Weitermachen, wo du aufgehört hast',
             'resume.lastCommit': 'Letzter Commit',
             'resume.lastSession': 'Letzte Sitzung',
@@ -691,6 +694,7 @@
             'sessions.transcript': 'Transcripción',
             'sessions.folder': 'Abrir carpeta de la sesión',
             'sessions.toolCalls': '{count} llamadas a herramientas',
+            'sessions.untitled': 'Sesión sin título',
             'resume.title': 'Continúa donde lo dejaste',
             'resume.lastCommit': 'Último commit',
             'resume.lastSession': 'Última sesión',
@@ -887,6 +891,7 @@
             'sessions.transcript': 'Transcription',
             'sessions.folder': 'Ouvrir le dossier de session',
             'sessions.toolCalls': '{count} appels d’outils',
+            'sessions.untitled': 'Session sans titre',
             'resume.title': 'Reprendre où vous en étiez',
             'resume.lastCommit': 'Dernier commit',
             'resume.lastSession': 'Dernière session',
@@ -1083,6 +1088,7 @@
             'sessions.transcript': '记录',
             'sessions.folder': '打开会话文件夹',
             'sessions.toolCalls': '{count} 次工具调用',
+            'sessions.untitled': '未命名会话',
             'resume.title': '从上次中断处继续',
             'resume.lastCommit': '最近提交',
             'resume.lastSession': '最近会话',
@@ -1279,6 +1285,7 @@
             'sessions.transcript': 'トランスクリプト',
             'sessions.folder': 'セッションフォルダーを開く',
             'sessions.toolCalls': 'ツール呼び出し {count} 回',
+            'sessions.untitled': '無題のセッション',
             'resume.title': '前回の続きから',
             'resume.lastCommit': '最新のコミット',
             'resume.lastSession': '最新のセッション',
@@ -2160,7 +2167,7 @@
             const ms = toMs(s.timestamp);
             items += '<div class="resume-item">' +
                 `<div class="resume-label">${icon('chat', 'sm')}${escapeHtml(t('resume.lastSession'))}<span class="ago">${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</span></div>` +
-                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt)}">${escapeHtml(s.prompt)}</div>` +
+                `<div class="resume-name resume-prompt" title="${escapeHtml(s.prompt || t('sessions.untitled'))}">${escapeHtml(s.prompt || t('sessions.untitled'))}</div>` +
                 `<div class="row-text">${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</div>` +
                 '<div class="resume-actions">' +
                     `<button class="btn btn-sm btn-soft" data-action="openTranscript" data-path="${escapeHtml(s.transcriptPath)}">${icon('file-text')}${escapeHtml(t('sessions.transcript'))}</button>` +
@@ -2266,7 +2273,7 @@
         return `<div class="row session" style="--i:${i}">` +
             `<div class="sess-time">${escapeHtml(ms ? timeOfDay(ms) : s.time)}<small>${escapeHtml(ms ? relTime(ms) : s.timeAgo)}</small></div>` +
             '<div class="row-info">' +
-                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt)}</div>` +
+                `<div class="sess-prompt row-text clamp2">${escapeHtml(s.prompt || t('sessions.untitled'))}</div>` +
                 '<div class="sess-meta">' +
                     `<span${heavy ? ' class="heavy"' : ''}>${icon('wrench', 'sm')}${escapeHtml(t('sessions.toolCalls', { count: s.toolCount || 0 }))}</span>` +
                     (s.activeDoc ? `<span title="${escapeHtml(s.activeDoc)}">${icon('file-code', 'sm')}${escapeHtml(s.activeDoc.split(/[\\/]/).pop())}</span>` : '') +
