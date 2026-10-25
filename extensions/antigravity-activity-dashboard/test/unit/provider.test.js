@@ -126,7 +126,12 @@ function installStubs() {
     setStub('collectors/sessions.js', { getBrainSessions: async () => clone(fixture.sessions) });
     setStub('collectors/projects.js', { getProjectsData: async () => clone(fixture.projects) });
     setStub('collectors/github.js', {
-        getGithubReposData: async () => Object.assign(clone(fixture.githubRepos), { targetUser: 'sample-org' }),
+        // network: false answers at once with a one-repo "cached" list; the fresh list takes a moment.
+        getGithubReposData: async (user, opts) => {
+            if (opts && opts.network === false) return Object.assign(clone(fixture.githubRepos).slice(0, 1), { targetUser: 'sample-org' });
+            await tick(10);
+            return Object.assign(clone(fixture.githubRepos), { targetUser: 'sample-org' });
+        },
         getDetectedGithubUser: async () => 'sample-org'
     });
     setStub('collectors/system.js', { getSystemTelemetry: async () => clone(fixture.system) });
@@ -260,6 +265,22 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             await openPanel();
             await send({ command: 'refreshAgQuota', isManual: false }, 40);
             assert.deepStrictEqual(vscode.state.info, []);
+        });
+
+        it('renders the cached GitHub list first and swaps in the fresh list when gh answers', async () => {
+            freshModules().storage.saveGithubCache([{ name: 'cached', nameWithOwner: 'sample-org/cached' }]);
+            try {
+                await openPanel();
+                assert.strictEqual(panel._lastData.githubRepos.length, 1, 'cached list rendered first');
+                await tick(40);
+                assert.strictEqual(panel._lastData.githubRepos.length, fixture.githubRepos.length, 'fresh list applied');
+                const update = lastUpdate();
+                assert.strictEqual(update.data.ghCount, fixture.githubRepos.length);
+                assert.strictEqual(update.data.githubUser, 'sample-org');
+                assert.ok(!('githubFresh' in JSON.parse(JSON.stringify(update.data))), 'the promise never reaches the webview');
+            } finally {
+                fs.rmSync(path.join(home, '.antigravity_cockpit', 'github_repos_cache.json'), { force: true });
+            }
         });
     });
 

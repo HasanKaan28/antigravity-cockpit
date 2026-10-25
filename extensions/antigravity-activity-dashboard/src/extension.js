@@ -5,7 +5,7 @@
  */
 const vscode = require('vscode');
 const logger = require('./logger');
-const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel, refreshDashboardPanel } = require('./webviewProvider');
+const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel, refreshDashboardPanel, followGithubUpdate } = require('./webviewProvider');
 const { getPanelData } = require('./collectors/panel');
 const { hostText } = require('./hostStrings');
 
@@ -88,6 +88,7 @@ function activate(context) {
                     const data = await collectAllDashboardData(vscode);
                     webviewPanel._lastData = data;
                     webviewPanel.webview.html = getWebviewHtml(webviewPanel.webview, context.extensionUri, data);
+                    followGithubUpdate(webviewPanel, data);
                 } catch (err) {
                     logger.error('Deserialization data fetch error:', err);
                     webviewPanel.webview.html = getWebviewHtml(webviewPanel.webview, context.extensionUri, {});

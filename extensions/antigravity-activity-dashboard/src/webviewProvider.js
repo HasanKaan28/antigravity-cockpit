@@ -18,7 +18,8 @@ const {
     applyUserFlags,
     addCustomRepo,
     getFavorites,
-    getArchived
+    getArchived,
+    getGithubCache
 } = require('./storage');
 const { getProjectsData } = require('./collectors/projects');
 const { getGithubReposData } = require('./collectors/github');
@@ -44,7 +45,26 @@ async function pushFreshData(panel, vscodeInstance) {
     const data = await collectAllDashboardData(vscodeInstance);
     panel._lastData = data;
     panel.webview.postMessage({ command: 'updateData', data });
+    followGithubUpdate(panel, data);
     return data;
+}
+
+// Swaps the fresh GitHub list into the panel state and the webview once gh has answered, unless a
+// newer refresh has replaced this data in the meantime.
+function followGithubUpdate(panel, data) {
+    if (!data || !data.githubFresh) return;
+    data.githubFresh.then(({ repos, user }) => {
+        if (!panel || panel._lastData !== data) return;
+        data.githubRepos = repos;
+        data.githubUser = user;
+        data.githubConnected = Boolean(user);
+        data.ghCount = repos.length;
+        applyUserFlags(data);
+        panel.webview.postMessage({
+            command: 'updateData',
+            data: { ...data, favCount: getFavorites().size, archCount: getArchived().size }
+        });
+    }).catch(err => logger.warn('Background GitHub refresh failed:', err));
 }
 
 // Refreshes the open dashboard, if any (used by the "Refresh Dashboard" command).
@@ -71,22 +91,26 @@ async function collectAllDashboardData(vscodeInstance) {
 
     const wfPaths = (vscodeInstance.workspace.workspaceFolders || []).map(f => f.uri.fsPath);
 
+    // The GitHub list needs the network (about a second). With a cached list the dashboard renders
+    // from the cache at once and the fresh list follows through followGithubUpdate; a first run waits.
+    const githubFresh = getGithubReposData(customUser || null);
+    githubFresh.catch(() => { /* reported where the result is applied */ });
+    const githubFirst = getGithubCache() ? getGithubReposData(customUser || null, { network: false }) : githubFresh;
+
     // Run parallel async collectors
-    const [panelRes, sessRes, projRes, ghRes, skillsRes] = await Promise.all([
+    const [panelRes, sessRes, projRes, ghRes, skillsRes, systemRes] = await Promise.all([
         getPanelData(),
         getBrainSessions(25),
         getProjectsData(wfPaths, scanRoots),
-        getGithubReposData(customUser || null),
-        getSkillsData(wfPaths.length > 0 ? wfPaths[0] : null)
+        githubFirst,
+        getSkillsData(wfPaths.length > 0 ? wfPaths[0] : null),
+        getSystemTelemetry()
     ]);
-
-    const graphifyCount = projRes.filter(p => p.hasGraphify).length + ghRes.filter(r => r.hasGraphify).length;
-    const systemRes = await getSystemTelemetry(graphifyCount);
 
     const favSet = getFavorites();
     const archSet = getArchived();
 
-    return {
+    const data = {
         ideLanguage,
         configuredLanguage,
         sessions: sessRes,
@@ -102,6 +126,13 @@ async function collectAllDashboardData(vscodeInstance) {
         system: systemRes,
         skills: skillsRes
     };
+    if (githubFirst !== githubFresh) {
+        // Not enumerable, so it stays out of the JSON sent to the webview.
+        Object.defineProperty(data, 'githubFresh', {
+            value: githubFresh.then(repos => ({ repos, user: customUser || repos.targetUser || null }))
+        });
+    }
+    return data;
 }
 
 function getWebviewHtml(webview, extensionUri, initialData) {
@@ -624,6 +655,7 @@ async function openDashboardPanel(context, vscodeInstance) {
             const data = await collectAllDashboardData(vscodeInstance);
             currentPanel._lastData = data;
             currentPanel.webview.html = getWebviewHtml(currentPanel.webview, context.extensionUri, data);
+            followGithubUpdate(currentPanel, data);
         } catch (err) {
             logger.error('Failed to refresh existing dashboard panel:', err);
         }
@@ -650,6 +682,7 @@ async function openDashboardPanel(context, vscodeInstance) {
         const data = await collectAllDashboardData(vscodeInstance);
         currentPanel._lastData = data;
         currentPanel.webview.html = getWebviewHtml(currentPanel.webview, context.extensionUri, data);
+        followGithubUpdate(currentPanel, data);
     } catch (err) {
         logger.error('Failed to initialize dashboard panel:', err);
         currentPanel.webview.html = getWebviewHtml(currentPanel.webview, context.extensionUri, {});
@@ -668,5 +701,6 @@ module.exports = {
     getWebviewHtml,
     attachPanelListeners,
     getCurrentPanel,
-    refreshDashboardPanel
+    refreshDashboardPanel,
+    followGithubUpdate
 };

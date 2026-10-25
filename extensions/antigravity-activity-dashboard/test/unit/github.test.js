@@ -90,6 +90,14 @@ describe('GitHub collector', () => {
         assert.strictEqual(repos.length, 0);
     });
 
+    it('builds the list from the cache without starting gh when the network is off', async () => {
+        require(storagePath).saveGithubCache(sampleRepos);
+        const repos = await github.getGithubReposData(null, { network: false });
+        assert.strictEqual(calls.length, 0, 'gh never runs');
+        assert.strictEqual(repos.length, 2);
+        assert.strictEqual(repos.targetUser, 'sample-org', 'the cached owner names the user');
+    });
+
     it('falls back to the cached list when gh is unavailable', async () => {
         require(storagePath).saveGithubCache(sampleRepos);
         responses['repo list'] = new Error('gh: not logged in');

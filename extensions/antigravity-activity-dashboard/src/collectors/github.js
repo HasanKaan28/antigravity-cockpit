@@ -37,7 +37,8 @@ async function getDetectedGithubUser() {
     return null;
 }
 
-async function getGithubReposData(configUser = null) {
+// network: false builds the list from the cached gh answer only and never starts gh.
+async function getGithubReposData(configUser = null, { network = true } = {}) {
     const userDir = os.homedir();
     let targetUser = configUser || null;
     let fetched = null;
@@ -45,25 +46,30 @@ async function getGithubReposData(configUser = null) {
     // Without a configured user, `gh repo list` lists the signed-in user's own repos and names the
     // owner in each entry, so the separate `gh api user` round trip is only needed when the list
     // comes back empty or gh is unavailable.
-    try {
-        const { stdout } = await execFileAsync('gh', [
-            'repo', 'list', ...(targetUser ? [targetUser] : []),
-            '--limit', '50',
-            '--json', 'name,nameWithOwner,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
-        ], {}, 5000);
+    if (network) {
+        try {
+            const { stdout } = await execFileAsync('gh', [
+                'repo', 'list', ...(targetUser ? [targetUser] : []),
+                '--limit', '50',
+                '--json', 'name,nameWithOwner,description,isPrivate,pushedAt,url,stargazerCount,primaryLanguage,sshUrl,defaultBranchRef'
+            ], {}, 5000);
 
-        if (stdout) {
-            fetched = JSON.parse(stdout);
-            saveGithubCache(fetched);
+            if (stdout) {
+                fetched = JSON.parse(stdout);
+                saveGithubCache(fetched);
+            }
+        } catch (err) {
+            logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
         }
-    } catch (err) {
-        logger.warn('gh repo list failed or offline, loading cached repos:', err.message || err);
     }
     const rawRepos = fetched || getGithubCache() || [];
 
     if (!targetUser) {
-        const owned = (fetched || []).find(r => typeof r.nameWithOwner === 'string' && r.nameWithOwner.includes('/'));
-        targetUser = owned ? owned.nameWithOwner.split('/')[0] : await getDetectedGithubUser();
+        // Online, only a fresh answer may name the user; the cache names the user who fetched it.
+        const source = network ? (fetched || []) : rawRepos;
+        const owned = source.find(r => typeof r.nameWithOwner === 'string' && r.nameWithOwner.includes('/'));
+        if (owned) targetUser = owned.nameWithOwner.split('/')[0];
+        else if (network) targetUser = await getDetectedGithubUser();
     }
 
     // Merge custom added repos
