@@ -104,7 +104,7 @@ describe('Cockpit Internationalization (i18n) Engine Tests', () => {
         assert(start > -1 && end > start, 'LOCALES literal found in dashboard.js');
         const sets = {};
         let current = null;
-        for (const line of dashboardJs.slice(start, end).split('\n')) {
+        for (const line of dashboardJs.slice(start, end).split(/\r?\n/)) {
             const block = line.match(/^ {8}([a-z]{2}): \{$/);
             if (block) {
                 current = block[1];
