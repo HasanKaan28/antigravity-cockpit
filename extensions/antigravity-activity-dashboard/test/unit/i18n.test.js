@@ -80,17 +80,42 @@ describe('Cockpit Internationalization (i18n) Engine Tests', () => {
             'lang.auto'
         ];
 
-        // Ensure LOCALES contains required keys for each language
-        SUPPORTED_LOCALES.forEach(() => {
+        const sets = localeKeySets();
+        SUPPORTED_LOCALES.forEach(locale => {
+            assert(sets[locale], `dictionary for ${locale} exists`);
             requiredKeys.forEach(k => {
-                const keyPattern = new RegExp(`'${k}'\\s*:\\s*'([^']+)'`);
-                assert(
-                    keyPattern.test(dashboardJs),
-                    `Translation key '${k}' should exist in dashboard.js dictionaries`
-                );
+                assert(sets[locale].has(k), `Translation key '${k}' should exist in the ${locale} dictionary`);
             });
         });
     });
+
+    it('defines the same keys in every language as in English', () => {
+        const sets = localeKeySets();
+        const english = [...sets.en].sort();
+        SUPPORTED_LOCALES.forEach(locale => {
+            assert.deepStrictEqual([...sets[locale]].sort(), english, `${locale} has exactly the English keys`);
+        });
+    });
+
+    // The keys each locale defines, read from the LOCALES literal block by block.
+    function localeKeySets() {
+        const start = dashboardJs.indexOf('    const LOCALES = {');
+        const end = dashboardJs.indexOf('\n    };', start);
+        assert(start > -1 && end > start, 'LOCALES literal found in dashboard.js');
+        const sets = {};
+        let current = null;
+        for (const line of dashboardJs.slice(start, end).split('\n')) {
+            const block = line.match(/^ {8}([a-z]{2}): \{$/);
+            if (block) {
+                current = block[1];
+                sets[current] = new Set();
+                continue;
+            }
+            const key = current && line.match(/^ {12}'([^']+)':/);
+            if (key) sets[current].add(key[1]);
+        }
+        return sets;
+    }
 
     it('interpolates parameters correctly in translations', () => {
         function t(template, params = {}) {
