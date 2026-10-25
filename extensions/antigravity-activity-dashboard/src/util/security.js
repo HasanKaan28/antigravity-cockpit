@@ -2,7 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const REPO_REGEX = /^[a-zA-Z0-9_.-]+(?:\/[a-zA-Z0-9_.-]+)?$/;
+// A segment never starts with "-" (it would reach gh as an option) and is never "." or "..".
+const REPO_SEGMENT = '(?!\\.\\.?(?:/|$))[a-zA-Z0-9_.][a-zA-Z0-9_.-]*';
+const REPO_REGEX = new RegExp(`^${REPO_SEGMENT}(?:/${REPO_SEGMENT})?$`);
 
 function validateExternalUrl(rawUrl) {
     if (!rawUrl || typeof rawUrl !== 'string') return null;
@@ -69,6 +71,30 @@ function isExistingPath(targetPath) {
     }
 }
 
+// Absolute path to an existing .html/.htm file: the only local files the browser may open.
+function isLocalHtmlFile(targetPath) {
+    if (!targetPath || typeof targetPath !== 'string') return false;
+    const clean = targetPath.trim();
+    if (!path.isAbsolute(clean) || !/\.html?$/i.test(clean)) return false;
+    try {
+        return fs.statSync(clean).isFile();
+    } catch {
+        return false;
+    }
+}
+
+// Absolute path to an existing file named transcript.jsonl.
+function isTranscriptFile(targetPath) {
+    if (!targetPath || typeof targetPath !== 'string') return false;
+    const clean = targetPath.trim();
+    if (!path.isAbsolute(clean) || path.basename(clean).toLowerCase() !== 'transcript.jsonl') return false;
+    try {
+        return fs.statSync(clean).isFile();
+    } catch {
+        return false;
+    }
+}
+
 function safePath(targetPath) {
     if (!targetPath || typeof targetPath !== 'string') return null;
     const normalized = path.normalize(targetPath.trim());
@@ -80,5 +106,7 @@ module.exports = {
     parseRepoInput,
     normalizeKey,
     isExistingPath,
+    isLocalHtmlFile,
+    isTranscriptFile,
     safePath
 };

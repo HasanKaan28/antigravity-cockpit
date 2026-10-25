@@ -7,7 +7,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { execFileAsync } = require('../util/proc');
+const { execFileAsync, execGit } = require('../util/proc');
 const { getCustomRepos, getGithubCache, saveGithubCache, isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
 const logger = require('../logger');
@@ -30,7 +30,7 @@ async function getDetectedGithubUser() {
         // fallback to git config
     }
     try {
-        const { stdout } = await execFileAsync('git', ['config', '--get', 'github.user'], {}, 1500);
+        const { stdout } = await execGit(['config', '--get', 'github.user'], {}, 1500);
         if (stdout && stdout.trim()) return stdout.trim();
     } catch (e) {
         logger.debug('github.user git config check ignored:', e.message);

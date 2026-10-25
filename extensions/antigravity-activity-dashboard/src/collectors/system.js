@@ -7,7 +7,7 @@
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-const { execFileAsync } = require('../util/proc');
+const { execFileAsync, execGit } = require('../util/proc');
 
 async function probeGpu() {
     // 1. Probe NVIDIA GPU with live utilization percentage
@@ -89,7 +89,7 @@ async function probeVault() {
     for (const vPath of vaultCandidates) {
         if (fs.existsSync(path.join(vPath, '.git'))) {
             try {
-                const { stdout } = await execFileAsync('git', ['status', '--short'], { cwd: vPath }, 1500);
+                const { stdout } = await execGit(['status', '--short', '--ignore-submodules=all'], { cwd: vPath }, 1500);
                 const hasPending = Boolean(stdout && stdout.trim());
                 return hasPending ? 'Bulut Senkronu (Değişiklikler var)' : 'Bulut Senkronu (Senkronize)';
             } catch {
@@ -103,8 +103,9 @@ async function probeVault() {
 
 async function probePower() {
     try {
+        // -I: isolated mode, so a ctypes.py in the current folder is never imported instead of the stdlib one.
         const { stdout } = await execFileAsync('python', [
-            '-c',
+            '-I', '-c',
             'import ctypes; b=(ctypes.c_byte*12)(); ctypes.windll.kernel32.GetSystemPowerStatus(b); print(b[0], b[2])'
         ], {}, 1200);
         if (stdout) {

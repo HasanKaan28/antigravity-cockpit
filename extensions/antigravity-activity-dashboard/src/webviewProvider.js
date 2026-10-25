@@ -8,7 +8,7 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 const logger = require('./logger');
-const { validateExternalUrl, parseRepoInput, isExistingPath } = require('./util/security');
+const { validateExternalUrl, parseRepoInput, isExistingPath, isLocalHtmlFile } = require('./util/security');
 const { execFileAsync, launchInBrowser } = require('./util/proc');
 const {
     toggleFavorite,
@@ -31,6 +31,9 @@ const { getSkillsData } = require('./collectors/skills');
 const { openCleanTranscript } = require('./transcriptViewer');
 
 let currentPanel = null;
+
+// Mirrors the enum of antigravity.dashboard.language in package.json.
+const SUPPORTED_LANGUAGES = ['auto', 'en', 'tr', 'de', 'es', 'fr', 'zh', 'ja'];
 
 function getNonce() {
     return crypto.randomBytes(16).toString('hex');
@@ -128,18 +131,20 @@ function getWebviewHtml(webview, extensionUri, initialData) {
         `font-src ${webview.cspSource}`,
         `style-src ${webview.cspSource} 'unsafe-inline'`,
         `script-src ${webview.cspSource} 'nonce-${nonce}'`,
-        `img-src ${webview.cspSource} data: https:`,
+        `img-src ${webview.cspSource} data:`,
         "connect-src 'none'"
     ].join('; ');
 
     const safeJson = JSON.stringify(initialData || {}).replace(/</g, '\\u003c');
 
+    // Function replacers: a string replacement would expand $& / $' / $` found in commit
+    // messages or session titles and splice pieces of the template into the page.
     return template
-        .replace('{{CSP}}', csp)
-        .replace('{{CSS_URI}}', cssUri)
-        .replace('{{JS_URI}}', jsUri)
-        .replaceAll('{{NONCE}}', nonce)
-        .replace('{{INITIAL_DATA}}', safeJson);
+        .replace('{{CSP}}', () => csp)
+        .replace('{{CSS_URI}}', () => cssUri)
+        .replace('{{JS_URI}}', () => jsUri)
+        .replaceAll('{{NONCE}}', () => nonce)
+        .replace('{{INITIAL_DATA}}', () => safeJson);
 }
 
 function vscodeUriJoin(baseUri, ...segments) {
@@ -270,8 +275,8 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         }
 
         case 'openGraphify': {
-            const gPath = message.path;
-            if (isExistingPath(gPath)) {
+            const gPath = isLocalHtmlFile(message.path) ? message.path.trim() : null;
+            if (gPath) {
                 launchInBrowser(gPath, vscodeInstance);
                 vscodeInstance.window.showInformationMessage('Graphify Deep Space Observatory Microsoft Edge ile açıldı.');
             } else {
@@ -480,6 +485,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
 
         case 'setLanguage': {
             const lang = message.language || 'auto';
+            if (!SUPPORTED_LANGUAGES.includes(lang)) break;
             const config = vscodeInstance.workspace.getConfiguration('antigravity.dashboard');
             config.update('language', lang, vscodeInstance.ConfigurationTarget.Global);
             break;

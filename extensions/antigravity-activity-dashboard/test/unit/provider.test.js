@@ -208,6 +208,22 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             assert.ok(panel._lastData && panel._lastData.projects.length === fixture.projects.length);
         });
 
+        it('keeps $ sequences in the data intact when filling the template', async () => {
+            ({ provider } = freshModules());
+            const data = { projects: [{ name: 'x', gitLog: [{ msg: "cost $& and $' plus $` and $1 $$" }] }] };
+            const html = provider.getWebviewHtml(makePanel('t').webview, makeUri(extRoot), data);
+            const line = html.split('\n').find(l => l.includes('window.__INITIAL_DATA__ = '));
+            const json = line.slice(line.indexOf('= ') + 2, line.lastIndexOf(';'));
+            assert.deepStrictEqual(JSON.parse(json), data);
+            assert.strictEqual(html.split('window.__INITIAL_DATA__').length, 2, 'the template appears once');
+        });
+
+        it('limits images to the extension and data URIs', async () => {
+            await openPanel();
+            const csp = panel.webview.html.match(/img-src [^;"]*/)[0];
+            assert.strictEqual(csp, 'img-src vscode-resource: data:');
+        });
+
         it('reuses the open panel instead of creating a second one', async () => {
             await openPanel();
             await provider.openDashboardPanel(context, vscode);
@@ -314,6 +330,18 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             assert.strictEqual(vscode.state.error.length, 1);
         });
 
+        it('openTranscript only reads files named transcript.jsonl', async () => {
+            await openPanel();
+            const dir = path.join(home, 'other', 'logs');
+            fs.mkdirSync(dir, { recursive: true });
+            const notes = path.join(dir, 'notes.jsonl');
+            fs.writeFileSync(notes, JSON.stringify({ step_index: 1, source: 'USER_EXPLICIT', type: 'USER_INPUT', content: 'hi' }));
+            await send({ command: 'openTranscript', path: notes });
+            assert.strictEqual(vscode.state.panels.filter(p => p.viewType === 'antigravityCleanTranscript').length, 0);
+            assert.strictEqual(vscode.state.error.length, 1);
+            assert.ok(!fs.existsSync(path.join(home, 'other', 'sohbet_gecmisi.md')), 'nothing written next to other files');
+        });
+
         it('openSessionFolder reveals existing folders only', async () => {
             await openPanel();
             await send({ command: 'openSessionFolder', path: home });
@@ -358,6 +386,17 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             assert.strictEqual(vscode.state.warn.length, 1);
         });
 
+        it('openGraphify refuses files that are not HTML maps', async () => {
+            await openPanel();
+            proc.launched.length = 0;
+            const other = path.join(home, 'tool.cmd');
+            fs.writeFileSync(other, 'echo');
+            await send({ command: 'openGraphify', path: other });
+            await send({ command: 'openGraphify', path: home });
+            assert.strictEqual(proc.launched.length, 0);
+            assert.strictEqual(vscode.state.warn.length, 2);
+        });
+
         it('openFolderDialog, openAgSettings and openAgSidebar run their commands', async () => {
             await openPanel();
             await send({ command: 'openFolderDialog' });
@@ -399,7 +438,9 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             await openPanel();
             proc.runs.length = 0;
             await send({ command: 'cloneGithubRepo', name: '../../etc' });
-            assert.strictEqual(vscode.state.error.length, 1, 'invalid names are rejected');
+            await send({ command: 'cloneGithubRepo', name: '-x/repo' });
+            assert.strictEqual(vscode.state.error.length, 2, 'invalid names are rejected');
+            assert.strictEqual(proc.runs.length, 0, 'gh never runs for rejected names');
             fs.mkdirSync(path.join(home, 'github-repos', 'orbit-api'), { recursive: true });
             await send({ command: 'cloneGithubRepo', name: 'sample-org/orbit-api' });
             assert.strictEqual(vscode.state.warn.length, 1, 'existing folder is not overwritten');
@@ -437,6 +478,13 @@ describe('Extension handlers and commands (fake VS Code)', function () {
             await send({ command: 'setLanguage', language: 'de' });
             assert.strictEqual(vscode.state.config.openOnStartup, false);
             assert.strictEqual(vscode.state.config.language, 'de');
+        });
+
+        it('setLanguage ignores languages the extension does not ship', async () => {
+            await openPanel();
+            await send({ command: 'setLanguage', language: 'xx' });
+            await send({ command: 'setLanguage', language: { en: true } });
+            assert.ok(!('language' in vscode.state.config));
         });
 
         it('retired CBM commands explain that CBM is disabled', async () => {

@@ -1,6 +1,9 @@
 'use strict';
 const assert = require('assert');
-const { validateExternalUrl, parseRepoInput, normalizeKey } = require('../../src/util/security');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { validateExternalUrl, parseRepoInput, normalizeKey, isLocalHtmlFile, isTranscriptFile } = require('../../src/util/security');
 
 describe('Security Utility Tests', () => {
     describe('normalizeKey', () => {
@@ -72,6 +75,46 @@ describe('Security Utility Tests', () => {
             assert.strictEqual(parseRepoInput('../../../etc/passwd'), null);
             assert.strictEqual(parseRepoInput('repo; rm -rf /'), null);
             assert.strictEqual(parseRepoInput('owner/repo/extra/sub'), null);
+        });
+
+        it('rejects segments that start with a dash or are dot folders', () => {
+            assert.strictEqual(parseRepoInput('-owner/repo'), null);
+            assert.strictEqual(parseRepoInput('owner/-repo'), null);
+            assert.strictEqual(parseRepoInput('owner/..'), null);
+            assert.strictEqual(parseRepoInput('.'), null);
+        });
+
+        it('still accepts repo names that start with a dot', () => {
+            assert.strictEqual(parseRepoInput('octocat/.github').fullName, 'octocat/.github');
+        });
+    });
+
+    describe('local file checks', () => {
+        let dir;
+        before(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cockpit-security-')); });
+        after(() => fs.rmSync(dir, { recursive: true, force: true }));
+
+        it('isLocalHtmlFile accepts only absolute paths to existing .html/.htm files', () => {
+            const html = path.join(dir, 'graph.html');
+            const htm = path.join(dir, 'graph.HTM');
+            const text = path.join(dir, 'graph.txt');
+            [html, htm, text].forEach(f => fs.writeFileSync(f, 'x'));
+            assert.strictEqual(isLocalHtmlFile(html), true);
+            assert.strictEqual(isLocalHtmlFile(htm), true);
+            assert.strictEqual(isLocalHtmlFile(text), false);
+            assert.strictEqual(isLocalHtmlFile('graph.html'), false, 'relative paths are refused');
+            assert.strictEqual(isLocalHtmlFile(path.join(dir, 'missing.html')), false);
+            assert.strictEqual(isLocalHtmlFile(null), false);
+        });
+
+        it('isTranscriptFile accepts only existing files named transcript.jsonl', () => {
+            const transcript = path.join(dir, 'transcript.jsonl');
+            const other = path.join(dir, 'other.jsonl');
+            [transcript, other].forEach(f => fs.writeFileSync(f, '{}'));
+            assert.strictEqual(isTranscriptFile(transcript), true);
+            assert.strictEqual(isTranscriptFile(other), false);
+            assert.strictEqual(isTranscriptFile(dir), false);
+            assert.strictEqual(isTranscriptFile('transcript.jsonl'), false);
         });
     });
 });

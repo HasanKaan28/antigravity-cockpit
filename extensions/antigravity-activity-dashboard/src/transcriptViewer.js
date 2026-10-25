@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const logger = require('./logger');
+const { isTranscriptFile } = require('./util/security');
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -386,7 +387,8 @@ ${T_ICONS}
 }
 
 function openCleanTranscript(transcriptPath, vscodeInstance, extensionUri, opts = {}) {
-    if (!fs.existsSync(transcriptPath)) {
+    // Only real transcript.jsonl files: the viewer writes sohbet_gecmisi.md two folders up.
+    if (!isTranscriptFile(transcriptPath)) {
         vscodeInstance.window.showErrorMessage('Transkript dosyası bulunamadı: ' + transcriptPath);
         return;
     }

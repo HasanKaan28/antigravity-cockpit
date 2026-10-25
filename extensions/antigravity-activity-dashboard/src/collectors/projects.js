@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { execFileAsync, createPool } = require('../util/proc');
+const { execGit, createPool } = require('../util/proc');
 const { isFavorite, isArchived } = require('../storage');
 const { matchProjectCbm } = require('./cbm');
 const logger = require('../logger');
@@ -20,7 +20,7 @@ async function inspectGitRepo(projectPath) {
         let hasUncommitted = false;
 
         try {
-            const { stdout: bOut } = await execFileAsync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: projectPath }, 1500);
+            const { stdout: bOut } = await execGit(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: projectPath }, 1500);
             if (bOut) branch = bOut.trim();
         } catch {
             // not a valid HEAD yet
@@ -29,7 +29,7 @@ async function inspectGitRepo(projectPath) {
         try {
             // Subject goes last so a "|" inside it cannot shift the fields. "time" (ms) lets the
             // webview format the age in the UI language; "ago" stays as git's English fallback.
-            const { stdout: lOut } = await execFileAsync('git', ['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], { cwd: projectPath }, 1500);
+            const { stdout: lOut } = await execGit(['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], { cwd: projectPath }, 1500);
             if (lOut) {
                 gitLog = lOut.split('\n').filter(Boolean).map(line => {
                     const [hash = '', ct = '', ago = '', ...msg] = line.split('|');
@@ -41,7 +41,7 @@ async function inspectGitRepo(projectPath) {
         }
 
         try {
-            const { stdout: sOut } = await execFileAsync('git', ['status', '--short'], { cwd: projectPath }, 1500);
+            const { stdout: sOut } = await execGit(['status', '--short', '--ignore-submodules=all'], { cwd: projectPath }, 1500);
             hasUncommitted = Boolean(sOut && sOut.trim());
         } catch {
             // ignore
