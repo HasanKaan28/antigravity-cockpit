@@ -37,6 +37,14 @@ async function getDetectedGithubUser() {
     return null;
 }
 
+// Owner of a gh list entry: from nameWithOwner, or from the url for lists cached by older builds.
+function repoOwner(r) {
+    const full = typeof r.nameWithOwner === 'string'
+        ? r.nameWithOwner
+        : (typeof r.url === 'string' ? r.url.replace(/^https?:\/\/github\.com\//i, '') : '');
+    return full.includes('/') ? full.split('/')[0] : null;
+}
+
 // network: false builds the list from the cached gh answer only and never starts gh.
 async function getGithubReposData(configUser = null, { network = true } = {}) {
     const userDir = os.homedir();
@@ -67,8 +75,8 @@ async function getGithubReposData(configUser = null, { network = true } = {}) {
     if (!targetUser) {
         // Online, only a fresh answer may name the user; the cache names the user who fetched it.
         const source = network ? (fetched || []) : rawRepos;
-        const owned = source.find(r => typeof r.nameWithOwner === 'string' && r.nameWithOwner.includes('/'));
-        if (owned) targetUser = owned.nameWithOwner.split('/')[0];
+        const owner = source.map(repoOwner).find(Boolean);
+        if (owner) targetUser = owner;
         else if (network) targetUser = await getDetectedGithubUser();
     }
 

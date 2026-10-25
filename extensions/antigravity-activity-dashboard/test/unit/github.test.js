@@ -98,6 +98,14 @@ describe('GitHub collector', () => {
         assert.strictEqual(repos.targetUser, 'sample-org', 'the cached owner names the user');
     });
 
+    it('names the user from the url when an older cache has no nameWithOwner', async () => {
+        require(storagePath).saveGithubCache(sampleRepos.map(r => { const old = { ...r }; delete old.nameWithOwner; return old; }));
+        const repos = await github.getGithubReposData(null, { network: false });
+        assert.strictEqual(calls.length, 0);
+        assert.strictEqual(repos.targetUser, 'sample-org');
+        assert.strictEqual(repos[0].fullName, 'sample-org/orbit-api');
+    });
+
     it('falls back to the cached list when gh is unavailable', async () => {
         require(storagePath).saveGithubCache(sampleRepos);
         responses['repo list'] = new Error('gh: not logged in');
