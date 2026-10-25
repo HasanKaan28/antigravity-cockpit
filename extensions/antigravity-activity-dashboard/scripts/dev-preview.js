@@ -102,9 +102,7 @@ const mockData = {
             detectedEngines: []
         },
         ollamaOnline: false,
-        ollamaInstalled: false,
-        remoteVault: "Yapılandırılmadı",
-        graphifyStatus: "Hazır (Observatory)"
+        ollamaInstalled: false
     }
 };
 

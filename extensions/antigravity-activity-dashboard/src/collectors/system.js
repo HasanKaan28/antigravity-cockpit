@@ -1,13 +1,10 @@
 'use strict';
 /**
  * Collector: Real system telemetry.
- * Probes GPU via nvidia-smi, local AI engines via their APIs, git vault sync and power state.
+ * Probes GPU via nvidia-smi, local AI engines via their APIs and the power state.
  * Never displays hardcoded fake strings.
  */
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const { execFileAsync, execGit } = require('../util/proc');
+const { execFileAsync } = require('../util/proc');
 
 async function probeGpu() {
     // 1. Probe NVIDIA GPU with live utilization percentage
@@ -73,34 +70,7 @@ async function probeGpu() {
     return '';
 }
 
-const { probeOllamaStatus, findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');
-
-async function probeOllama(timeoutMs = 1200) {
-    return await probeOllamaStatus(timeoutMs);
-}
-
-async function probeVault() {
-    const userDir = os.homedir();
-    const vaultCandidates = [
-        path.join(userDir, '.gemini', 'config'),
-        path.join(userDir, '.gemini', 'sync'),
-        path.join(userDir, '.gemini', 'vault')
-    ];
-
-    for (const vPath of vaultCandidates) {
-        if (fs.existsSync(path.join(vPath, '.git'))) {
-            try {
-                const { stdout } = await execGit(['status', '--short', '--ignore-submodules=all'], { cwd: vPath }, 1500);
-                const hasPending = Boolean(stdout && stdout.trim());
-                return hasPending ? 'Bulut Senkronu (Değişiklikler var)' : 'Bulut Senkronu (Senkronize)';
-            } catch {
-                return 'Bulut Senkronu (Aktif)';
-            }
-        }
-    }
-
-    return 'Yerel Profil (Standart)';
-}
+const { findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');
 
 async function probePower() {
     try {
@@ -114,33 +84,20 @@ async function probePower() {
             const ac = parseInt(acStr, 10);
             const pct = parseInt(pctStr, 10);
             const onAc = ac === 1;
-            return {
-                onAc,
-                percent: isNaN(pct) ? 100 : pct,
-                statusText: onAc ? `Prize Bağlı (%${pct})` : `Pilde (%${pct} - Eko Mod)`
-            };
+            return { onAc, percent: isNaN(pct) ? 100 : pct };
         }
     } catch {
         // Fallback
     }
-    return {
-        onAc: true,
-        percent: 100,
-        statusText: 'Prize Bağlı'
-    };
+    return { onAc: true, percent: 100 };
 }
 
-async function getSystemTelemetry(graphifyCount = 0) {
-    const [gpu, localAi, vault, power] = await Promise.all([
+async function getSystemTelemetry() {
+    const [gpu, localAi, power] = await Promise.all([
         probeGpu(),
         probeAllLocalAiEngines(),
-        probeVault(),
         probePower()
     ]);
-
-    const graphifyStatus = graphifyCount > 0
-        ? `Etkin (${graphifyCount} Harita Mevcut)`
-        : 'Hazır (Observatory)';
 
     const primary = localAi.primaryEngine;
     let localModel = 'Yerel Model Bulunamadı';
@@ -167,16 +124,12 @@ async function getSystemTelemetry(graphifyCount = 0) {
         hasLocalEngine: localAi.hasLocalEngine,
         ollamaOnline: isOllamaOnline,
         ollamaInstalled: isOllamaInstalled,
-        power,
-        remoteVault: vault,
-        graphifyStatus
+        power
     };
 }
 
 module.exports = {
     probeGpu,
-    probeOllama,
-    probeVault,
     probePower,
     getSystemTelemetry
 };
