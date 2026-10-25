@@ -15,39 +15,26 @@ const gitPool = createPool(4);
 
 async function inspectGitRepo(projectPath) {
     return gitPool(async () => {
-        let branch = 'main';
-        let gitLog = [];
-        let hasUncommitted = false;
-
-        try {
-            const { stdout: bOut } = await execGit(['rev-parse', '--abbrev-ref', 'HEAD'], { cwd: projectPath }, 1500);
-            if (bOut) branch = bOut.trim();
-        } catch {
-            // not a valid HEAD yet
-        }
-
-        try {
+        const opts = { cwd: projectPath };
+        // The three reads are independent, so they run side by side; a failed one keeps its default.
+        const [branchRes, logRes, statusRes] = await Promise.allSettled([
+            execGit(['rev-parse', '--abbrev-ref', 'HEAD'], opts, 1500),
             // Subject goes last so a "|" inside it cannot shift the fields. "time" (ms) lets the
             // webview format the age in the UI language; "ago" stays as git's English fallback.
-            const { stdout: lOut } = await execGit(['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], { cwd: projectPath }, 1500);
-            if (lOut) {
-                gitLog = lOut.split('\n').filter(Boolean).map(line => {
-                    const [hash = '', ct = '', ago = '', ...msg] = line.split('|');
-                    return { hash, msg: msg.join('|'), ago, time: Number(ct) * 1000 || null };
-                });
-            }
-        } catch {
-            // no commits yet
-        }
+            execGit(['log', '-n', '2', '--pretty=format:%h|%ct|%ar|%s'], opts, 1500),
+            execGit(['status', '--short', '--ignore-submodules=all'], opts, 1500)
+        ]);
 
-        try {
-            const { stdout: sOut } = await execGit(['status', '--short', '--ignore-submodules=all'], { cwd: projectPath }, 1500);
-            hasUncommitted = Boolean(sOut && sOut.trim());
-        } catch {
-            // ignore
-        }
+        // rev-parse fails before the first commit; keep the default name then.
+        const branchOut = branchRes.status === 'fulfilled' ? branchRes.value.stdout.trim() : '';
+        const logOut = logRes.status === 'fulfilled' ? logRes.value.stdout : '';
+        const gitLog = logOut.split('\n').filter(Boolean).map(line => {
+            const [hash = '', ct = '', ago = '', ...msg] = line.split('|');
+            return { hash, msg: msg.join('|'), ago, time: Number(ct) * 1000 || null };
+        });
+        const hasUncommitted = statusRes.status === 'fulfilled' && Boolean(statusRes.value.stdout.trim());
 
-        return { branch, gitLog, hasUncommitted };
+        return { branch: branchOut || 'main', gitLog, hasUncommitted };
     });
 }
 
@@ -118,6 +105,54 @@ function getRecentIdeWorkspaces() {
     return results;
 }
 
+async function describeProject(cDir, normDir, isGit, cbmDbMap) {
+    const name = path.basename(cDir);
+    const gitInfo = isGit
+        ? await inspectGitRepo(cDir)
+        : { branch: 'main', gitLog: [], hasUncommitted: false };
+
+    let sessionNotes = '';
+    const sessionPath = path.join(cDir, 'SESSION_STATE.md');
+    if (fs.existsSync(sessionPath)) {
+        try {
+            const raw = await fs.promises.readFile(sessionPath, 'utf8');
+            sessionNotes = raw.slice(0, 500);
+        } catch {
+            // ignore
+        }
+    }
+
+    let graphifyPath = path.join(cDir, 'graphify-out', 'graph.html');
+    let hasGraphify = fs.existsSync(graphifyPath);
+    if (!hasGraphify) {
+        const alt = path.join(cDir, 'graph.html');
+        if (fs.existsSync(alt)) {
+            graphifyPath = alt;
+            hasGraphify = true;
+        }
+    }
+
+    const cbmStatus = matchProjectCbm(cDir, name, cbmDbMap);
+
+    return {
+        name,
+        path: normDir,
+        rawPath: cDir,
+        isGit,
+        branch: gitInfo.branch,
+        gitLog: gitInfo.gitLog,
+        hasUncommitted: gitInfo.hasUncommitted,
+        sessionNotes,
+        hasGraphify,
+        graphifyPath: hasGraphify ? graphifyPath.split('\\').join('/') : null,
+        cbmIndexed: cbmStatus.indexed,
+        cbmDbSize: cbmStatus.sizeMb,
+        cbmProjectKey: cbmStatus.cbmKey,
+        isFavorite: isFavorite(normDir),
+        isArchived: isArchived(normDir)
+    };
+}
+
 async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots = []) {
     const userDir = os.homedir();
     const candidateDirs = new Set();
@@ -181,7 +216,7 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
         }
     }
 
-    const projects = [];
+    const pending = [];
     const seen = new Set();
 
     for (const cDir of candidateDirs) {
@@ -205,56 +240,11 @@ async function getProjectsData(cbmDbMap, workspaceFolders = [], customScanRoots 
 
         if (!isProject) continue;
 
-        const name = path.basename(cDir);
-        let gitInfo = { branch: 'main', gitLog: [], hasUncommitted: false };
-        if (isGit) {
-            gitInfo = await inspectGitRepo(cDir);
-        }
-
-        let sessionNotes = '';
-        const sessionPath = path.join(cDir, 'SESSION_STATE.md');
-        if (fs.existsSync(sessionPath)) {
-            try {
-                const raw = await fs.promises.readFile(sessionPath, 'utf8');
-                sessionNotes = raw.slice(0, 500);
-            } catch {
-                // ignore
-            }
-        }
-
-        let graphifyPath = path.join(cDir, 'graphify-out', 'graph.html');
-        let hasGraphify = fs.existsSync(graphifyPath);
-        if (!hasGraphify) {
-            const alt = path.join(cDir, 'graph.html');
-            if (fs.existsSync(alt)) {
-                graphifyPath = alt;
-                hasGraphify = true;
-            }
-        }
-
-        const cbmStatus = matchProjectCbm(cDir, name, cbmDbMap);
-        const fav = isFavorite(normDir);
-        const arch = isArchived(normDir);
-
-        projects.push({
-            name,
-            path: normDir,
-            rawPath: cDir,
-            isGit,
-            branch: gitInfo.branch,
-            gitLog: gitInfo.gitLog,
-            hasUncommitted: gitInfo.hasUncommitted,
-            sessionNotes,
-            hasGraphify,
-            graphifyPath: hasGraphify ? graphifyPath.split('\\').join('/') : null,
-            cbmIndexed: cbmStatus.indexed,
-            cbmDbSize: cbmStatus.sizeMb,
-            cbmProjectKey: cbmStatus.cbmKey,
-            isFavorite: fav,
-            isArchived: arch
-        });
+        // Started without awaiting, so repos are inspected in parallel; gitPool caps how many run git at once.
+        pending.push(describeProject(cDir, normDir, isGit, cbmDbMap));
     }
 
+    const projects = await Promise.all(pending);
     projects.sort((a, b) => {
         if (a.isFavorite && !b.isFavorite) return -1;
         if (!a.isFavorite && b.isFavorite) return 1;
