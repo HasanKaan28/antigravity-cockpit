@@ -17,7 +17,7 @@ async function probeGpu() {
             const parts = stdout.split(',').map(s => s.trim());
             const name = parts[0] || 'NVIDIA GPU';
             const util = parts[1] || '0%';
-            return `${name} (${util} Aktif)`;
+            return `${name} · ${util}`;
         }
     } catch {
         // nvidia-smi not available or non-nvidia system
@@ -31,7 +31,7 @@ async function probeGpu() {
                 '(Get-CimInstance Win32_VideoController | Select-Object -First 1).Name'
             ], {}, 2500);
             if (stdout && stdout.trim()) {
-                return `${stdout.trim()} (Aktif)`;
+                return stdout.trim();
             }
         } catch {
             // ignore
@@ -45,7 +45,7 @@ async function probeGpu() {
             if (stdout) {
                 const match = stdout.match(/Chipset Model:\s*(.+)/i);
                 if (match && match[1]) {
-                    return `${match[1].trim()} (Aktif)`;
+                    return match[1].trim();
                 }
             }
         } catch {
@@ -61,7 +61,7 @@ async function probeGpu() {
                 const vgaLine = stdout.split('\n').find(l => /VGA compatible controller|3D controller/i.test(l));
                 if (vgaLine) {
                     const clean = vgaLine.split(':').slice(2).join(':').trim();
-                    return `${clean} (Aktif)`;
+                    return clean;
                 }
             }
         } catch {
@@ -69,7 +69,8 @@ async function probeGpu() {
         }
     }
 
-    return 'Standart Grafik Kartı';
+    // Unknown adapter: the dashboard shows its own localized label for an empty name.
+    return '';
 }
 
 const { probeOllamaStatus, findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');

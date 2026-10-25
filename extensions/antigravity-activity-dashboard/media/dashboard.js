@@ -30,6 +30,7 @@
             'hud.moveHint': 'Move',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detecting',
+            'telemetry.gpuUnknown': 'Graphics adapter',
             'telemetry.quota': 'Model quota',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Not connected',
@@ -227,6 +228,7 @@
             'hud.moveHint': 'Gezin',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Algılanıyor',
+            'telemetry.gpuUnknown': 'Grafik kartı',
             'telemetry.quota': 'Model kotası',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Bağlı değil',
@@ -424,6 +426,7 @@
             'hud.moveHint': 'Bewegen',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Wird erkannt',
+            'telemetry.gpuUnknown': 'Grafikkarte',
             'telemetry.quota': 'Modellkontingent',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Nicht verbunden',
@@ -621,6 +624,7 @@
             'hud.moveHint': 'Moverse',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Detectando',
+            'telemetry.gpuUnknown': 'Tarjeta gráfica',
             'telemetry.quota': 'Cuota de modelos',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Sin conectar',
@@ -818,6 +822,7 @@
             'hud.moveHint': 'Naviguer',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': 'Détection',
+            'telemetry.gpuUnknown': 'Carte graphique',
             'telemetry.quota': 'Quota des modèles',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': 'Non connecté',
@@ -1015,6 +1020,7 @@
             'hud.moveHint': '移动',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '正在检测',
+            'telemetry.gpuUnknown': '显卡',
             'telemetry.quota': '模型配额',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': '未连接',
@@ -1212,6 +1218,7 @@
             'hud.moveHint': '移動',
             'telemetry.gpu': 'GPU',
             'telemetry.gpuDetecting': '検出中',
+            'telemetry.gpuUnknown': 'グラフィックカード',
             'telemetry.quota': 'モデルのクォータ',
             'telemetry.github': 'GitHub',
             'telemetry.ghPending': '未接続',
@@ -2589,7 +2596,7 @@
     // --- System + GitHub instruments, local engine ---
     function renderSystem() {
         const sys = appData.system || {};
-        setText('teleGpu', sys.gpu || t('telemetry.gpuDetecting'));
+        setText('teleGpu', sys.gpu || t('telemetry.gpuUnknown'));
         const power = sys.power;
         setText('telePower', power ? (power.onAc ? t('power.acOnline') : `${t('power.batteryEco')} · ${power.percent}%`) : '');
 

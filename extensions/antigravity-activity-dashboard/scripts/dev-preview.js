@@ -93,7 +93,7 @@ const mockData = {
         }
     },
     system: {
-        gpu: "Sistem GPU (Aktif)",
+        gpu: "Sample GPU · 12 %",
         localModel: "Yerel Model Bulunamadı",
         hasLocalEngine: false,
         localAi: {
