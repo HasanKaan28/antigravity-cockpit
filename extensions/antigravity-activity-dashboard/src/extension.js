@@ -7,6 +7,7 @@ const vscode = require('vscode');
 const logger = require('./logger');
 const { openDashboardPanel, collectAllDashboardData, attachPanelListeners, getWebviewHtml, getCurrentPanel, refreshDashboardPanel } = require('./webviewProvider');
 const { getPanelData } = require('./collectors/panel');
+const { hostText } = require('./hostStrings');
 
 let quotaInterval = null;
 const lastKnownQuotas = { gemini: null, claude: null };
@@ -33,7 +34,7 @@ function activate(context) {
 
     const refreshCmd = vscode.commands.registerCommand('antigravity.refreshActivityDashboard', () => {
         refreshDashboardPanel(vscode).then(() => {
-            vscode.window.showInformationMessage('Dashboard verileri güncellendi.');
+            vscode.window.showInformationMessage(hostText(vscode, 'dataRefreshed'));
         }).catch(err => {
             logger.error('Manual refresh failed:', err);
         });
@@ -133,7 +134,7 @@ function activate(context) {
                         changes.push(`Claude: %${lastKnownQuotas.claude} ➔ %${cVal}`);
                         lastKnownQuotas.claude = cVal;
                     }
-                    vscode.window.showInformationMessage(`Antigravity Panel: Model kotasında belirgin değişim: ${changes.join(' | ')}`);
+                    vscode.window.showInformationMessage(hostText(vscode, 'quotaChanged', { changes: changes.join(' | ') }));
                 }
             }
         } catch {

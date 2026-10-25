@@ -9,6 +9,7 @@ const path = require('path');
 const crypto = require('crypto');
 const logger = require('./logger');
 const { isTranscriptFile } = require('./util/security');
+const { hostText } = require('./hostStrings');
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -389,7 +390,7 @@ ${T_ICONS}
 function openCleanTranscript(transcriptPath, vscodeInstance, extensionUri, opts = {}) {
     // Only real transcript.jsonl files: the viewer writes sohbet_gecmisi.md two folders up.
     if (!isTranscriptFile(transcriptPath)) {
-        vscodeInstance.window.showErrorMessage('Transkript dosyası bulunamadı: ' + transcriptPath);
+        vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'transcriptMissing', { path: transcriptPath }));
         return;
     }
 
@@ -440,13 +441,13 @@ function openCleanTranscript(transcriptPath, vscodeInstance, extensionUri, opts 
             case 'copyText':
                 if (message.text) {
                     vscodeInstance.env.clipboard.writeText(message.text);
-                    vscodeInstance.window.showInformationMessage('📋 Kod panoya kopyalandı.');
+                    vscodeInstance.window.showInformationMessage('📋 ' + L.copied);
                 }
                 break;
 
             case 'copyFullMarkdown':
                 vscodeInstance.env.clipboard.writeText(mdContent);
-                vscodeInstance.window.showInformationMessage('📋 Tüm sohbet konuşması Markdown formatında kopyalandı.');
+                vscodeInstance.window.showInformationMessage('📋 ' + L.allCopied);
                 break;
 
             case 'openMarkdown':

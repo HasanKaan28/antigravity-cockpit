@@ -29,6 +29,7 @@ const { getPanelData } = require('./collectors/panel');
 const { getSystemTelemetry } = require('./collectors/system');
 const { getSkillsData } = require('./collectors/skills');
 const { openCleanTranscript } = require('./transcriptViewer');
+const { hostText } = require('./hostStrings');
 
 let currentPanel = null;
 
@@ -157,7 +158,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
     switch (message.command) {
         case 'refresh':
             pushFreshData(panel, vscodeInstance).then(() => {
-                vscodeInstance.window.showInformationMessage('Dashboard verileri güncellendi.');
+                vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'dataRefreshed'));
             }).catch(err => {
                 logger.error('Refresh failed:', err);
             });
@@ -192,7 +193,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 const newWin = Boolean(message.newWindow);
                 vscodeInstance.commands.executeCommand('vscode.openFolder', vscodeInstance.Uri.file(fPath), newWin);
             } else {
-                vscodeInstance.window.showErrorMessage(`Proje klasörü bulunamadı: ${fPath || 'Geçersiz yol'}`);
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'folderMissing', { path: fPath || hostText(vscodeInstance, 'invalidPath') }));
             }
             break;
         }
@@ -213,10 +214,10 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 vscodeInstance.workspace.openTextDocument(vscodeInstance.Uri.file(fPath)).then(doc => {
                     vscodeInstance.window.showTextDocument(doc);
                 }, err => {
-                    vscodeInstance.window.showErrorMessage('Dosya açılamadı: ' + err.message);
+                    vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'fileOpenFailed', { error: err.message }));
                 });
             } else {
-                vscodeInstance.window.showWarningMessage('Dosya yolu bulunamadı: ' + fPath);
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'fileMissing', { path: fPath }));
             }
             break;
         }
@@ -269,7 +270,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             if (valid) {
                 launchInBrowser(valid, vscodeInstance);
             } else {
-                vscodeInstance.window.showWarningMessage('Geçersiz web adresi: ' + message.url);
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'invalidUrl', { url: message.url }));
             }
             break;
         }
@@ -278,9 +279,9 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             const gPath = isLocalHtmlFile(message.path) ? message.path.trim() : null;
             if (gPath) {
                 launchInBrowser(gPath, vscodeInstance);
-                vscodeInstance.window.showInformationMessage('Graphify Deep Space Observatory Microsoft Edge ile açıldı.');
+                vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'graphifyOpened'));
             } else {
-                vscodeInstance.window.showWarningMessage('Graphify haritası bulunamadı. /graphify komutu ile oluşturabilirsiniz.');
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'graphifyMissing'));
             }
             break;
         }
@@ -294,7 +295,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 }
                 await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
-                vscodeInstance.window.showErrorMessage('Ollama işlem hatası: ' + (err.message || String(err)));
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaError', { error: err.message || String(err) }));
             });
             break;
         }
@@ -309,7 +310,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 }
                 await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
-                vscodeInstance.window.showErrorMessage('Yerel motor işlem hatası: ' + (err.message || String(err)));
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'engineError', { error: err.message || String(err) }));
             });
             break;
         }
@@ -323,7 +324,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 }
                 await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
-                vscodeInstance.window.showErrorMessage('Ollama başlatma hatası: ' + (err.message || String(err)));
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaStartError', { error: err.message || String(err) }));
             });
             break;
         }
@@ -337,25 +338,25 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 }
                 await pushFreshData(panel, vscodeInstance);
             }).catch(err => {
-                vscodeInstance.window.showErrorMessage('Ollama durdurma hatası: ' + (err.message || String(err)));
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaStopError', { error: err.message || String(err) }));
             });
             break;
         }
 
         case 'openCbmUi': {
-            vscodeInstance.window.showInformationMessage('Codebase Memory (CBM) devre dışı bırakılmıştır. Mimari haritalar için Graphify kullanabilirsiniz.');
+            vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'cbmRetired'));
             break;
         }
 
         case 'indexInCbm': {
-            vscodeInstance.window.showInformationMessage('Codebase Memory (CBM) devre dışı bırakılmıştır. Mimari haritalar için Graphify kullanabilirsiniz.');
+            vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'cbmRetired'));
             break;
         }
 
         case 'cloneGithubRepo': {
             const parsed = parseRepoInput(message.name);
             if (!parsed) {
-                vscodeInstance.window.showErrorMessage('Geçersiz GitHub deposu adı.');
+                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'invalidRepoName'));
                 break;
             }
 
@@ -363,21 +364,23 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             const targetDir = path.join(userDir, 'github-repos', parsed.repo);
 
             if (isExistingPath(targetDir)) {
-                vscodeInstance.window.showWarningMessage(`Klasör zaten mevcut: ${targetDir}`);
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'folderExists', { path: targetDir }));
                 break;
             }
 
             vscodeInstance.window.withProgress({
                 location: vscodeInstance.ProgressLocation.Notification,
-                title: `${parsed.fullName} klonlanıyor...`,
+                title: hostText(vscodeInstance, 'cloning', { name: parsed.fullName }),
                 cancellable: false
             }, async () => {
                 try {
                     await execFileAsync('gh', ['repo', 'clone', parsed.fullName, targetDir], {}, 60000);
-                    vscodeInstance.window.showInformationMessage(`${parsed.repo} başarıyla klonlandı: ${targetDir}`);
+                    vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'cloned', { name: parsed.repo, path: targetDir }));
                     await pushFreshData(panel, vscodeInstance);
                 } catch (err) {
-                    vscodeInstance.window.showErrorMessage('Klonlama hatası: ' + (err.stderr || err.error?.message || 'Bilinmeyen hata'));
+                    vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'cloneFailed', {
+                        error: err.stderr || err.error?.message || hostText(vscodeInstance, 'unknownError')
+                    }));
                 }
             });
             break;
@@ -395,10 +398,10 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                     language: 'GitHub Repo',
                     pushedAt: new Date().toISOString()
                 });
-                vscodeInstance.window.showInformationMessage(`⭐ GitHub deposu eklendi: ${parsed.fullName}`);
+                vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'repoAdded', { name: parsed.fullName }));
                 pushFreshData(panel, vscodeInstance).catch(err => logger.error('Refresh after adding a repository failed:', err));
             } else {
-                vscodeInstance.window.showWarningMessage('Geçersiz depo formatı. Örnek: owner/repo veya repo-adi');
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'invalidRepoFormat'));
             }
             break;
         }
@@ -410,10 +413,10 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 vscodeInstance.workspace.openTextDocument(vscodeInstance.Uri.file(normalized)).then(doc => {
                     vscodeInstance.window.showTextDocument(doc);
                 }, err => {
-                    vscodeInstance.window.showErrorMessage('Skill dosyası açılamadı: ' + err.message);
+                    vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'skillOpenFailed', { error: err.message }));
                 });
             } else {
-                vscodeInstance.window.showWarningMessage('Skill dosyası bulunamadı: ' + (rawPath || 'Bilinmeyen yol'));
+                vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'skillMissing', { path: rawPath || hostText(vscodeInstance, 'unknownPath') }));
             }
             break;
         }
@@ -421,7 +424,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         case 'copySkillPrompt': {
             if (message.prompt) {
                 vscodeInstance.env.clipboard.writeText(message.prompt).then(() => {
-                    vscodeInstance.window.showInformationMessage(`Skill prompt kopyalandı: "${message.prompt}"`);
+                    vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'skillPromptCopied', { prompt: message.prompt }));
                 });
             }
             break;
@@ -465,9 +468,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                 }
 
                 const shortPrompt = prompt.length > 40 ? prompt.slice(0, 40) + '...' : prompt;
-                vscodeInstance.window.showInformationMessage(
-                    `💬 Yeni sohbet başlatıldı. Prompt panoya kopyalandı:\n"${shortPrompt}"`
-                );
+                vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'chatStarted', { prompt: shortPrompt }));
             })();
             break;
         }
@@ -475,11 +476,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
         case 'toggleStartup': {
             const cfg = vscodeInstance.workspace.getConfiguration('antigravity.dashboard');
             cfg.update('openOnStartup', Boolean(message.value), vscodeInstance.ConfigurationTarget.Global);
-            vscodeInstance.window.showInformationMessage(
-                message.value
-                    ? 'Antigravity açıldığında Cockpit otomatik açılacak.'
-                    : 'Otomatik açılış kapatıldı.'
-            );
+            vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, message.value ? 'startupOn' : 'startupOff'));
             break;
         }
 
@@ -505,7 +502,7 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
                         panel._lastData.panel = pData;
                     }
                     if (message.isManual) {
-                        vscodeInstance.window.showInformationMessage('Model kotaları ve token bakiyesi güncellendi.');
+                        vscodeInstance.window.showInformationMessage(hostText(vscodeInstance, 'quotaRefreshed'));
                     }
                 } catch (err) {
                     logger.error('Failed to refresh panel quota:', err);
