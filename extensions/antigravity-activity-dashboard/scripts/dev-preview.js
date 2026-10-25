@@ -27,7 +27,8 @@ const mockData = {
             id: "session-sample-uuid-001",
             time: "10:30",
             timeAgo: "Az Önce",
-            timestamp: Date.now(),
+            // Fixed, so regenerating the preview page only changes it when the UI does.
+            timestamp: Date.UTC(2026, 9, 24, 7, 30),
             prompt: "Örnek oturum: Proje mimarisi ve bileşen oluşturma",
             activeDoc: "src/index.js",
             toolCount: 8,
@@ -94,15 +95,7 @@ const mockData = {
     },
     system: {
         gpu: "Sample GPU · 12 %",
-        localModel: "Yerel Model Bulunamadı",
-        hasLocalEngine: false,
-        localAi: {
-            hasLocalEngine: false,
-            primaryEngine: null,
-            detectedEngines: []
-        },
-        ollamaOnline: false,
-        ollamaInstalled: false
+        power: { onAc: true, percent: 100 }
     }
 };
 

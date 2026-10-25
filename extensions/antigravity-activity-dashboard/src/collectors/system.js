@@ -1,7 +1,7 @@
 'use strict';
 /**
  * Collector: Real system telemetry.
- * Probes GPU via nvidia-smi, local AI engines via their APIs and the power state.
+ * Probes the GPU via nvidia-smi and the power state.
  * Never displays hardcoded fake strings.
  */
 const { execFileAsync } = require('../util/proc');
@@ -70,8 +70,6 @@ async function probeGpu() {
     return '';
 }
 
-const { findOllamaExecutable, probeAllLocalAiEngines } = require('../util/ollama');
-
 async function probePower() {
     try {
         // -I: isolated mode, so a ctypes.py in the current folder is never imported instead of the stdlib one.
@@ -93,39 +91,8 @@ async function probePower() {
 }
 
 async function getSystemTelemetry() {
-    const [gpu, localAi, power] = await Promise.all([
-        probeGpu(),
-        probeAllLocalAiEngines(),
-        probePower()
-    ]);
-
-    const primary = localAi.primaryEngine;
-    let localModel = 'Yerel Model Bulunamadı';
-    if (primary) {
-        if (primary.online) {
-            localModel = primary.activeModel
-                ? `${primary.activeModel} (${primary.name} Aktif)`
-                : `${primary.name} (Aktif)`;
-        } else if (primary.installed) {
-            localModel = `${primary.name} (Kurulu - Çevrimdışı)`;
-        }
-        if (!power.onAc) {
-            localModel = `${primary.activeModel || primary.name} (Pilde - Eko Mod)`;
-        }
-    }
-
-    const isOllamaOnline = Boolean(primary && primary.id === 'ollama' && primary.online);
-    const isOllamaInstalled = Boolean(findOllamaExecutable() || isOllamaOnline);
-
-    return {
-        gpu,
-        localModel,
-        localAi,
-        hasLocalEngine: localAi.hasLocalEngine,
-        ollamaOnline: isOllamaOnline,
-        ollamaInstalled: isOllamaInstalled,
-        power
-    };
+    const [gpu, power] = await Promise.all([probeGpu(), probePower()]);
+    return { gpu, power };
 }
 
 module.exports = {

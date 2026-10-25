@@ -142,14 +142,6 @@
   },
   "system": {
     "gpu": "Sample GPU 8 GB",
-    "hasLocalEngine": true,
-    "ollamaOnline": false,
-    "ollamaInstalled": true,
-    "localAi": {
-      "hasLocalEngine": true,
-      "primaryEngine": { "id": "ollama", "name": "Ollama", "endpoint": "http://127.0.0.1:11434", "online": true, "activeModel": "qwen2.5-coder:7b" },
-      "detectedEngines": [{ "id": "ollama", "name": "Ollama" }]
-    },
     "power": { "onAc": true, "percent": 100 }
   },
   "skills": {

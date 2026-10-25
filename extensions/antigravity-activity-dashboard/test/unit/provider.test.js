@@ -95,7 +95,6 @@ const cmdCalls = (vscode, name) => vscode.state.calls.filter(c => c[0] === 'cmd'
 
 // ---- stubbed modules ----------------------------------------------------------------------
 const proc = { runs: [], launched: [] };
-const engines = { calls: [] };
 const stubbedPaths = [];
 const freshPaths = ['storage.js', 'webviewProvider.js', 'extension.js', 'transcriptViewer.js'].map(f => path.join(srcDir, f));
 
@@ -105,22 +104,12 @@ function setStub(rel, exportsObj) {
     stubbedPaths.push(p);
 }
 
-function engineResult(name) {
-    return async (...args) => { engines.calls.push([name, ...args]); return { success: true, message: `${name} ok` }; };
-}
-
 function installStubs() {
     setStub('util/proc.js', {
         execFileAsync: async (...args) => { proc.runs.push(args); return { stdout: '', stderr: '' }; },
         launchInBrowser: (...args) => { proc.launched.push(args); },
         findEdgeExecutable: () => null,
         createPool: () => ({ run: (fn) => fn() })
-    });
-    setStub('util/ollama.js', {
-        startOllama: engineResult('startOllama'),
-        stopOllama: engineResult('stopOllama'),
-        toggleOllama: engineResult('toggleOllama'),
-        toggleLocalAi: engineResult('toggleLocalAi')
     });
     setStub('collectors/panel.js', { getPanelData: async () => clone(fixture.panel) });
     setStub('collectors/sessions.js', { getBrainSessions: async () => clone(fixture.sessions) });
@@ -480,18 +469,7 @@ describe('Extension handlers and commands (fake VS Code)', function () {
         });
     });
 
-    describe('local engine and settings', () => {
-        for (const command of ['toggleLocalAi', 'toggleOllama', 'startOllama', 'stopOllama']) {
-            it(`${command} reports the result and refreshes the panel state`, async () => {
-                await openPanel();
-                engines.calls.length = 0;
-                await send({ command, engineId: 'ollama' }, 60);
-                assert.strictEqual(engines.calls[0][0], command);
-                assert.strictEqual(vscode.state.info.length, 1);
-                assert.strictEqual(panel._lastData, lastUpdate().data, 'panel state follows the data sent after the engine change');
-            });
-        }
-
+    describe('settings', () => {
         it('toggleStartup and setLanguage write the global settings', async () => {
             await openPanel();
             await send({ command: 'toggleStartup', value: false });

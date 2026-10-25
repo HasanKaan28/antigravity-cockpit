@@ -165,15 +165,6 @@
             'settings.startupAutoDesc': 'Show the cockpit whenever Antigravity IDE launches.',
             'settings.sfx': 'Interface sounds',
             'settings.sfxDesc': 'Short tones when you switch views or press buttons.',
-            'settings.localAiTitle': 'Local engine',
-            'settings.localAiDesc': '{name} was detected on this machine and can run coding tasks locally.',
-            'settings.localAiEco': 'On battery ({percent}%). The local engine stays in eco mode.',
-            'settings.startEngine': 'Start engine',
-            'settings.stopEngine': 'Stop engine',
-            'settings.testConn': 'Test connection',
-            'settings.refreshConn': 'Reconnect',
-            'settings.online': 'Online',
-            'settings.offline': 'Offline',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'Open the architecture map of the first project that has one.',
             'settings.openMap': 'Open map',
@@ -202,7 +193,6 @@
             'toast.chatStarting': 'Opening a new chat',
             'toast.cloning': 'Cloning {name}',
             'toast.repoAdding': 'Adding {name}',
-            'toast.engine': 'Updating {name}',
             'toast.noGraph': 'None of your projects has a Graphify map yet.',
             'toast.ghAuthCopied': 'gh auth login copied to clipboard',
             'toast.shown': '{name} shown',
@@ -363,15 +353,6 @@
             'settings.startupAutoDesc': 'Antigravity IDE her açıldığında Cockpit’i göster.',
             'settings.sfx': 'Arayüz sesleri',
             'settings.sfxDesc': 'Bölüm değiştirirken ve butonlara basarken kısa sesler.',
-            'settings.localAiTitle': 'Yerel motor',
-            'settings.localAiDesc': 'Bu bilgisayarda {name} algılandı, kodlama görevlerini yerelde çalıştırabilir.',
-            'settings.localAiEco': 'Cihaz pilde (%{percent}). Yerel motor tasarruf modunda tutuluyor.',
-            'settings.startEngine': 'Motoru başlat',
-            'settings.stopEngine': 'Motoru durdur',
-            'settings.testConn': 'Bağlantıyı sına',
-            'settings.refreshConn': 'Yeniden bağlan',
-            'settings.online': 'Çevrimiçi',
-            'settings.offline': 'Çevrimdışı',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'Haritası olan ilk projenin mimari haritasını aç.',
             'settings.openMap': 'Haritayı aç',
@@ -400,7 +381,6 @@
             'toast.chatStarting': 'Yeni sohbet açılıyor',
             'toast.cloning': '{name} klonlanıyor',
             'toast.repoAdding': '{name} ekleniyor',
-            'toast.engine': '{name} güncelleniyor',
             'toast.noGraph': 'Projelerinin hiçbirinde henüz Graphify haritası yok.',
             'toast.ghAuthCopied': 'gh auth login panoya kopyalandı',
             'toast.shown': '{name} gösteriliyor',
@@ -561,15 +541,6 @@
             'settings.startupAutoDesc': 'Das Cockpit bei jedem Start der Antigravity IDE anzeigen.',
             'settings.sfx': 'Oberflächentöne',
             'settings.sfxDesc': 'Kurze Töne beim Wechseln von Bereichen und bei Klicks.',
-            'settings.localAiTitle': 'Lokale Engine',
-            'settings.localAiDesc': '{name} wurde auf diesem Rechner erkannt und kann Coding-Aufgaben lokal ausführen.',
-            'settings.localAiEco': 'Akkubetrieb ({percent}%). Die lokale Engine bleibt im Sparmodus.',
-            'settings.startEngine': 'Engine starten',
-            'settings.stopEngine': 'Engine stoppen',
-            'settings.testConn': 'Verbindung testen',
-            'settings.refreshConn': 'Neu verbinden',
-            'settings.online': 'Online',
-            'settings.offline': 'Offline',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'Öffnet die Architekturkarte des ersten Projekts, das eine hat.',
             'settings.openMap': 'Karte öffnen',
@@ -598,7 +569,6 @@
             'toast.chatStarting': 'Neuer Chat wird geöffnet',
             'toast.cloning': '{name} wird geklont',
             'toast.repoAdding': '{name} wird hinzugefügt',
-            'toast.engine': '{name} wird aktualisiert',
             'toast.noGraph': 'Noch keines deiner Projekte hat eine Graphify-Karte.',
             'toast.ghAuthCopied': 'gh auth login wurde kopiert',
             'toast.shown': '{name} eingeblendet',
@@ -759,15 +729,6 @@
             'settings.startupAutoDesc': 'Mostrar el Cockpit cada vez que se inicie Antigravity IDE.',
             'settings.sfx': 'Sonidos de la interfaz',
             'settings.sfxDesc': 'Tonos breves al cambiar de sección o pulsar botones.',
-            'settings.localAiTitle': 'Motor local',
-            'settings.localAiDesc': 'Se detectó {name} en este equipo; puede ejecutar tareas de código en local.',
-            'settings.localAiEco': 'Con batería ({percent}%). El motor local se mantiene en modo ahorro.',
-            'settings.startEngine': 'Iniciar motor',
-            'settings.stopEngine': 'Detener motor',
-            'settings.testConn': 'Probar conexión',
-            'settings.refreshConn': 'Reconectar',
-            'settings.online': 'En línea',
-            'settings.offline': 'Sin conexión',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'Abre el mapa de arquitectura del primer proyecto que tenga uno.',
             'settings.openMap': 'Abrir mapa',
@@ -796,7 +757,6 @@
             'toast.chatStarting': 'Abriendo un nuevo chat',
             'toast.cloning': 'Clonando {name}',
             'toast.repoAdding': 'Añadiendo {name}',
-            'toast.engine': 'Actualizando {name}',
             'toast.noGraph': 'Ninguno de tus proyectos tiene todavía un mapa de Graphify.',
             'toast.ghAuthCopied': 'gh auth login copiado',
             'toast.shown': '{name} visible',
@@ -957,15 +917,6 @@
             'settings.startupAutoDesc': 'Afficher le Cockpit à chaque lancement d’Antigravity IDE.',
             'settings.sfx': 'Sons de l’interface',
             'settings.sfxDesc': 'Sons brefs lors des changements de section et des clics.',
-            'settings.localAiTitle': 'Moteur local',
-            'settings.localAiDesc': '{name} a été détecté sur cette machine et peut exécuter des tâches de code en local.',
-            'settings.localAiEco': 'Sur batterie ({percent} %). Le moteur local reste en mode économie.',
-            'settings.startEngine': 'Démarrer le moteur',
-            'settings.stopEngine': 'Arrêter le moteur',
-            'settings.testConn': 'Tester la connexion',
-            'settings.refreshConn': 'Reconnecter',
-            'settings.online': 'En ligne',
-            'settings.offline': 'Hors ligne',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'Ouvre la carte d’architecture du premier projet qui en possède une.',
             'settings.openMap': 'Ouvrir la carte',
@@ -994,7 +945,6 @@
             'toast.chatStarting': 'Ouverture d’un nouveau chat',
             'toast.cloning': 'Clonage de {name}',
             'toast.repoAdding': 'Ajout de {name}',
-            'toast.engine': 'Mise à jour de {name}',
             'toast.noGraph': 'Aucun de vos projets n’a encore de carte Graphify.',
             'toast.ghAuthCopied': 'gh auth login copié',
             'toast.shown': '{name} affiché',
@@ -1155,15 +1105,6 @@
             'settings.startupAutoDesc': '每次启动 Antigravity IDE 时显示 Cockpit。',
             'settings.sfx': '界面音效',
             'settings.sfxDesc': '切换分区或点击按钮时播放简短提示音。',
-            'settings.localAiTitle': '本地引擎',
-            'settings.localAiDesc': '在本机检测到 {name}，可在本地执行编码任务。',
-            'settings.localAiEco': '正在使用电池（{percent}%），本地引擎保持节能模式。',
-            'settings.startEngine': '启动引擎',
-            'settings.stopEngine': '停止引擎',
-            'settings.testConn': '测试连接',
-            'settings.refreshConn': '重新连接',
-            'settings.online': '在线',
-            'settings.offline': '离线',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': '打开第一个拥有图谱的项目的架构图。',
             'settings.openMap': '打开图谱',
@@ -1192,7 +1133,6 @@
             'toast.chatStarting': '正在打开新对话',
             'toast.cloning': '正在克隆 {name}',
             'toast.repoAdding': '正在添加 {name}',
-            'toast.engine': '正在更新 {name}',
             'toast.noGraph': '你的项目中还没有 Graphify 图谱。',
             'toast.ghAuthCopied': '已复制 gh auth login',
             'toast.shown': '已显示{name}',
@@ -1353,15 +1293,6 @@
             'settings.startupAutoDesc': 'Antigravity IDE の起動時に毎回 Cockpit を表示します。',
             'settings.sfx': 'インターフェース音',
             'settings.sfxDesc': 'セクション切り替えやボタン操作時の短い音。',
-            'settings.localAiTitle': 'ローカルエンジン',
-            'settings.localAiDesc': 'このマシンで {name} が検出されました。コーディングタスクをローカルで実行できます。',
-            'settings.localAiEco': 'バッテリー駆動中（{percent}%）。ローカルエンジンは省電力モードです。',
-            'settings.startEngine': 'エンジンを起動',
-            'settings.stopEngine': 'エンジンを停止',
-            'settings.testConn': '接続をテスト',
-            'settings.refreshConn': '再接続',
-            'settings.online': 'オンライン',
-            'settings.offline': 'オフライン',
             'settings.radarTitle': 'Graphify',
             'settings.radarDesc': 'マップを持つ最初のプロジェクトのアーキテクチャマップを開きます。',
             'settings.openMap': 'マップを開く',
@@ -1390,7 +1321,6 @@
             'toast.chatStarting': '新しいチャットを開いています',
             'toast.cloning': '{name} をクローンしています',
             'toast.repoAdding': '{name} を追加しています',
-            'toast.engine': '{name} を更新しています',
             'toast.noGraph': 'Graphify マップのあるプロジェクトはまだありません。',
             'toast.ghAuthCopied': 'gh auth login をコピーしました',
             'toast.shown': '{name}を表示しました',
@@ -2593,7 +2523,7 @@
         setText('geminiWeeklyReset', weekly.resetTime ? `(${weekly.resetTime})` : '');
     }
 
-    // --- System + GitHub instruments, local engine ---
+    // --- System + GitHub instruments ---
     function renderSystem() {
         const sys = appData.system || {};
         setText('teleGpu', sys.gpu || t('telemetry.gpuUnknown'));
@@ -2606,37 +2536,6 @@
         if (ghDot) ghDot.className = 'state-dot ' + (user ? 'ok' : 'off');
         const repoCount = (appData.githubRepos || []).filter(r => !r.isArchived).length;
         setText('teleGraphify', user ? t('github.repoCount', { count: repoCount }) : '');
-
-        const localAi = sys.localAi;
-        const hasLocal = Boolean(sys.hasLocalEngine || sys.ollamaInstalled || sys.ollamaOnline ||
-            (localAi && (localAi.hasLocalEngine || (localAi.detectedEngines && localAi.detectedEngines.length > 0))));
-        const section = $('settingsExtraLocalAiSection');
-        if (section) section.hidden = !hasLocal;
-        if (!hasLocal) return;
-
-        const engine = (localAi && localAi.primaryEngine) || {
-            id: 'ollama',
-            name: 'Ollama',
-            endpoint: 'http://127.0.0.1:11434',
-            online: Boolean(sys.ollamaOnline),
-            activeModel: sys.localModel
-        };
-        const online = Boolean(engine.online);
-        setText('settingsLocalAiTitle', `${t('settings.localAiTitle')}: ${engine.name}`);
-        setText('settingsLocalAiPill', t(online ? 'settings.online' : 'settings.offline'));
-        setText('settingsLocalAiEndpoint', engine.endpoint || 'http://127.0.0.1');
-        const engineDot = $('settingsLocalAiDot');
-        if (engineDot) engineDot.className = 'state-dot ' + (online ? 'ok' : 'off');
-        const modelTag = $('settingsLocalAiModelTag');
-        if (modelTag) {
-            modelTag.hidden = !engine.activeModel;
-            modelTag.textContent = engine.activeModel || '';
-        }
-        const isOllama = engine.id === 'ollama';
-        setText('settingsLocalAiBtnText', t(isOllama ? (online ? 'settings.stopEngine' : 'settings.startEngine') : (online ? 'settings.refreshConn' : 'settings.testConn')));
-        setText('settingsLocalAiDesc', power && !power.onAc
-            ? t('settings.localAiEco', { percent: power.percent })
-            : t('settings.localAiDesc', { name: engine.name }));
     }
 
     function renderCounts() {
@@ -2817,16 +2716,6 @@
                 AudioEngine.click();
                 post('openAgSidebar');
                 break;
-            case 'toggleLocalAi':
-            case 'toggleOllama': {
-                AudioEngine.click();
-                const sys = appData.system || {};
-                const engine = (sys.localAi && sys.localAi.primaryEngine) || { id: 'ollama', name: 'Ollama' };
-                showToast(t('toast.engine', { name: engine.name }));
-                post('toggleLocalAi', { engineId: engine.id });
-                break;
-            }
-
             case 'toggleFav':
                 if (!d.id) break;
                 AudioEngine.favorite();

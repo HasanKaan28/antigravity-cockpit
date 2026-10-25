@@ -46,7 +46,7 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 1. ⚡ **Cockpit Extension Installed:** The `.vsix` package is installed directly into Antigravity IDE and configured to **auto-launch on IDE startup**.
 2. ⚡ **Status Bar Item Active:** Permanent `$(dashboard) Cockpit` quick-launch toggle pinned to your status bar.
 3. 🧠 **Dynamic Skills Auto-Detection:** Automatically scans and organizes your own local agent skills from `~/.gemini/config/skills/`, IDE builtin skills, and workspace `.agents/skills`.
-4. 🖥️ **Hardware Telemetry:** Dynamically probes your system GPU (NVIDIA, AMD, Intel, Apple Silicon) and local AI engines (Ollama, LM Studio) without hardcoded device IDs.
+4. 🖥️ **Hardware Telemetry:** Dynamically probes your system GPU (NVIDIA, AMD, Intel, Apple Silicon) and power state without hardcoded device IDs.
 
 ---
 
@@ -86,7 +86,7 @@ The AI agent reads [`AGENTS.md`](AGENTS.md) / [`GEMINI.md`](GEMINI.md) and execu
 ### 📊 Live Model Quotas & Telemetry
 - Real-time Gemini and Claude quota percentages (from Antigravity Panel SQLite).
 - Silent background watcher alerting you when significant quota shifts occur.
-- Hardware telemetry: Dynamic GPU detection (WMI, macOS system profiler, Linux lspci, nvidia-smi), local Ollama model engine detection, and power status (AC vs battery).
+- Hardware telemetry: Dynamic GPU detection (WMI, macOS system profiler, Linux lspci, nvidia-smi) and power status (AC vs battery).
 
 ---
 

@@ -1327,8 +1327,6 @@ kbd { font-family: var(--font-mono); }
 .switch input:checked + .track::after { transform: translateX(14px); background: var(--accent-ink); }
 .switch input:focus-visible + .track { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.engine-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
-
 /* Dialog */
 .overlay.center { display: grid; place-items: center; z-index: 70; padding: 20px; }
 .dialog {

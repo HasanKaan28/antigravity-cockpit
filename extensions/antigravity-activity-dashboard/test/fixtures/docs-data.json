@@ -49,14 +49,6 @@
   },
   "system": {
     "gpu": "NVIDIA GeForce RTX 4070 (12 GB)",
-    "hasLocalEngine": true,
-    "ollamaOnline": true,
-    "ollamaInstalled": true,
-    "localAi": {
-      "hasLocalEngine": true,
-      "primaryEngine": { "id": "ollama", "name": "Ollama", "endpoint": "http://127.0.0.1:11434", "online": true, "activeModel": "qwen2.5-coder:7b" },
-      "detectedEngines": [{ "id": "ollama", "name": "Ollama" }]
-    },
     "power": { "onAc": true, "percent": 100 }
   },
   "skills": {

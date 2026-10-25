@@ -300,7 +300,7 @@ async function step(name, fn) {
         assert.ok(!(await page.$eval('#agDetailsModal', el => el.classList.contains('open'))));
     });
 
-    await step('settings sheet: open, inner click, startup, sound, local engine', async () => {
+    await step('settings sheet: open, inner click, startup, sound', async () => {
         await page.click('#openSettingsBtn');
         assert.ok(await page.$eval('#settingsModal', el => el.classList.contains('open')));
         await page.click('#settingsModal .sheet-body');
@@ -310,10 +310,7 @@ async function step(name, fn) {
         assert.deepStrictEqual(await lastPost('toggleStartup'), { command: 'toggleStartup', value: false });
         await page.click('#settingsAudioInput');
         assert.match(await toast(), /sesleri/);
-        assert.ok(await visible('#settingsExtraLocalAiSection'));
-        assert.match(await page.textContent('#settingsLocalAiBtnText'), /durdur/i);
-        await page.click('#settingsLocalAiBtn');
-        assert.deepStrictEqual(await lastPost('toggleLocalAi'), { command: 'toggleLocalAi', engineId: 'ollama' });
+        assert.strictEqual(await page.$('#settingsExtraLocalAiSection'), null, 'no local engine card');
     });
 
     await step('settings: layout toggles hide and restore panels and tabs', async () => {

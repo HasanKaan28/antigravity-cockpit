@@ -24,7 +24,6 @@ const {
 const { getProjectsData } = require('./collectors/projects');
 const { getGithubReposData } = require('./collectors/github');
 const { getBrainSessions } = require('./collectors/sessions');
-const { startOllama, stopOllama, toggleOllama, toggleLocalAi } = require('./util/ollama');
 const { getPanelData } = require('./collectors/panel');
 const { getSystemTelemetry } = require('./collectors/system');
 const { getSkillsData } = require('./collectors/skills');
@@ -300,63 +299,6 @@ function handleWebviewMessage(panel, message, vscodeInstance, _extensionUri) {
             } else {
                 vscodeInstance.window.showWarningMessage(hostText(vscodeInstance, 'graphifyMissing'));
             }
-            break;
-        }
-
-        case 'toggleOllama': {
-            toggleOllama().then(async (res) => {
-                if (res.success) {
-                    vscodeInstance.window.showInformationMessage(res.message);
-                } else {
-                    vscodeInstance.window.showWarningMessage(res.message);
-                }
-                await pushFreshData(panel, vscodeInstance);
-            }).catch(err => {
-                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaError', { error: err.message || String(err) }));
-            });
-            break;
-        }
-
-        case 'toggleLocalAi': {
-            const engineId = message.engineId || 'ollama';
-            toggleLocalAi(engineId).then(async (res) => {
-                if (res.success) {
-                    vscodeInstance.window.showInformationMessage(res.message);
-                } else {
-                    vscodeInstance.window.showWarningMessage(res.message);
-                }
-                await pushFreshData(panel, vscodeInstance);
-            }).catch(err => {
-                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'engineError', { error: err.message || String(err) }));
-            });
-            break;
-        }
-
-        case 'startOllama': {
-            startOllama().then(async (res) => {
-                if (res.success) {
-                    vscodeInstance.window.showInformationMessage(res.message);
-                } else {
-                    vscodeInstance.window.showWarningMessage(res.message);
-                }
-                await pushFreshData(panel, vscodeInstance);
-            }).catch(err => {
-                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaStartError', { error: err.message || String(err) }));
-            });
-            break;
-        }
-
-        case 'stopOllama': {
-            stopOllama().then(async (res) => {
-                if (res.success) {
-                    vscodeInstance.window.showInformationMessage(res.message);
-                } else {
-                    vscodeInstance.window.showWarningMessage(res.message);
-                }
-                await pushFreshData(panel, vscodeInstance);
-            }).catch(err => {
-                vscodeInstance.window.showErrorMessage(hostText(vscodeInstance, 'ollamaStopError', { error: err.message || String(err) }));
-            });
             break;
         }
 
