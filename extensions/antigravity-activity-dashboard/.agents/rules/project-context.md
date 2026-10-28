@@ -37,7 +37,7 @@
 - **Packaging & Installation**: `npm run package` builds the `.vsix`, and `npm run install-local` installs it directly via `antigravity-ide.cmd --install-extension <vsix> --force`.
 
 ## Testing & Verification
-- Unit test suite (`npm run test:unit`): 25 passing tests covering security utils, storage canonical IDs, transcript parsing, and CBM exact matching.
+- Unit test suite (`npm run test:unit`): 104 passing tests covering security utils, process helpers, storage, the collectors (projects, GitHub, sessions, skills), host strings, i18n, transcript parsing and the webview message handlers.
 - E2E UI audit (`npm run test:e2e`, `test/e2e-ui.js`): builds `preview.html` from `test/fixtures/ui-data.json`, stubs `acquireVsCodeApi` to assert every button's `postMessage` contract, and drives headless Edge through all views, settings, themes (WCAG contrast check for all 20 palettes), language switching, live updates and narrow widths.
-- Packaging (`npm run package`): Produces `antigravity-activity-dashboard-2.2.0.vsix`.
-- Local installation (`npm run install-local`): Verified installed in Antigravity IDE (`antigravity-local.antigravity-activity-dashboard@2.2.0`).
+- Packaging (`npm run package`): Produces `antigravity-activity-dashboard-2.3.0.vsix`.
+- Local installation (`npm run install-local`): Verified installed in Antigravity IDE (`antigravity-local.antigravity-activity-dashboard@2.3.0`).

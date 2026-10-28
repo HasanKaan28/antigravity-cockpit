@@ -1,7 +1,7 @@
 # ⚡ Antigravity Cockpit & Activity Dashboard
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-2.2.0-cyan.svg)](package.json)
+[![Version](https://img.shields.io/badge/Version-2.3.0-cyan.svg)](package.json)
 [![Antigravity IDE](https://img.shields.io/badge/Antigravity_IDE-Ready-purple.svg)](package.json)
 [![Agent Skills](https://img.shields.io/badge/Agent_Skills-Dynamic_Auto--Detect-green.svg)](#-dynamic-agent-skills-detection)
 

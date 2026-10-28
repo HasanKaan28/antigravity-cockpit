@@ -2,7 +2,7 @@
   "name": "antigravity-activity-dashboard",
   "displayName": "Antigravity Activity Dashboard & Cockpit",
   "description": "Futuristic mission control dashboard and agent cockpit for Antigravity IDE, displaying local projects, active sessions, Graphify maps, and live AI model quotas on startup.",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "publisher": "antigravity-local",
   "license": "MIT",
   "author": "Antigravity Open Source Community",
@@ -56,7 +56,16 @@
         },
         "antigravity.dashboard.language": {
           "type": "string",
-          "enum": ["auto", "en", "tr", "de", "es", "fr", "zh", "ja"],
+          "enum": [
+            "auto",
+            "en",
+            "tr",
+            "de",
+            "es",
+            "fr",
+            "zh",
+            "ja"
+          ],
           "default": "auto",
           "description": "Antigravity Cockpit interface language (auto: System / IDE language, en: English, tr: Turkish, de: German, es: Spanish, fr: French, zh: Simplified Chinese, ja: Japanese)."
         },

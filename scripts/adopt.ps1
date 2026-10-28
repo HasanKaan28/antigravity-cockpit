@@ -9,7 +9,9 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $repoDir = Split-Path -Parent $scriptDir
 $geminiDir = Join-Path $env:USERPROFILE ".gemini"
-$extDir = Join-Path $env:USERPROFILE ".antigravity-ide\extensions\antigravity-local.antigravity-activity-dashboard-2.2.0"
+# The installed folder carries the extension version from package.json
+$extVersion = (Get-Content (Join-Path $repoDir "extensions\antigravity-activity-dashboard\package.json") -Raw | ConvertFrom-Json).version
+$extDir = Join-Path $env:USERPROFILE ".antigravity-ide\extensions\antigravity-local.antigravity-activity-dashboard-$extVersion"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "       ANTIGRAVITY COCKPIT - ENVIRONMENT ADOPTION         " -ForegroundColor Yellow

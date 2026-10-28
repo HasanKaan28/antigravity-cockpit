@@ -5,7 +5,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 GEMINI_DIR="$HOME/.gemini"
-EXT_DIR="$HOME/.antigravity-ide/extensions/antigravity-local.antigravity-activity-dashboard-2.2.0"
+# The installed folder carries the extension version from package.json
+EXT_VERSION="$(grep -m1 '"version"' "$REPO_DIR/extensions/antigravity-activity-dashboard/package.json" | sed -E 's/.*"version": *"([^"]+)".*/\1/')"
+EXT_DIR="$HOME/.antigravity-ide/extensions/antigravity-local.antigravity-activity-dashboard-$EXT_VERSION"
 
 echo -e "\033[36m==========================================================\033[0m"
 echo -e "\033[33m       ANTIGRAVITY COCKPIT - ENVIRONMENT ADOPTION         \033[0m"

@@ -2,6 +2,31 @@
 
 All notable changes to the **Antigravity Activity Dashboard & Cockpit** extension will be documented in this file.
 
+## [2.3.0] — 2026-10-28
+
+### Added
+- **Mission Control UI**: the dashboard rebuilt from scratch with a resume strip, day-grouped sessions, keyboard navigation (`1`–`6`, arrows, `Enter`) and 9 theme families in dark and light with WCAG-checked contrast.
+- **Transcript viewer** restyled to match the Cockpit, with search, a prompt outline and copy actions.
+- **Localized IDE notifications**: host-side messages follow the Cockpit language in all 7 languages.
+- **Collector tests** for projects, GitHub, sessions and host strings; the i18n test checks every locale block.
+
+### Changed
+- **Faster refresh**: project repositories are inspected in parallel, the GitHub list needs a single `gh` call and renders from the cache first (about 0.6 s instead of 1.8 s).
+- The last Turkish-only strings (GPU label, untitled sessions, session times) are localized or dropped.
+
+### Security
+- Git runs with repo-controlled hooks, fsmonitor, signature checks and attribute filters turned off, so a scanned repository cannot run programs on the machine.
+- Browser launches are limited to http(s) URLs and local HTML files; the PowerShell fallback is gone.
+- Stricter validation for Graphify and transcript paths, the language setting and repository names; the webview no longer loads remote images.
+
+### Fixed
+- Favorites and archive state stick without a refresh.
+- The refresh command and automatic opening no longer create duplicate panels.
+
+### Removed
+- Codebase Memory (CBM) integration.
+- Local AI engine support (Ollama / LM Studio detection, start/stop and the settings card).
+
 ## [2.2.0] — 2026-10-11
 
 ### Added

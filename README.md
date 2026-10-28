@@ -116,7 +116,7 @@ antigravity-cockpit/
 │   └── skills/                             # 50+ curated skills
 ├── extensions/
 │   ├── antigravity-activity-dashboard/     # Futuristic startup control panel extension (source code)
-│   └── antigravity-activity-dashboard-2.2.0.vsix # One-click installable package
+│   └── antigravity-activity-dashboard-2.3.0.vsix # One-click installable package
 └── scripts/
     ├── adopt.ps1                           # Windows one-click setup (Dashboard included)
     ├── adopt.sh                            # Linux/macOS one-click setup (Dashboard included)
