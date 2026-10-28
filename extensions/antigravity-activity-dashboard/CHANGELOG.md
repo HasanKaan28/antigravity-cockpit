@@ -5,7 +5,7 @@ All notable changes to the **Antigravity Activity Dashboard & Cockpit** extensio
 ## [2.3.0] — 2026-10-28
 
 ### Added
-- **Mission Control UI**: the dashboard rebuilt from scratch with a resume strip, day-grouped sessions, keyboard navigation (`1`–`6`, arrows, `Enter`) and 9 theme families in dark and light with WCAG-checked contrast.
+- **Mission Control UI**: the dashboard rebuilt from scratch with a resume strip, day-grouped sessions, keyboard navigation (`1`–`6`, arrows, `Enter`) and 10 theme families in dark and light (plus Match IDE) with WCAG-checked contrast.
 - **Transcript viewer** restyled to match the Cockpit, with search, a prompt outline and copy actions.
 - **Localized IDE notifications**: host-side messages follow the Cockpit language in all 7 languages.
 - **Collector tests** for projects, GitHub, sessions and host strings; the i18n test checks every locale block.
